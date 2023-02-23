@@ -11,7 +11,7 @@ import banCircle from '../assets/landing/ban-circle.svg';
 
 function Home() {
 	window.addEventListener('scroll', function () {
-		var header = document.querySelector('header');
+		const header = document.querySelector('header');
 		header.classList.toggle('sticky', window.scrollY > 0);
 	});
 
