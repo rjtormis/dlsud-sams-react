@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="62" height="62" viewBox="0 0 62 62">
+    <defs>
+        <filter id="prefix__a" width="530%" height="530%" x="-215%" y="-115%" filterUnits="objectBoundingBox">
+            <feOffset dy="20" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="11"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.200229981 0 0 0 0 0.176205033 0 0 0 0 0.382133152 0 0 0 0.297394012 0"/>
+        </filter>
+        <circle id="prefix__b" cx="240" cy="271" r="10"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd" opacity=".4" transform="translate(-209 -260)">
+        <use fill="#000" filter="url(#prefix__a)" xlink:href="#prefix__b"/>
+        <use fill="#FFF" xlink:href="#prefix__b"/>
+    </g>
+</svg>
