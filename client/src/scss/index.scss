@@ -1,27 +1,37 @@
-@use 'config';
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@use "config";
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-	font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 #regLogo {
-	img {
-		width: 280px;
-		height: 70px;
-	}
+  img {
+    width: 280px;
+    height: 70px;
+  }
 }
 
 #regBG {
-	background: url('assets/Register/bg.jpg') no-repeat center center/cover;
+  background: url("assets/Register/bg.jpg") no-repeat center center/cover;
 }
 
 #regInput {
-	figure img {
-		width: 200px;
-		height: 180px;
-	}
+  figure img {
+    width: 200px;
+    height: 180px;
+  }
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-text {
+  font-size: 10px;
 }
