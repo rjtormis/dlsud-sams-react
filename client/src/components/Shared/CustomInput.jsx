@@ -1,9 +1,9 @@
 import React from "react";
-import { Formik, useField } from "formik";
+import { useField } from "formik";
 
-function CustomInput({ label, icon, type, ...props }) {
+function CustomInput({ page, label, icon, type, ...props }) {
   const [field, meta] = useField(props);
-
+  console.log(page);
   const disableWheel = (e) => {
     e.target.blur();
   };
@@ -11,8 +11,8 @@ function CustomInput({ label, icon, type, ...props }) {
   return (
     <div className="form-control">
       <label htmlFor="" className="label">
-        <span className="label-text">{label}</span>
-        {meta.error && meta.touched ? <p className="custom-text text-error">{meta.error}</p> : null}
+        <span className={`custom-text-${page} label-text`}>{label}</span>
+        {meta.error && meta.touched ? <p className={`custom-text-${page} text-error`}>{meta.error}</p> : null}
       </label>
       {icon ? (
         <div className="input-group">
