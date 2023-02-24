@@ -19,3 +19,13 @@ body {
   width: 200px;
   height: 180px;
 }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-text {
+  font-size: 10px;
+}
