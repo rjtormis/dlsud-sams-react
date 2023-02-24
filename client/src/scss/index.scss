@@ -33,5 +33,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .custom-text {
-  font-size: 10px;
+  &-register {
+    font-size: 12px;
+  }
+  &-login {
+    font-size: 14px;
+    font-weight: 400;
+  }
 }
