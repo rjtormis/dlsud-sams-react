@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { FaHome, FaUserTie, FaUserGraduate } from "react-icons/fa";
 
 import RegisterStudent from "../components/Register/RegisterStudent";
-
+import RegisterProfessor from "../components/Register/RegisterProfessor";
 function Register() {
   const params = useParams();
 
@@ -30,7 +30,7 @@ function Register() {
           <h2 className="text-green-700 text-4xl">CREATE A {type === "student" ? "STUDENT" : "PROFESSOR"} ACCOUNT</h2>
           <p className="mt-2">Never Miss a Beat: Keep Track of Attendance with Ease</p>
 
-          {type === "student" ? <RegisterStudent type={type} /> : ""}
+          {type === "student" ? <RegisterStudent /> : <RegisterProfessor />}
 
           <p className="mt-10 text-center">
             Already have an account?
