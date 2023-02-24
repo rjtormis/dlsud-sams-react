@@ -1,15 +1,13 @@
 import React from "react";
 import { Formik } from "formik";
 import { HiIdentification } from "react-icons/hi";
-
+import { FaEnvelope } from "react-icons/fa";
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 
-import { FaEnvelope } from "react-icons/fa";
-
-import { registerSchema } from "../../schemas/Register";
+import { registerStudentSchema } from "../../schemas/RegisterSchema";
 import CustomInput from "../Shared/CustomInput";
 
-function RegisterStudent({ type }) {
+function RegisterStudent() {
   const handleSubmit = (e, state, action) => {
     e.preventDefault();
     console.log(state);
@@ -28,21 +26,28 @@ function RegisterStudent({ type }) {
           password: "",
           confirmPassword: "",
         }}
-        validationSchema={registerSchema}
+        validationSchema={registerStudentSchema}
         onSubmit={handleSubmit}
       >
         {(props) => (
           <form action="" className="mt-10" onSubmit={props.handleSubmit}>
             {/* Name */}
             <div className="grid grid-cols-3 gap-4">
-              <CustomInput label="First name" name="firstName" type="text" placeholder="First name" />
-              <CustomInput label="Middle Initial" name="middleInitial" type="text" placeholder="Middle Initial" />
-              <CustomInput label="Last name" name="lastName" type="text" placeholder="Last name" />
+              <CustomInput page="register" label="First name" name="firstName" type="text" placeholder="First name" />
+              <CustomInput
+                page="register"
+                label="Middle Initial"
+                name="middleInitial"
+                type="text"
+                placeholder="Middle Initial"
+              />
+              <CustomInput page="register" label="Last name" name="lastName" type="text" placeholder="Last name" />
             </div>
 
             {/* Student ID, Email */}
             <div className="grid grid-cols-2 gap-4">
               <CustomInput
+                page="register"
                 label="Student Number"
                 name="studentNumber"
                 type="number"
@@ -50,11 +55,19 @@ function RegisterStudent({ type }) {
                 icon={<HiIdentification />}
               />
 
-              <CustomInput label="Email" name="emailAddress" type="email" placeholder="Email" icon={<FaEnvelope />} />
+              <CustomInput
+                page="register"
+                label="Email"
+                name="emailAddress"
+                type="email"
+                placeholder="Email"
+                icon={<FaEnvelope />}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <CustomInput
+                page="register"
                 label="Password"
                 name="password"
                 type="password"
@@ -63,6 +76,7 @@ function RegisterStudent({ type }) {
               />
 
               <CustomInput
+                page="register"
                 label="Confirm Password"
                 name="confirmPassword"
                 type="password"
