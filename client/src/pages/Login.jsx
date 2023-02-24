@@ -39,7 +39,9 @@ function Login() {
 					</form>
 					<p className="mt-10 text-center">
 						Don't Have an account?
-						<Link className="ml-4 link link-primary">Sign Up!</Link>
+						<Link to="/register/student" className="ml-4 link link-primary">
+							Sign Up!
+						</Link>
 					</p>
 				</section>
 			</div>
