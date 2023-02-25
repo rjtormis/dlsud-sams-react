@@ -20,6 +20,8 @@ client/.env.production.local
 
 __pycache__/
 
+backend/venv
+
 .env
 
 npm-debug.log*
