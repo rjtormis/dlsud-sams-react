@@ -1,5 +1,6 @@
 import React from "react";
 import { Formik } from "formik";
+import axios from "axios";
 import { HiIdentification } from "react-icons/hi";
 import { FaEnvelope } from "react-icons/fa";
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
@@ -8,10 +9,21 @@ import { registerStudentSchema } from "../../schemas/RegisterSchema";
 import CustomInput from "../Shared/CustomInput";
 
 function RegisterStudent() {
-  const handleSubmit = (e, state, action) => {
-    e.preventDefault();
-    console.log(state);
-    console.log(action);
+  const handleSubmit = async (state, action) => {
+    try {
+      const response = await axios.post(
+        "/api/v1/users",
+        { ...state, type: "student" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      action.resetForm();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -33,15 +45,28 @@ function RegisterStudent() {
           <form action="" className="mt-10" onSubmit={props.handleSubmit}>
             {/* Name */}
             <div className="grid grid-cols-3 gap-4">
-              <CustomInput page="register" label="First name" name="firstName" type="text" placeholder="First name" />
+              <CustomInput
+                page="register"
+                label="First name"
+                name="firstName"
+                type="text"
+                placeholder="First name"
+              />
               <CustomInput
                 page="register"
                 label="Middle Initial"
                 name="middleInitial"
                 type="text"
+                customProp="Middle Initial"
                 placeholder="Middle Initial"
               />
-              <CustomInput page="register" label="Last name" name="lastName" type="text" placeholder="Last name" />
+              <CustomInput
+                page="register"
+                label="Last name"
+                name="lastName"
+                type="text"
+                placeholder="Last name"
+              />
             </div>
 
             {/* Student ID, Email */}
@@ -52,6 +77,7 @@ function RegisterStudent() {
                 name="studentNumber"
                 type="number"
                 placeholder="Student no."
+                customProp="number"
                 icon={<HiIdentification />}
               />
 

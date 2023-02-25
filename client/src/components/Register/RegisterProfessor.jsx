@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik } from "formik";
-import { FaEnvelope, FaBuilding, FaCalendar } from "react-icons/fa";
+import { FaEnvelope, FaCalendar } from "react-icons/fa";
 
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 
@@ -9,9 +9,8 @@ import CustomSelect from "../Shared/CustomSelect";
 import { registerProfessorSchema } from "../../schemas/RegisterSchema";
 
 function RegisterProfessor() {
-  const handleSubmit = (state, action) => {
+  const handleSubmit = async (state, action) => {
     console.log(state);
-    console.log(action);
   };
 
   return (
