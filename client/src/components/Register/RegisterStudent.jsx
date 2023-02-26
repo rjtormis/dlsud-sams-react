@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import axios from "axios";
+
+//Icons
 import { HiIdentification } from "react-icons/hi";
 import { FaEnvelope } from "react-icons/fa";
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 
+// Schema
 import { registerStudentSchema } from "../../schemas/RegisterSchema";
-import CustomInput from "../Shared/CustomInput";
 
-function RegisterStudent() {
+//Components
+import CustomInput from "../Shared/CustomInput";
+import spinner from "../../assets/spinner.gif";
+import Modal from "../Shared/Modal";
+
+function RegisterStudent({ handleSuccess }) {
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (state, action) => {
     try {
+      setLoading(true);
       const response = await axios.post(
         "/api/v1/users",
         { ...state, type: "student" },
@@ -20,9 +30,23 @@ function RegisterStudent() {
           },
         }
       );
-      action.resetForm();
+      if (response.status === 201) {
+        setTimeout(() => {
+          handleSuccess(true);
+          setLoading(false);
+          action.resetForm();
+        }, 1500);
+      }
     } catch (e) {
-      console.log(e);
+      setLoading(false);
+      if (e.response.data["msg"] === "Student no. already taken.") {
+        action.setFieldError("studentNumber", "Student no. already exists.");
+      } else if (e.response.data["msg"] === "Email already taken.") {
+        action.setFieldError("emailAddress", "Email already exists.");
+      } else if (e.response.data["msg"] === "Student number & Email already taken.") {
+        action.setFieldError("studentNumber", "Student no. already exists.");
+        action.setFieldError("emailAddress", "Email already exists.");
+      }
     }
   };
 
@@ -111,7 +135,23 @@ function RegisterStudent() {
               />
             </div>
 
-            <input type="submit" value="CREATE ACCOUNT" className="btn btn-primary w-full mt-4" />
+            <button
+              type="submit"
+              id="my-modal"
+              className={`btn btn-primary w-full mt-4 ${
+                loading ? "disabled:btn-primary opacity-75" : ""
+              }`}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <img src={spinner} alt="" className="w-5 h-5 mr-2" />
+                  <p>Creating account ...</p>
+                </>
+              ) : (
+                "CREATE ACCOUNT"
+              )}
+            </button>
           </form>
         )}
       </Formik>

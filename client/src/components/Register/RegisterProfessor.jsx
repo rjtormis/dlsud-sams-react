@@ -1,16 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
-import { FaEnvelope, FaCalendar } from "react-icons/fa";
+import axios from "axios";
 
+// Icons
+import { FaEnvelope, FaCalendar } from "react-icons/fa";
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 
+// Components
 import CustomInput from "../Shared/CustomInput";
 import CustomSelect from "../Shared/CustomSelect";
+import spinner from "../../assets/spinner.gif";
+
+// Schema
 import { registerProfessorSchema } from "../../schemas/RegisterSchema";
 
-function RegisterProfessor() {
+function RegisterProfessor({ handleSuccess }) {
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (state, action) => {
-    console.log(state);
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "/api/v1/users",
+        { ...state, type: "professor" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 201) {
+        setTimeout(() => {
+          handleSuccess(true);
+          setLoading(false);
+          action.resetForm();
+        }, 500);
+      }
+    } catch (e) {
+      setLoading(false);
+      console.log(e.response.status);
+    }
   };
 
   return (
@@ -32,7 +61,13 @@ function RegisterProfessor() {
         {(props) => (
           <form action="" className="mt-10" onSubmit={props.handleSubmit}>
             <div className="grid grid-cols-3 gap-4">
-              <CustomInput page="register" label="First name" name="firstName" type="text" placeholder="First name" />
+              <CustomInput
+                page="register"
+                label="First name"
+                name="firstName"
+                type="text"
+                placeholder="First name"
+              />
               <CustomInput
                 page="register"
                 label="Middle Initial"
@@ -40,11 +75,22 @@ function RegisterProfessor() {
                 type="text"
                 placeholder="Middle Initial"
               />
-              <CustomInput page="register" label="Last name" name="lastName" type="text" placeholder="Last name" />
+              <CustomInput
+                page="register"
+                label="Last name"
+                name="lastName"
+                type="text"
+                placeholder="Last name"
+              />
             </div>
 
             <div className="grid grid-cols-3 gap-4">
-              <CustomSelect label="Collegiate" name="collegiate" type="select" placeholder="Select collegiate">
+              <CustomSelect
+                label="Collegiate"
+                name="collegiate"
+                type="select"
+                placeholder="Select collegiate"
+              >
                 <option value="">Select Colleigate</option>
                 <option value="CBAA">CBAA</option>
                 <option value="CCJE">CCJE</option>
@@ -91,7 +137,22 @@ function RegisterProfessor() {
                 icon={<BsShieldFillExclamation />}
               />
             </div>
-            <input type="submit" value="CREATE ACCOUNT" className="btn btn-primary w-full mt-4" />
+            <button
+              type="submit"
+              className={`btn btn-primary w-full mt-4 ${
+                loading ? "disabled:btn-primary opacity-75" : ""
+              }`}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <img src={spinner} alt="" className="w-5 h-5 mr-2" />
+                  <p>Creating account ...</p>
+                </>
+              ) : (
+                "CREATE ACCOUNT"
+              )}
+            </button>
           </form>
         )}
       </Formik>
