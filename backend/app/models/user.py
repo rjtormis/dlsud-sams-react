@@ -1,19 +1,25 @@
 from app import db, bcrypt
 from datetime import datetime
-from .helper import generate_uuid
+
+# Helper
+from ..utils.generate_uuid import generate_uuid
+from .details import Details
 
 
-class User(db.Model):
+class User(db.Model, Details):
 
-    id = db.Column(primary_key=True, unique=True, default=generate_uuid)
+    __tablename__ = "users"
+    id = db.Column(
+        db.String(length=40), primary_key=True, unique=True, default=generate_uuid
+    )
     first_name = db.Column(db.String(length=20), nullable=False)
     middle_initial = db.Column(db.String(length=1), nullable=False)
     last_name = db.Column(db.String(length=20), nullable=False)
-    emailAddress = db.Column(db.String(length=50), nullable=False, unique=True)
+    emailAddress = db.Column(db.String(length=345), nullable=False, unique=True)
     password_hash = db.Column(db.String(length=50), nullable=False)
     type = db.Column(db.String(length=15), nullable=False)
-    created = db.Column(db.DateTime(), default=datetime.utcnow)
-    updated = db.Column(db.DateTime(), default=datetime.utcnow)
+
+    __mapper_args__ = {"polymorphic_identity": "user", "polymorphic_on": type}
 
     @property
     def password(self):
@@ -26,4 +32,4 @@ class User(db.Model):
         )
 
     def __repr__(self):
-        return f"User: {self.first_name} {self.middle_initial} {self.last_name}, Type:{self.type}"
+        return f"User: {self.first_name} {self.middle_initial} {self.last_name}, Type:{self.type} {self.id}"
