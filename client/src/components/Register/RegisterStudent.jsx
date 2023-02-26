@@ -66,9 +66,9 @@ function RegisterStudent({ handleSuccess }) {
         onSubmit={handleSubmit}
       >
         {(props) => (
-          <form action="" className="mt-10" onSubmit={props.handleSubmit}>
+          <form action="" className="mt-10 " onSubmit={props.handleSubmit}>
             {/* Name */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <CustomInput
                 page="register"
                 label="First name"
@@ -94,7 +94,7 @@ function RegisterStudent({ handleSuccess }) {
             </div>
 
             {/* Student ID, Email */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <CustomInput
                 page="register"
                 label="Student Number"
@@ -115,7 +115,7 @@ function RegisterStudent({ handleSuccess }) {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <CustomInput
                 page="register"
                 label="Password"

@@ -60,7 +60,7 @@ function RegisterProfessor({ handleSuccess }) {
       >
         {(props) => (
           <form action="" className="mt-10" onSubmit={props.handleSubmit}>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <CustomInput
                 page="register"
                 label="First name"
@@ -84,7 +84,7 @@ function RegisterProfessor({ handleSuccess }) {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <CustomSelect
                 label="Collegiate"
                 name="collegiate"
@@ -118,7 +118,7 @@ function RegisterProfessor({ handleSuccess }) {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <CustomInput
                 page="register"
                 label="Password"
