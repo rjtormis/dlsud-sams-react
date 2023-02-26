@@ -3,6 +3,7 @@ import { useField } from "formik";
 
 function CustomInput({ page, customProp, label, icon, type, ...props }) {
   const [field, meta] = useField(props);
+
   const disableWheel = (e) => {
     e.target.blur();
   };
