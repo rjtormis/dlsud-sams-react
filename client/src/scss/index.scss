@@ -8,12 +8,6 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-#regLogo {
-  img {
-    width: 280px;
-    height: 70px;
-  }
-}
 
 #regBG {
   background: url("assets/Register/bg.jpg") no-repeat center center/cover;
@@ -40,4 +34,8 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 14px;
     font-weight: 400;
   }
+}
+
+#dashboard-main {
+  background: url('assets/testbg.svg') no-repeat center center/cover;
 }

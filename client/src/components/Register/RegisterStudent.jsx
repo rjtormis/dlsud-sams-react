@@ -13,7 +13,6 @@ import { registerStudentSchema } from "../../schemas/RegisterSchema";
 //Components
 import CustomInput from "../Shared/CustomInput";
 import spinner from "../../assets/spinner.gif";
-import Modal from "../Shared/Modal";
 
 function RegisterStudent({ handleSuccess }) {
   const [loading, setLoading] = useState(false);

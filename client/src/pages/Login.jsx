@@ -14,8 +14,8 @@ function Login() {
   };
 
   return (
-    <div className="grid grid-cols-3 h-screen">
-      <div className="col-span-2 relative">
+    <div className="grid grid-cols-1 h-screen md:grid-cols-2 xl:grid-cols-3">
+      <div className="hidden col-span-1 relative md:block xl:col-span-2">
         <Link to="/" className="absolute btn bg-white top-5 left-5">
           <FaHome size={20} color={"#224429"} />
         </Link>
@@ -24,16 +24,22 @@ function Login() {
         </figure>
       </div>
 
-      <div id="register" className="bg-white p-4 flex flex-col">
-        <section id="regLogo" className="flex justify-center">
-          <img src={logo} alt="DLSUD SAMS" />
+      <div id="register" className="bg-white p-2 flex flex-col xl:col-span-1">
+        <section id="regLogo" className="w-full">
+          <img src={logo} alt="DLSUD SAMS" className="w-52 m-auto sm:w-60 xl:w-64" />
         </section>
 
-        <section id="regInput" className="my-auto mx-10 ">
-          <h2 className="text-green-700 text-4xl">Welcome back</h2>
-          <p>Welcome back! Please enter your details</p>
+        <section id="regInput" className="my-auto mx-5 flex flex-col sm:block ">
+          <h2 className="text-green-700 text-3xl text-center sm:text-4xl xl:text-start">
+            Welcome back
+          </h2>
+          <p className="text-center xl:text-start">Welcome back! Please enter your details</p>
 
-          <Formik initialValues={{ email: "", password: "" }} validationSchema={loginSchema} onSubmit={handleSubmit}>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={loginSchema}
+            onSubmit={handleSubmit}
+          >
             {(props) => (
               <form action="" className="mt-10" onSubmit={props.handleSubmit}>
                 <CustomInput
@@ -58,11 +64,14 @@ function Login() {
           </Formik>
 
           <p className="mt-10 text-center">
-            Don't Have an account?
-            <Link to="/register/student" className="ml-4 link link-primary">
+            Don't Have an account?{" "}
+            <Link to="/register/student" className="hidden ml-2 link link-primary sm:inline-block">
               Sign Up!
             </Link>
           </p>
+          <Link to="/register/student" className="link link-primary self-center sm:hidden">
+            Sign Up!
+          </Link>
         </section>
       </div>
     </div>
