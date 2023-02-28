@@ -1,17 +1,23 @@
+from flask import Flask
 from app.config import ApplicationConfig
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask import Flask, request, jsonify
+
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
 
 app = Flask(__name__)
 app.config.from_object(ApplicationConfig)
 db = SQLAlchemy(app)
-bcrypt = Bcrypt()
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 
 
 # Esential API Imports
-from .api import user
+from .api import user, auth, dashboard
 
 # Essential Model Imports
 from .models.user import User
