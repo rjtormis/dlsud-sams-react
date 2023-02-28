@@ -63,7 +63,6 @@ def users():
                 emailAddress=emailAddress,
                 password=confirmPassword,
             )
-
             push_to_database(new_student)
 
         if type == "professor":
