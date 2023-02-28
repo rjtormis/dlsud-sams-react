@@ -25,8 +25,8 @@ function CustomInput({ page, customProp, label, icon, type, ...props }) {
             {...props}
             onWheel={type === customProp ? disableWheel : undefined}
             maxLength={label === customProp ? 1 : undefined}
-            className={`input input-${
-              meta.error && meta.touched ? "error" : "ghost"
+            className={`input ${
+              meta.error && meta.touched ? "input-error" : "input-ghost"
             } input-bordered w-full`}
           />
         </div>

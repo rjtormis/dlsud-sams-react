@@ -98,6 +98,7 @@ function RegisterStudent({ handleSuccess }) {
                 page="register"
                 label="Student Number"
                 name="studentNumber"
+                id="studentNumber"
                 type="number"
                 placeholder="Student no."
                 customProp="number"
@@ -108,6 +109,7 @@ function RegisterStudent({ handleSuccess }) {
                 page="register"
                 label="Email"
                 name="emailAddress"
+                id="emailAddress"
                 type="email"
                 placeholder="Email"
                 icon={<FaEnvelope />}
