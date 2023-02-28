@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { MdDashboard } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
@@ -6,8 +7,11 @@ import { Outlet, Link } from "react-router-dom";
 import logo from "../assets/dlsu-d.png";
 import profile from "../assets/sample-profile.jfif";
 
+// Context
+import { DashboardContextProvider } from "../context/DashboardContext";
 function DashboardLayout() {
   return (
+    // <DashboardContextProvider>
     <div id="dashboard-container" className="h-screen flex flex-col">
       <header className="h-12 p-2 relative shadow-sm" style={{ backgroundColor: "#FAFAFA" }}>
         <div className="flex">
@@ -74,6 +78,7 @@ function DashboardLayout() {
         </div>
       </div>
     </div>
+    // </DashboardContextProvider>
   );
 }
 export default DashboardLayout;
