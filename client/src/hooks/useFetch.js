@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function useFetch(url, options, expected) {
+function useFetch(url, expected, options) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -11,18 +11,23 @@ function useFetch(url, options, expected) {
     setData(null);
     setError(null);
 
-    const source = axios.CancelToken.source();
-    try {
-      const response = axios.get(url, { ...options, cancelToken: source.token });
-      setLoading(false);
-      setData(response.data[expected]);
-    } catch (e) {
-      setLoading(false);
-      setError(e);
-    }
-    return () => {
-      source.cancel();
-    };
+    const cancel_token = axios.CancelToken.source();
+    setTimeout(() => {
+      const source = axios
+        .get(url, { ...options, cancelToken: cancel_token.token })
+        .then((response) => {
+          setLoading(false);
+          setData(response.data[expected]);
+        })
+        .catch((e) => {
+          setLoading(false);
+          setError(e);
+        });
+
+      return () => {
+        source.cancel();
+      };
+    }, 1000);
   }, [url, options, expected]);
   return { data, loading, error };
 }
