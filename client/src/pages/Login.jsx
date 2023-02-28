@@ -1,16 +1,47 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
 import { Formik } from "formik";
 import { FaEnvelope, FaShieldAlt, FaHome } from "react-icons/fa";
+
+import axios from "axios";
 import logo from "../assets/dlsu-d.png";
 import bg from "../assets/bg.jpg";
+
+// Schmeas
 import { loginSchema } from "../schemas/LoginSchema";
 
+// Components
 import CustomInput from "../components/Shared/CustomInput";
 
+// Context
+import AuthContext from "../context/AuthContext";
+
 function Login() {
-  const handleSubmit = (state, action) => {
-    console.log(state);
-    console.log(action);
+  const [success, setSucces] = useState(false);
+  const { auth, setAuth } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (state, action) => {
+    try {
+      const response = await axios.post(
+        "/login",
+        { ...state },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { id, type, access_token } = response.data;
+      setAuth({ id: id, type: type, access_token: access_token });
+      navigate("/dashboard");
+    } catch (e) {
+      if (e.response.status === 404) {
+        action.setFieldError("email", "Invalid credentials");
+        action.setFieldError("password", "‎");
+      }
+    }
   };
 
   return (
