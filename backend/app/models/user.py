@@ -16,7 +16,7 @@ class User(db.Model, Details):
     middle_initial = db.Column(db.String(length=1), nullable=False)
     last_name = db.Column(db.String(length=20), nullable=False)
     emailAddress = db.Column(db.String(length=345), nullable=False, unique=True)
-    password_hash = db.Column(db.String(length=50), nullable=False)
+    password_hash = db.Column(db.String(length=300), nullable=False)
     type = db.Column(db.String(length=15), nullable=False)
 
     __mapper_args__ = {"polymorphic_identity": "user", "polymorphic_on": type}
