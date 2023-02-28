@@ -21,7 +21,8 @@ export const registerStudentSchema = yup.object().shape({
     .required("Required *"),
   studentNumber: yup
     .number()
-    .test("isValidLength", "Student no. must be 9 digits", (value) => String(value).length === 9),
+    .test("isValidLength", "Student no. must be 9 digits", (value) => String(value).length === 9)
+    .required("Required *"),
   emailAddress: yup.string().matches(email_regex, "DLSUD email only.").required("Required *"),
   password: yup
     .string("Required *")
