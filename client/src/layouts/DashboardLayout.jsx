@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { MdDashboard } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 import logo from "../assets/dlsu-d.png";
 import profile from "../assets/sample-profile.jfif";
@@ -10,6 +10,11 @@ import profile from "../assets/sample-profile.jfif";
 // Context
 import { DashboardContextProvider } from "../context/DashboardContext";
 function DashboardLayout() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
   return (
     // <DashboardContextProvider>
     <div id="dashboard-container" className="h-screen flex flex-col">
@@ -63,11 +68,11 @@ function DashboardLayout() {
               </Link>
             </li>
             <li className="mt-4 tooltip tooltip-right absolute bottom-4" data-tip="Logout">
-              <Link to="/dashboard" className="flex btn btn-ghost btn-square">
+              <button onClick={handleLogout} className="flex btn btn-ghost btn-square">
                 <div>
                   <RiLogoutBoxRFill color="#224429" size={25} className="block m-auto" />
                 </div>
-              </Link>
+              </button>
             </li>
           </ul>
         </div>
