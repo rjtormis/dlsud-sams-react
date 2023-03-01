@@ -2,7 +2,7 @@ import axios from "axios";
 export const name_regex = /^[A-Za-z]+(?:\s+[A-Za-z]+)*$/;
 export const email_regex = /^\w+@dlsud\.edu\.ph$/;
 export const password_regex = /^(?=.*[A-Z])(?=.*\d).+$/;
-
+export const numbers = [1, 2, 3, 4];
 // Helper fetch api for both student_number & emailAddress
 // Since we can't use useFetch in plain JS =(
 export const isAvailable = async (condition, endpoint) => {

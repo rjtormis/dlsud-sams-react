@@ -1,5 +1,14 @@
 import * as yup from "yup";
-import { name_regex, email_regex, password_regex, isAvailable } from "./Helper";
+import { name_regex, email_regex, password_regex } from "./Helper";
+
+export const ValidateFileType = (file) => {
+  let valid = true;
+  if (file) {
+    const supportedFormat = ["image/png", "image/jpeg", "image/jpg"];
+    return supportedFormat.includes(file.type);
+  }
+  return valid;
+};
 
 export const registerStudentSchema = yup.object().shape({
   firstName: yup
@@ -67,4 +76,11 @@ export const registerProfessorSchema = yup.object().shape({
     .string()
     .oneOf([yup.ref("password"), null], "Password must match.")
     .required("Required *"),
+});
+
+export const registerClassroomSchema = yup.object().shape({
+  course: yup.string().oneOf(["IT", "CS"]).required("Required *"),
+  section: yup.number().oneOf([1, 2, 3, 4, 5]).required("Required *"),
+  year: yup.number().oneOf([1, 2, 3, 4, 5]).required("Required *"),
+  file: yup.mixed().test("fileFormat", "Unsupported File Format", ValidateFileType),
 });
