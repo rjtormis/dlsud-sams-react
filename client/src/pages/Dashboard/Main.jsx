@@ -9,7 +9,7 @@ import useFetch from "../../hooks/useFetch";
 import AuthContext from "../../context/AuthContext";
 function Main() {
   const { auth } = useContext(AuthContext);
-  const { data, error, loading } = useFetch("/api/dashboard", "total", auth.access_token);
+  const { data, error, loading } = useFetch("/api/v1/dashboard", "total", auth.access_token);
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
   const [classrooms, setClassrooms] = useState(0);

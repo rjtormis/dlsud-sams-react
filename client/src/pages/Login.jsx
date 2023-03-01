@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import { Formik } from "formik";
 import { FaEnvelope, FaShieldAlt, FaHome } from "react-icons/fa";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import axios from "axios";
 import logo from "../assets/dlsu-d.png";
@@ -17,12 +18,13 @@ import CustomInput from "../components/Shared/CustomInput";
 import AuthContext from "../context/AuthContext";
 
 function Login() {
-  const [success, setSucces] = useState(false);
-  const { auth, setAuth } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const { setAuth } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (state, action) => {
+    setLoading(true);
     try {
       const response = await axios.post(
         "/login",
@@ -35,9 +37,11 @@ function Login() {
       );
       const { id, type, access_token } = response.data;
       setAuth({ id: id, type: type, access_token: access_token });
+      setLoading(false);
       navigate("/dashboard");
     } catch (e) {
       if (e.response.status === 404) {
+        setLoading(false);
         action.setFieldError("email", "Invalid credentials");
         action.setFieldError("password", "‎");
       }
@@ -89,7 +93,13 @@ function Login() {
                   name="password"
                   icon={<FaShieldAlt />}
                 />
-                <input type="submit" value="LOGIN" className="btn btn-primary w-full mt-4" />
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full mt-4"
+                  disabled={loading ? true : false}
+                >
+                  {loading ? <ClipLoader color="#436147" /> : "LOGIN"}
+                </button>
               </form>
             )}
           </Formik>
