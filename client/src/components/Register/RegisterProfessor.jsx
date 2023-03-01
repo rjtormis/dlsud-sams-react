@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 
@@ -7,14 +7,19 @@ import { FaEnvelope, FaCalendar } from "react-icons/fa";
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 
 // Components
-import CustomInput from "../Shared/CustomInput";
-import CustomSelect from "../Shared/CustomSelect";
+import CustomInput from "../../components/Shared/CustomInput";
+import CustomSelect from "../../components/Shared/CustomSelect";
 import spinner from "../../assets/spinner.gif";
 
 // Schema
 import { registerProfessorSchema } from "../../schemas/RegisterSchema";
 
-function RegisterProfessor({ handleSuccess }) {
+// Context
+import CreateContext from "../../context/CreateContext";
+
+function RegisterProfessor() {
+  const { setSuccess } = useContext(CreateContext);
+
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
@@ -31,7 +36,7 @@ function RegisterProfessor({ handleSuccess }) {
       );
       if (response.status === 201) {
         setTimeout(() => {
-          handleSuccess(true);
+          setSuccess(true);
           setLoading(false);
           action.resetForm();
         }, 500);

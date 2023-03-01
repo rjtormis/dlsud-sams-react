@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 
@@ -14,7 +14,11 @@ import { registerStudentSchema } from "../../schemas/RegisterSchema";
 import CustomInput from "../Shared/CustomInput";
 import spinner from "../../assets/spinner.gif";
 
-function RegisterStudent({ handleSuccess }) {
+// Context
+import CreateContext from "../../context/CreateContext";
+
+function RegisterStudent() {
+  const { setSuccess } = useContext(CreateContext);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
@@ -31,7 +35,7 @@ function RegisterStudent({ handleSuccess }) {
       );
       if (response.status === 201) {
         setTimeout(() => {
-          handleSuccess(true);
+          setSuccess(true);
           setLoading(false);
           action.resetForm();
         }, 1500);
