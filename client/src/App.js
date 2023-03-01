@@ -7,21 +7,29 @@ import {
 
 // Pages
 import Home from "./pages/Home";
-import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Main from "./pages/Main";
+import Main from "./pages/Dashboard/Main";
+import Classroom from "./pages/Dashboard/Classroom";
+import Student from "./pages/Register/Student";
+import Professor from "./pages/Register/Professor";
 import NotFound from "./pages/NotFound";
 
 // Layouts
 import DashboardLayout from "./layouts/DashboardLayout";
-import Classroom from "./pages/Classroom";
+import RegisterLayout from "./layouts/RegisterLayout";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Home />}></Route>
-      <Route path="register/:type" element={<Register />} />
-      <Route path="login" element={<Login />} />
+
+      <Route path="/register" element={<RegisterLayout />}>
+        <Route path="student" element={<Student />} />
+        <Route path="professor" element={<Professor />} />
+      </Route>
+
+      <Route path="/login" element={<Login />} />
+
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<Main />} />
         <Route path="classroom" element={<Classroom />} />
