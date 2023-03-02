@@ -17,12 +17,13 @@ jwt = JWTManager(app)
 
 
 # Esential API Imports
-from .api import user, auth, dashboard
+from .api import section, user, auth, dashboard
 
 # Essential Model Imports
 from .models.user import User
 from .models.student import Student
 from .models.collegiate import Collegiate
+from .models.section import Section
 
 
 # Scripts
