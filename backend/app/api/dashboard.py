@@ -12,11 +12,3 @@ def dashboard():
     return jsonify(
         {"total": {"students": total_student, "lectures": 1, "classrooms": 999}}
     )
-
-
-@app.route("/api/v1/classroom", methods=["POST"])
-@jwt_required()
-def classroom():
-    data = request.get_json()
-    print(data)
-    return jsonify({"msg": "recieved"})

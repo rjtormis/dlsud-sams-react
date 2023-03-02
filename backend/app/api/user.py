@@ -42,16 +42,16 @@ def users():
 
             id = data["studentNumber"]
 
-            qEmail = User.query.filter_by(emailAddress=emailAddress).first()
+            query_email = User.query.filter_by(emailAddress=emailAddress).first()
             query_id = Student.query.filter_by(student_no=id).first()
 
-            if qEmail and query_id:
+            if query_email and query_id:
                 return jsonify({"msg": "Student number & Email already taken."}), 409
 
             if query_id:
                 return jsonify({"msg": "Student no. already taken."}), 409
 
-            if qEmail:
+            if query_email:
                 return jsonify({"msg": "Email already taken."}), 409
 
             new_student = Student(
