@@ -1,22 +1,52 @@
+import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
-
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Formik } from "formik";
 
 // Components
 import CustomSelect from "../../components/Shared/CustomSelect";
+import DashboardClassroomItem from "../../components/Dashboard/DashboardClassroomItem";
 import Modal from "../../components/Shared/Modal";
+
+// Schema
 import { registerClassroomSchema } from "../../schemas/RegisterSchema";
-import axios from "axios";
 
 // Context
 import AuthContext from "../../context/AuthContext";
 
+import useFetch from "../../hooks/useFetch";
+
 function Classroom() {
   const { auth } = useContext(AuthContext);
+  const [sections, setSections] = useState([]);
+
+  const { data, loading, error } = useFetch("/api/v1/section", "sections", auth.access_token);
+
+  useEffect(() => {
+    if (data !== null) {
+      setSections(data);
+    }
+  }, [data]);
 
   const handleSubmit = async (state, action) => {
-    console.log(state);
+    const formData = new FormData();
+    formData.append("course", state.course);
+    formData.append("year", state.year);
+    formData.append("section", state.section);
+    formData.append("file", state.file);
+
+    try {
+      const response = await axios.post("/api/v1/section", formData, {
+        headers: {
+          Authorization: `Bearer ${auth.access_token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setSections((prev) => [...prev, response.data]);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -51,6 +81,27 @@ function Classroom() {
         </div>
       </div>
 
+      {loading ? (
+        <div className="w-full mt-24 text-center">
+          <ClipLoader size={150} />
+          <p className="text-2xl">Retrieving data... Please wait..</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-4 mt-4">
+          {loading ? (
+            <ClipLoader />
+          ) : (
+            sections.map((section) => (
+              <DashboardClassroomItem
+                key={section.id}
+                title={section.section_name}
+                adviser={section.section_adviser}
+              />
+            ))
+          )}
+        </div>
+      )}
+
       {/* MODAL */}
       <Modal id="create">
         <div className="flex">
@@ -62,7 +113,7 @@ function Classroom() {
             course: "",
             year: "",
             section: "",
-            file: "",
+            file: undefined,
           }}
           validationSchema={registerClassroomSchema}
           onSubmit={handleSubmit}
@@ -73,6 +124,7 @@ function Classroom() {
               className="
             flex flex-col
           "
+              encType="multipart/form-data"
               onSubmit={props.handleSubmit}
             >
               <CustomSelect page="register" label="Course" name="course">
@@ -99,10 +151,16 @@ function Classroom() {
               <div className="form-control mt-3">
                 <label htmlFor="" className="label">
                   <span className="label-text">Custom Background (Optional)</span>
+                  {props.errors.file && (
+                    <p className={`custom-text-register text-error`}>{props.errors.file}</p>
+                  )}
                 </label>
                 <input
                   type="file"
                   name="file"
+                  onChange={(e) => {
+                    props.setFieldValue("file", e.currentTarget.files[0]);
+                  }}
                   className="file-input file-input-ghost file-input-bordered"
                 />
               </div>

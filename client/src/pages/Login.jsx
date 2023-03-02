@@ -45,6 +45,9 @@ function Login() {
         action.setFieldError("email", "Invalid credentials");
         action.setFieldError("password", "‎");
       }
+      if (e.response.status === 500) {
+        setLoading(false);
+      }
     }
   };
 
