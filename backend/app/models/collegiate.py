@@ -12,3 +12,5 @@ class Collegiate(db.Model, Details):
     id = db.Column(db.Integer(), primary_key=True)
     collegiate_shorten = db.Column(db.String(length=10), nullable=False, unique=True)
     collegiate_name = db.Column(db.String(length=100), unique=True, nullable=False)
+
+    professor = db.relationship("Professor", backref="professor_collegiate")

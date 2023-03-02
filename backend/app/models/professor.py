@@ -9,6 +9,6 @@ class Professor(User):
     collegiate_id = db.Column(
         db.Integer(), db.ForeignKey("collegiates.id"), nullable=False
     )
-    collegiate = db.relationship("Collegiate", backref="professor_collegiate")
 
+    sections = db.relationship("Section", backref="professor")
     __mapper_args__ = {"polymorphic_identity": "professor"}
