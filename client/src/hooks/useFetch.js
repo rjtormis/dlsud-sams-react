@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function useFetch(url, expected, token) {
+function useFetch(url, expected) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ function useFetch(url, expected, token) {
     setTimeout(() => {
       const source = axios
         .get(url, {
-          headers: { Authorization: `Bearer ${token}`, cancelToken: cancel_token.token },
+          cancelToken: cancel_token.token,
         })
         .then((response) => {
           setLoading(false);
@@ -29,7 +29,7 @@ function useFetch(url, expected, token) {
         source.cancel();
       };
     }, 1000);
-  }, [url, token, expected]);
+  }, [url, expected]);
   return { data, loading, error };
 }
 
