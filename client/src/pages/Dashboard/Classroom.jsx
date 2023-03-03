@@ -18,10 +18,9 @@ import AuthContext from "../../context/AuthContext";
 import useFetch from "../../hooks/useFetch";
 
 function Classroom() {
-  const { auth } = useContext(AuthContext);
   const [sections, setSections] = useState([]);
 
-  const { data, loading, error } = useFetch("/api/v1/section", "sections", auth.access_token);
+  const { data, loading, error } = useFetch("/api/v1/section", "sections");
 
   useEffect(() => {
     if (data !== null) {
@@ -39,7 +38,6 @@ function Classroom() {
     try {
       const response = await axios.post("/api/v1/section", formData, {
         headers: {
-          Authorization: `Bearer ${auth.access_token}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -84,7 +82,8 @@ function Classroom() {
       {loading ? (
         <div className="w-full mt-24 text-center">
           <ClipLoader size={150} />
-          <p className="text-2xl">Retrieving data... Please wait..</p>
+          <p className="text-3xl">Retrieving data...</p>
+          <p>Please wait</p>
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-4 mt-4">

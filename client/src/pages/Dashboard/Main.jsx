@@ -9,7 +9,7 @@ import useFetch from "../../hooks/useFetch";
 import AuthContext from "../../context/AuthContext";
 function Main() {
   const { auth } = useContext(AuthContext);
-  const { data, error, loading } = useFetch("/api/v1/dashboard", "total", auth.access_token);
+  const { data, error, loading } = useFetch("/api/v1/dashboard", "total");
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
   const [classrooms, setClassrooms] = useState(0);
@@ -22,8 +22,6 @@ function Main() {
     }
   }, [data]);
 
-  const isLoading = loading || auth.access_token === undefined;
-
   return (
     <>
       <h1 className="text-4xl text-green-800">DASHBOARD</h1>
@@ -35,7 +33,7 @@ function Main() {
           </div>
           <div className="stat-title">TOTAL CLASSROOM</div>
           <div className="stat-value">
-            {isLoading || classrooms === 0 ? <BeatLoader color="#436147" /> : classrooms}
+            {loading || classrooms === 0 ? <BeatLoader color="#436147" /> : classrooms}
           </div>
           <div className="stat-desc">Total classroom registered in the system.</div>
         </div>
@@ -45,7 +43,7 @@ function Main() {
           </div>
           <div className="stat-title text-primary">TOTAL STUDENTS</div>
           <div className="stat-value ">
-            {isLoading || students === 0 ? <BeatLoader color="#436147" /> : students}
+            {loading || students === 0 ? <BeatLoader color="#436147" /> : students}
           </div>
           <div className="stat-desc">Total students registered in the system.</div>
         </div>
@@ -55,7 +53,7 @@ function Main() {
           </div>
           <div className="stat-title">TOTAL LECTURES CONDUCTED</div>
           <div className="stat-value">
-            {isLoading || lectures === 0 ? <BeatLoader color="#436147" /> : lectures}
+            {loading || lectures === 0 ? <BeatLoader color="#436147" /> : lectures}
           </div>
           <div className="stat-desc">Total lectures you have conducted.</div>
         </div>
