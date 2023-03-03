@@ -3,20 +3,23 @@ import { MdDashboard } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import logo from "../assets/dlsu-d.png";
 import profile from "../assets/sample-profile.jfif";
 
 // Context
-import { DashboardContextProvider } from "../context/DashboardContext";
 function DashboardLayout() {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("/logout", {});
+      if (response.status === 200) {
+        navigate("/");
+      }
+    } catch (e) {}
   };
   return (
-    // <DashboardContextProvider>
     <div id="dashboard-container" className="h-screen flex flex-col">
       <header className="h-12 p-2 relative shadow-sm" style={{ backgroundColor: "#FAFAFA" }}>
         <div className="flex">
@@ -83,7 +86,6 @@ function DashboardLayout() {
         </div>
       </div>
     </div>
-    // </DashboardContextProvider>
   );
 }
 export default DashboardLayout;
