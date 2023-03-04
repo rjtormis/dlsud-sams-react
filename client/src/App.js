@@ -9,7 +9,7 @@ import {
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Main from "./pages/Dashboard/Main";
-import Classroom from "./pages/Dashboard/Classroom";
+import AllSection from "./pages/Dashboard/AllSection";
 import Student from "./pages/Register/Student";
 import Professor from "./pages/Register/Professor";
 import NotFound from "./pages/NotFound";
@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 // Layouts
 import DashboardLayout from "./layouts/DashboardLayout";
 import RegisterLayout from "./layouts/RegisterLayout";
+import SpecificSection from "./pages/Dashboard/SpecificSection";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,7 +33,8 @@ const router = createBrowserRouter(
 
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<Main />} />
-        <Route path="classroom" element={<Classroom />} />
+        <Route path="sections" element={<AllSection />} />
+        <Route path="sections/:name" element={<SpecificSection />} />
       </Route>
     </>
   )
