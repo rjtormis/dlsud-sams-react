@@ -10,6 +10,8 @@ class Section(db.Model, Details):
     section_name = db.Column(db.String(length=30), unique=True, nullable=False)
     section_image = db.Column(db.String(length=100))
 
+    subjects = db.relationship("Subject", backref="section")
+
     def json_format(self):
         return {
             "id": self.id,
@@ -21,4 +23,4 @@ class Section(db.Model, Details):
         }
 
     def __repr__(self) -> str:
-        return f"Section {self.section_name} Adviser: {self.section_adviser}"
+        return f"Section {self.section_name} Adviser: {self.professor.first_name} {self.professor.middle_initial} {self.professor.last_name}"
