@@ -12,7 +12,6 @@ def dashboard():
     current_user = get_jwt_identity()
     total_student = db.session.query(Student.id).count()
     total_section = db.session.query(Section.id).count()
-
     if not current_user:
         return jsonify({"msg": "UNAUTHORIZED"}), 401
     return jsonify(

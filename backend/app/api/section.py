@@ -12,7 +12,6 @@ from ..utils.push_to_database import push_to_database
 @app.route("/api/v1/section", methods=["GET", "POST"])
 @jwt_required()
 def classroom():
-
     if request.method == "GET":
         get_sections = Section.query.order_by(Section.created.desc()).all()
 
@@ -34,3 +33,16 @@ def classroom():
         push_to_database(new_section)
 
         return jsonify(new_section.json_format()), 201
+
+
+@app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
+@jwt_required()
+def section_adviser(name):
+    current_user = get_jwt_identity()
+
+    query_section = Section.query.filter_by(section_name=name).first()
+
+    if query_section.section_adviser == current_user:
+        return jsonify({"isAdviser": True}), 200
+    else:
+        return jsonify({"isAdviser": False}), 200
