@@ -66,6 +66,10 @@ def users():
             push_to_database(new_student)
 
         if type == "professor":
+            query_email = User.query.filter_by(emailAddress=emailAddress).first()
+
+            if query_email:
+                return jsonify({"msg": "Email already taken."}), 409
 
             collegiate_shorten = data["collegiate"]
 
