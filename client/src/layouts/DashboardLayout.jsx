@@ -5,16 +5,21 @@ import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { useEffect } from "react";
 import logo from "../assets/dlsu-d.png";
 import profile from "../assets/sample-profile.jfif";
 
 // Context
+import AuthContext from "../context/AuthContext";
 function DashboardLayout() {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
+
   const handleLogout = async () => {
     try {
       const response = await axios.post("/logout", {});
       if (response.status === 200) {
+        logout();
         navigate("/");
       }
     } catch (e) {}
@@ -49,28 +54,31 @@ function DashboardLayout() {
       <div className="flex-1 flex">
         <div className="p-1 relative shadow" style={{ backgroundColor: "#FAFAFA" }}>
           <ul className="flex flex-col">
-            <li className="tooltip tooltip-right" data-tip="Dashboard">
+            <li className="tooltip tooltip-right tooltip-primary" data-tip="Dashboard">
               <Link to="/dashboard" className="flex btn btn-ghost btn-square">
                 <div>
                   <MdDashboard color="#224429" size={25} className="block m-auto" />
                 </div>
               </Link>
             </li>
-            <li className="mt-4 tooltip tooltip-right" data-tip="Classroom">
-              <Link to="/dashboard/classroom" className="flex btn btn-ghost btn-square">
+            <li className="mt-4 tooltip tooltip-right tooltip-primary" data-tip="Classroom">
+              <Link to="/dashboard/sections" className="flex btn btn-ghost btn-square">
                 <div>
                   <HiUserGroup color="#224429" size={25} className="block m-auto" />
                 </div>
               </Link>
             </li>
-            <li className="mt-4 tooltip tooltip-right" data-tip="Profile">
+            <li className="mt-4 tooltip tooltip-right tooltip-primary" data-tip="Profile">
               <Link to="dashboard/profile" className="flex btn btn-ghost btn-square">
                 <div>
                   <RiUserSettingsFill color="#224429" size={25} className="block m-auto" />
                 </div>
               </Link>
             </li>
-            <li className="mt-4 tooltip tooltip-right absolute bottom-4" data-tip="Logout">
+            <li
+              className="mt-4 tooltip tooltip-right absolute bottom-4 tooltip-primary"
+              data-tip="Logout"
+            >
               <button onClick={handleLogout} className="flex btn btn-ghost btn-square">
                 <div>
                   <RiLogoutBoxRFill color="#224429" size={25} className="block m-auto" />
@@ -81,7 +89,7 @@ function DashboardLayout() {
         </div>
 
         {/* INSERT HERE */}
-        <div id="dashboard-main" className="flex-1  p-5">
+        <div id="dashboard-main" className="flex-1 flex flex-col  p-5">
           <Outlet />
         </div>
       </div>
