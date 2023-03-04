@@ -16,9 +16,11 @@ import { registerClassroomSchema } from "../../schemas/RegisterSchema";
 import AuthContext from "../../context/AuthContext";
 
 import useFetch from "../../hooks/useFetch";
+import useCookie from "../../hooks/useCookie";
 
-function Classroom() {
+function AllSection() {
   const [sections, setSections] = useState([]);
+  const access = useCookie("csrf_access_token");
 
   const { data, loading, error } = useFetch("/api/v1/section", "sections");
 
@@ -39,6 +41,7 @@ function Classroom() {
       const response = await axios.post("/api/v1/section", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "X-CSRF-TOKEN": access,
         },
       });
       setSections((prev) => [...prev, response.data]);
@@ -49,7 +52,7 @@ function Classroom() {
 
   return (
     <>
-      <h1 className="text-4xl">CLASSROOMS</h1>
+      <h1 className="text-4xl text-green-800">SECTIONS</h1>
       <div className="flex justify-end">
         <a href="#create" className="btn btn-primary mr-4">
           CREATE
@@ -176,4 +179,4 @@ function Classroom() {
     </>
   );
 }
-export default Classroom;
+export default AllSection;

@@ -1,14 +1,14 @@
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FcReading, FcSms, FcGraduationCap } from "react-icons/fc";
 import BeatLoader from "react-spinners/BeatLoader";
 
 import useFetch from "../../hooks/useFetch";
 
-// Context
-import AuthContext from "../../context/AuthContext";
+// Custom Hook
+import useAuth from "../../hooks/useAuth";
+
 function Main() {
-  const { auth } = useContext(AuthContext);
+  const { user } = useAuth();
   const { data, error, loading } = useFetch("/api/v1/dashboard", "total");
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
@@ -25,17 +25,17 @@ function Main() {
   return (
     <>
       <h1 className="text-4xl text-green-800">DASHBOARD</h1>
-      <p>Welcome USER!</p>
+      <p className="text-xl">Welcome {user}!</p>
       <div className="grid grid-cols-3 gap-4 mt-4">
         <div className="stat shadow  rounded-lg bg-white hover:scale-105">
           <div className="stat-figure">
             <FcSms size={40} />
           </div>
-          <div className="stat-title">TOTAL CLASSROOM</div>
+          <div className="stat-title text-primary">TOTAL SECTIONS</div>
           <div className="stat-value">
             {loading || classrooms === 0 ? <BeatLoader color="#436147" /> : classrooms}
           </div>
-          <div className="stat-desc">Total classroom registered in the system.</div>
+          <div className="stat-desc">Total sections registered in the system.</div>
         </div>
         <div className="stat shadow  rounded-lg bg-white hover:scale-105">
           <div className="stat-figure">
@@ -51,14 +51,14 @@ function Main() {
           <div className="stat-figure">
             <FcReading size={40} />
           </div>
-          <div className="stat-title">TOTAL LECTURES CONDUCTED</div>
+          <div className="stat-title text-primary">TOTAL LECTURES CONDUCTED</div>
           <div className="stat-value">
             {loading || lectures === 0 ? <BeatLoader color="#436147" /> : lectures}
           </div>
           <div className="stat-desc">Total lectures you have conducted.</div>
         </div>
       </div>
-      <div className="flex bg-green-900 mt-4 w-2/4">kyu</div>
+      <div className="flex flex-1 bg-green-900 mt-4 w-2/4">kyu</div>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Formik } from "formik";
 import { FaEnvelope, FaShieldAlt, FaHome } from "react-icons/fa";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -13,13 +13,12 @@ import { loginSchema } from "../schemas/LoginSchema";
 
 // Components
 import CustomInput from "../components/Shared/CustomInput";
-
-// Context
-import AuthContext from "../context/AuthContext";
+import useAuth from "../hooks/useAuth";
 
 function Login() {
   const [loading, setLoading] = useState(false);
-  const { setAuth } = useContext(AuthContext);
+
+  const { setAuth } = useAuth();
 
   const navigate = useNavigate();
 
@@ -35,8 +34,8 @@ function Login() {
           },
         }
       );
-      const { id, type, access_token } = response.data;
-      setAuth({ id: id, type: type, access_token: access_token });
+      const { id, type, name } = response.data.user;
+      setAuth({ id: id, type: type, name: name });
       setLoading(false);
       navigate("/dashboard");
     } catch (e) {
