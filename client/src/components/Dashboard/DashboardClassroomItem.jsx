@@ -6,7 +6,7 @@ import bg from "../../assets/bg.jpg";
 function DashboardClassroomItem({ title, adviser }) {
   return (
     <>
-      <div class="card card-compact w-full hover:scale-105 bg-white">
+      <div class="card card-compact glass w-full hover:scale-105 bg-white hover:bg-green-800 hover:text-white">
         <figure>
           <img src={bg} alt="Shoes" />
         </figure>
