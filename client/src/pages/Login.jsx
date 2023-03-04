@@ -41,7 +41,7 @@ function Login() {
     } catch (e) {
       if (e.response.status === 404) {
         setLoading(false);
-        action.setFieldError("email", "Invalid credentials");
+        action.setFieldError("email", "Invalid credentials or account does not exists.");
         action.setFieldError("password", "‎");
       }
       if (e.response.status === 500) {

@@ -32,9 +32,7 @@ function Main() {
             <FcSms size={40} />
           </div>
           <div className="stat-title text-primary">TOTAL SECTIONS</div>
-          <div className="stat-value">
-            {loading || classrooms === 0 ? <BeatLoader color="#436147" /> : classrooms}
-          </div>
+          <div className="stat-value">{loading ? <BeatLoader color="#436147" /> : classrooms}</div>
           <div className="stat-desc">Total sections registered in the system.</div>
         </div>
         <div className="stat shadow  rounded-lg bg-white hover:scale-105">
@@ -42,9 +40,7 @@ function Main() {
             <FcGraduationCap size={40} />
           </div>
           <div className="stat-title text-primary">TOTAL STUDENTS</div>
-          <div className="stat-value ">
-            {loading || students === 0 ? <BeatLoader color="#436147" /> : students}
-          </div>
+          <div className="stat-value ">{loading ? <BeatLoader color="#436147" /> : students}</div>
           <div className="stat-desc">Total students registered in the system.</div>
         </div>
         <div className="stat shadow  rounded-lg bg-white hover:scale-105">
@@ -52,9 +48,7 @@ function Main() {
             <FcReading size={40} />
           </div>
           <div className="stat-title text-primary">TOTAL LECTURES CONDUCTED</div>
-          <div className="stat-value">
-            {loading || lectures === 0 ? <BeatLoader color="#436147" /> : lectures}
-          </div>
+          <div className="stat-value">{loading ? <BeatLoader color="#436147" /> : lectures}</div>
           <div className="stat-desc">Total lectures you have conducted.</div>
         </div>
       </div>
