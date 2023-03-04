@@ -1,19 +1,22 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import bg from "../../assets/bg.jpg";
 
 function DashboardClassroomItem({ title, adviser }) {
   return (
     <>
-      <div class="card w-full glass shadow-md shadow-black">
+      <div class="card card-compact w-full hover:scale-105 bg-white">
         <figure>
           <img src={bg} alt="Shoes" />
         </figure>
-        <div class="card-body">
-          <h2 class="card-title">{title}</h2>
+        <div className="card-body">
+          <h2 className="card-title">{title}</h2>
           <p>Adviser: {adviser}</p>
-          <div class="card-actions justify-end">
-            <button class="btn ">Visit</button>
+          <div className="card-actions justify-end">
+            <Link to={title} className="btn text-green-900">
+              Visit
+            </Link>
           </div>
         </div>
       </div>

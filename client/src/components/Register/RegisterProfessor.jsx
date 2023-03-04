@@ -43,7 +43,9 @@ function RegisterProfessor() {
       }
     } catch (e) {
       setLoading(false);
-      console.log(e.response.status);
+      if (e.response.data["msg"] === "Email already taken.") {
+        action.setFieldError("emailAddress", "Email already exists.");
+      }
     }
   };
 
