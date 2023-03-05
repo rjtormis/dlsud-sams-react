@@ -11,9 +11,15 @@ class Subject(db.Model, Details):
     __tablename__ = "subjects"
 
     id = db.Column(db.Integer(), primary_key=True)
-    section_id = db.Column(db.Integer(), db.ForeignKey("sections.id"), nullable=False)
+    section_id = db.Column(
+        db.Integer(),
+        db.ForeignKey("sections.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     professor_id = db.Column(
-        db.String(length=40), db.ForeignKey("professors.id"), nullable=False
+        db.String(length=40),
+        db.ForeignKey("professors.id"),
+        nullable=False,
     )
     subject_name = db.Column(db.String(length=100), nullable=False)
     start = db.Column(db.String(length=30), nullable=False)

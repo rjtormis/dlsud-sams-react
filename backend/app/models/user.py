@@ -32,4 +32,4 @@ class User(db.Model, Details):
         )
 
     def __repr__(self):
-        return f"User: {self.first_name} {self.middle_initial} {self.last_name}, Type:{self.type} {self.id}"
+        return f"User: {self.first_name} {self.middle_initial} {self.last_name}, Type:{self.type}"
