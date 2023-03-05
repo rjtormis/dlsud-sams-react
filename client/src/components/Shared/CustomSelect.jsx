@@ -1,31 +1,17 @@
-import React from "react";
 import { useField } from "formik";
+import FormControl from "./FormControl";
+import Select from "./Select";
 
-function CustomSelect({ page, label, icon, ...props }) {
-  const [fields, meta] = useField(props);
+function CustomSelect({ label, page, children, ...props }) {
+  const [field, meta] = useField(props);
+  const isError = meta.error && meta.touched;
+  const msg = meta.error;
   return (
-    <div className="form-control">
-      <label htmlFor="" className="label">
-        <span className="label-text">{label}</span>
-        {meta.error && meta.touched ? <p className={`custom-text-${page} text-error`}>{meta.error}</p> : null}
-      </label>
-      {icon ? (
-        <div className="input-group">
-          <span>{icon}</span>
-          <select
-            className={`select select-${meta.error && meta.touched ? "error" : "ghost"} select-bordered  `}
-            {...fields}
-            {...props}
-          />
-        </div>
-      ) : (
-        <select
-          className={`select select-${meta.error && meta.touched ? "error" : "ghost"} select-bordered `}
-          {...fields}
-          {...props}
-        />
-      )}
-    </div>
+    <FormControl label={label} page={page} error={isError} msg={msg}>
+      <Select styles={isError ? "select-error" : "select-ghost"} {...field} {...props}>
+        {children}
+      </Select>
+    </FormControl>
   );
 }
 
