@@ -1,24 +1,26 @@
-import React, { useState, useContext } from "react";
 import { Formik } from "formik";
+import { useState } from "react";
 import axios from "axios";
+
+// Components
+import CustomInput from "../Shared/CustomInput";
+import CustomSelect from "../Shared/CustomSelect";
+import CustomInputGroup from "../Shared/CustomInputGroup";
+
+import Button from "../Shared/Button";
+import spinner from "../../assets/spinner.gif";
 
 // Icons
 import { FaEnvelope, FaCalendar } from "react-icons/fa";
 import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 
-// Components
-import CustomInput from "../../components/Shared/CustomInput";
-import CustomSelect from "../../components/Shared/CustomSelect";
-import spinner from "../../assets/spinner.gif";
-
 // Schema
 import { registerProfessorSchema } from "../../schemas/RegisterSchema";
 
-// Context
-import CreateContext from "../../context/CreateContext";
-
+// Hooks
+import useCreate from "../../hooks/useCreate";
 function RegisterProfessor() {
-  const { setSuccess } = useContext(CreateContext);
+  const { setSuccess } = useCreate();
 
   const [loading, setLoading] = useState(false);
 
@@ -66,38 +68,34 @@ function RegisterProfessor() {
         onSubmit={handleSubmit}
       >
         {(props) => (
-          <form action="" className="mt-10" onSubmit={props.handleSubmit}>
+          <form className="mt-10" onSubmit={props.handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <CustomInput
-                page="register"
                 label="First name"
-                name="firstName"
+                page="register"
                 type="text"
                 placeholder="First name"
+                name="firstName"
               />
               <CustomInput
-                page="register"
                 label="Middle Initial"
-                name="middleInitial"
+                page="register"
                 type="text"
                 placeholder="Middle Initial"
+                name="middleInitial"
+                maxLength={1}
               />
               <CustomInput
-                page="register"
                 label="Last name"
-                name="lastName"
+                page="register"
                 type="text"
                 placeholder="Last name"
+                name="lastName"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <CustomSelect
-                label="Collegiate"
-                name="collegiate"
-                type="select"
-                placeholder="Select collegiate"
-              >
+              <CustomSelect label="Collegiate" page="register" name="collegiate">
                 <option value="">Select Colleigate</option>
                 <option value="CBAA">CBAA</option>
                 <option value="CCJE">CCJE</option>
@@ -107,59 +105,57 @@ function RegisterProfessor() {
                 <option value="CSCS">CSCS</option>
                 <option value="CTHM">CTHM</option>
               </CustomSelect>
-              <CustomInput
-                page="register"
+              <CustomInputGroup
                 label="Birth date"
-                name="birthDate"
-                type="date"
-                placeholder="Birth"
-                icon={<FaCalendar />}
-              />
-              <CustomInput
                 page="register"
+                icon={<FaCalendar />}
+                type="date"
+                name="birthDate"
+              />
+              <CustomInputGroup
                 label="Email"
-                name="emailAddress"
+                page="register"
+                icon={<FaEnvelope />}
                 type="email"
                 placeholder="Email"
-                icon={<FaEnvelope />}
+                name="emailAddress"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <CustomInput
-                page="register"
+              <CustomInputGroup
                 label="Password"
-                name="password"
-                type="password"
-                placeholder="Password"
-                icon={<BsFillShieldLockFill />}
-              />
-
-              <CustomInput
                 page="register"
-                label="Confirm Password"
-                name="confirmPassword"
-                type="password"
+                icon={<BsFillShieldLockFill />}
                 placeholder="Password"
+                type="password"
+                name="password"
+              />
+              <CustomInputGroup
+                label="Confirm Password"
+                page="register"
                 icon={<BsShieldFillExclamation />}
+                placeholder="Password"
+                type="password"
+                name="confirmPassword"
               />
             </div>
-            <button
-              type="submit"
-              className={`btn btn-primary w-full mt-4 ${
-                loading ? "disabled:btn-primary opacity-75" : ""
+            <Button
+              styles={`btn-primary w-full mt-4 ${
+                loading ? "disabled:opacity-75 disabled:btn-primary" : ""
               }`}
               disabled={loading}
+              type="submit"
             >
               {loading ? (
                 <>
                   <img src={spinner} alt="" className="w-5 h-5 mr-2" />
-                  <p>Creating account ...</p>
+                  <p>CREATING ACCOUNT ...</p>
                 </>
               ) : (
                 "CREATE ACCOUNT"
               )}
-            </button>
+            </Button>
           </form>
         )}
       </Formik>

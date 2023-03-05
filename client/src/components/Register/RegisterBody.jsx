@@ -3,6 +3,7 @@ import RegisterStudent from "../Register/RegisterStudent";
 import RegisterProfessor from "../Register/RegisterProfessor";
 
 function RegisterBody({ type }) {
+  const user_type = type === "student" ? <RegisterStudent /> : <RegisterProfessor />;
   return (
     <section id="regInput" className="p-0 relative top-0 left-0 xl:px-20">
       <h1 className="text-green-700  mt-4 text-3xl text-center sm:text-center md:text-center xl:text-start">
@@ -13,7 +14,7 @@ function RegisterBody({ type }) {
         Never Miss a Beat: Keep Track of Attendance with Ease
       </p>
 
-      {type === "student" ? <RegisterStudent /> : <RegisterProfessor />}
+      {user_type}
 
       <p className="mt-4 text-center">
         Already have an account?

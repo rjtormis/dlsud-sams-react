@@ -10,15 +10,17 @@ import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 // Schema
 import { registerStudentSchema } from "../../schemas/RegisterSchema";
 
-//Components
+// Components
 import CustomInput from "../Shared/CustomInput";
+import CustomInputGroup from "../Shared/CustomInputGroup";
 import spinner from "../../assets/spinner.gif";
 
-// Context
-import CreateContext from "../../context/CreateContext";
+// Hooks
+import useCreate from "../../hooks/useCreate";
+import Button from "../Shared/Button";
 
 function RegisterStudent() {
-  const { setSuccess } = useContext(CreateContext);
+  const { setSuccess } = useCreate();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
@@ -84,8 +86,8 @@ function RegisterStudent() {
                 label="Middle Initial"
                 name="middleInitial"
                 type="text"
-                customProp="Middle Initial"
                 placeholder="Middle Initial"
+                maxLength={1}
               />
               <CustomInput
                 page="register"
@@ -98,22 +100,20 @@ function RegisterStudent() {
 
             {/* Student ID, Email */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <CustomInput
+              <CustomInputGroup
                 page="register"
                 label="Student Number"
                 name="studentNumber"
-                id="studentNumber"
                 type="number"
                 placeholder="Student no."
-                customProp="number"
+                onWheel={(e) => e.target.blur()}
                 icon={<HiIdentification />}
               />
 
-              <CustomInput
+              <CustomInputGroup
                 page="register"
                 label="Email"
                 name="emailAddress"
-                id="emailAddress"
                 type="email"
                 placeholder="Email"
                 icon={<FaEnvelope />}
@@ -121,7 +121,7 @@ function RegisterStudent() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <CustomInput
+              <CustomInputGroup
                 page="register"
                 label="Password"
                 name="password"
@@ -130,7 +130,7 @@ function RegisterStudent() {
                 icon={<BsFillShieldLockFill />}
               />
 
-              <CustomInput
+              <CustomInputGroup
                 page="register"
                 label="Confirm Password"
                 name="confirmPassword"
@@ -140,23 +140,22 @@ function RegisterStudent() {
               />
             </div>
 
-            <button
-              type="submit"
-              id="my-modal"
-              className={`btn btn-primary w-full mt-4 ${
-                loading ? "disabled:btn-primary opacity-75" : ""
+            <Button
+              styles={`btn-primary w-full mt-4 ${
+                loading ? "disabled:opacity-75 disabled:btn-primary" : ""
               }`}
               disabled={loading}
+              type="submit"
             >
               {loading ? (
                 <>
                   <img src={spinner} alt="" className="w-5 h-5 mr-2" />
-                  <p>Creating account ...</p>
+                  <p>CREATING ACCOUNT ...</p>
                 </>
               ) : (
                 "CREATE ACCOUNT"
               )}
-            </button>
+            </Button>
           </form>
         )}
       </Formik>
