@@ -27,7 +27,7 @@ function AllSectionModal() {
     formData.append("file", state.file);
 
     try {
-      const response = await axios.post("/api/v1/section", formData, {
+      const response = await axios.post("/api/v1/sections", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "X-CSRF-TOKEN": access,
