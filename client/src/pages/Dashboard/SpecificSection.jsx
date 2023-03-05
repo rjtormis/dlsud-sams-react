@@ -26,7 +26,7 @@ function SpecificSection() {
       {loading ? (
         <div className="flex-1 flex flex-col justify-center">
           <ClipLoader size={150} className="mx-auto" />
-          <h3 className="mx-auto text-2xl">Retrieving data...</h3>
+          <h3 className="mx-auto text-2xl">Loading section...</h3>
           <p className="mx-auto">Please wait</p>
         </div>
       ) : (

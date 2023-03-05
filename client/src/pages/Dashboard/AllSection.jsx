@@ -11,7 +11,7 @@ import AllSectionModal from "../../components/Modals/AllSectionModal";
 function AllSection() {
   const [sections, setSections] = useState([]);
 
-  const { data, loading, error } = useFetch("/api/v1/section", "sections");
+  const { data, loading, error } = useFetch("/api/v1/sections", "sections");
 
   useEffect(() => {
     if (data !== null) {
