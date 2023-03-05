@@ -15,6 +15,11 @@ from ..models.user import User
 
 @app.route("/login", methods=["POST"])
 def auth():
+    """
+    REST API that handles the authentication
+
+    Return: POST: 200(success) , 404(Conflict)
+    """
 
     data = request.get_json()
 
@@ -55,6 +60,12 @@ def auth():
 @app.route("/refresh_token", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
+    """
+    REST API that issue new JWT token in every 8 minutes to the user.
+
+    Return: POST: STATUS 200
+    """
+
     current_user = get_jwt_identity()
     query_id = User.query.filter_by(id=current_user).first()
     access_token = create_access_token(identity=query_id.id)
@@ -65,6 +76,12 @@ def refresh():
 
 @app.route("/logout", methods=["POST"])
 def logout():
+    """
+    REST API that handles the logout.
+
+    Return: POST: STATUS 200
+    """
+
     response = make_response("logout")
     response.set_cookie("access_token_cookie", "", max_age=0)
     response.set_cookie("refresh_token_cookie", "", max_age=0)

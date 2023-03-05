@@ -9,6 +9,13 @@ from ..models.section import Section
 @app.route("/api/v1/dashboard", methods=["GET"])
 @jwt_required()
 def dashboard():
+    """
+    REST API that handles the main page of the dashboard where it queries the total
+    for students, sections, and lectures done by the professor.
+
+    Return: GET: STATUS 200(Authorized/Success) , STATUS 401("UNAUTHORIZED/Missing JWT Token")
+    """
+
     current_user = get_jwt_identity()
     total_student = db.session.query(Student.id).count()
     total_section = db.session.query(Section.id).count()

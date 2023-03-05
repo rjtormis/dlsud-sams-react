@@ -13,6 +13,11 @@ from ..utils.push_to_database import push_to_database
 
 @app.route("/api/v1/users", methods=["GET", "POST"])
 def users():
+    """
+    REST API that handles the GET USER and CREATE USER(POST)
+
+    Return: STATUS 201(CREATED/SUCCESSFULL) , STATUS 409(CONFLICT/EXISTING ACCOUNT)
+    """
 
     if request.method == "GET":
         return jsonify({"OK": "KEYO!"})
