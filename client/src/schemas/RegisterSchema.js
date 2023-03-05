@@ -44,7 +44,7 @@ export const registerProfessorSchema = yup.object().shape({
     .required("Required *"),
   middleInitial: yup
     .string()
-    .matches(name_regex, "Middle Initial can only contain letters.")
+    .matches(name_regex, "Middle Initial must be a letter.")
     .max(1, "Maximum of 1 character.")
     .required("Required *"),
   lastName: yup
