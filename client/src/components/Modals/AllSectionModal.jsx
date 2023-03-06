@@ -11,12 +11,11 @@ import Modal from "../../components/Shared/Modal";
 // Schema
 import { registerClassroomSchema } from "../../schemas/RegisterSchema";
 
-// Context
-import useCookie from "../../hooks/useCookie";
+import { getCookie } from "../../utilities/getCookie";
 
 function AllSectionModal() {
   const [isLoading, setIsLoading] = useState(false);
-  const access = useCookie("csrf_access_token");
+  const access = getCookie("csrf_access_token");
 
   const handleSubmit = async (state, action) => {
     setIsLoading(true);
