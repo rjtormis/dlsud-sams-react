@@ -1,19 +1,22 @@
-import { useContext } from "react";
 import { MdDashboard } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { useEffect } from "react";
 import logo from "../assets/dlsu-d.png";
 import profile from "../assets/sample-profile.jfif";
 
-// Context
-import AuthContext from "../context/AuthContext";
+// Utilities
+import { getCookie } from "../utilities/getCookie";
+
+// Hooks
+import useAuth from "../hooks/useAuth";
+
 function DashboardLayout() {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+
+  const { auth, setAuth, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
