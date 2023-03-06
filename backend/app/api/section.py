@@ -11,7 +11,7 @@ from ..utils.push_to_database import push_to_database
 
 @app.route("/api/v1/sections", methods=["GET", "POST"])
 @jwt_required()
-def classroom():
+def allSections():
     """
     REST API that queries all the sections(GET) and creates section(POST)
 
@@ -30,13 +30,23 @@ def classroom():
         return jsonify({"sections": sections})
 
     if request.method == "POST":
-        full = f'{request.values.get("course")} {request.values.get("year")}{request.values.get("section")}'
-        query_section = Section.query.filter_by(section_name=full).first()
+        course = request.values.get("course")
+        year = request.values.get("year")
+        section = request.values.get("section")
+        full = f"{course} {year}{section}"
+
+        query_section = Section.query.filter_by(section_full=full).first()
 
         if query_section:
             return jsonify({"msg": "Section already taken"}), 401
 
-        new_section = Section(section_name=full, section_adviser=current_user)
+        new_section = Section(
+            section_full=full,
+            section_course=course,
+            section_adviser=current_user,
+            section_year=year,
+            section_level=section,
+        )
         push_to_database(new_section)
 
         return jsonify(new_section.json_format()), 201
@@ -54,7 +64,7 @@ def isSectionAdviser(name):
 
     current_user = get_jwt_identity()
 
-    query_section = Section.query.filter_by(section_name=name).first()
+    query_section = Section.query.filter_by(section_full=name).first()
 
     if query_section.section_adviser == current_user:
         return jsonify({"isAdviser": True}), 200
@@ -62,25 +72,40 @@ def isSectionAdviser(name):
         return jsonify({"isAdviser": False}), 200
 
 
-@app.route("/api/v1/sections/<string:name>", methods=["POST", "DELETE", "PATCH"])
+@app.route("/api/v1/sections/<string:name>", methods=["GET", "POST", "DELETE", "PUT"])
 @jwt_required()
-def delete_section(name):
+def specificSection(name):
 
     """
     REST API that handles the editting and deleting the section
 
     Arguments : name - Name of the section.
     Return :
-             PATCH : STATUS 200
+             PUT : STATUS 200
              DELETE : STATUS 200
     """
 
     current_user = get_jwt_identity()
-    section = Section.query.filter_by(section_name=name).first()
+    section = Section.query.filter_by(section_full=name).first()
 
-    if request.method == "PATCH":
-        # @todo
-        pass
+    if request.method == "GET":
+        return jsonify(
+            {
+                "section": {
+                    "full": section.section_full,
+                    "course": section.section_course,
+                    "year": section.section_year,
+                    "section": section.section_level,
+                    "adviser": f"{section.professor.first_name} {section.professor.middle_initial} {section.professor.last_name}",
+                }
+            }
+        )
+
+    if request.method == "PUT":
+        data = request.get_json()
+        print(data)
+
+        return jsonify({"msg": "Section editted successfully."})
 
     if request.method == "DELETE":
         db.session.delete(section)

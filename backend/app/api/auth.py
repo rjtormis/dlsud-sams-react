@@ -68,7 +68,7 @@ def refresh():
 
     current_user = get_jwt_identity()
     query_id = User.query.filter_by(id=current_user).first()
-    access_token = create_access_token(identity=query_id.id)
+    access_token = create_access_token(identity=query_id.id, fresh=False)
     response = make_response("success")
     set_access_cookies(response, access_token)
     return response, 200
