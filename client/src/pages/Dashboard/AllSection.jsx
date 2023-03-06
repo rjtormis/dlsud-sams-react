@@ -5,7 +5,6 @@ import ClipLoader from "react-spinners/ClipLoader";
 import DashboardClassroomItem from "../../components/Dashboard/DashboardClassroomItem";
 
 import useFetch from "../../hooks/useFetch";
-import useCookie from "../../hooks/useCookie";
 import AllSectionModal from "../../components/Modals/AllSectionModal";
 
 function AllSection() {
@@ -65,7 +64,7 @@ function AllSection() {
             sections.map((section) => (
               <DashboardClassroomItem
                 key={section.id}
-                title={section.section_name}
+                title={section.section_full}
                 adviser={section.section_adviser}
               />
             ))

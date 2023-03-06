@@ -8,7 +8,8 @@ import useFetch from "../../hooks/useFetch";
 import useAuth from "../../hooks/useAuth";
 
 function Main() {
-  const { user } = useAuth();
+  const { auth } = useAuth();
+
   const { data, error, loading } = useFetch("/api/v1/dashboard", "total");
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
@@ -25,7 +26,7 @@ function Main() {
   return (
     <>
       <h1 className="text-4xl text-green-800">DASHBOARD</h1>
-      <p className="text-xl">Welcome {user}!</p>
+      <p className="text-xl">{auth ? <>Welcome {auth.name}</> : <BeatLoader />}!</p>
       <div className="grid grid-cols-3 gap-4 mt-4">
         <div className="stat shadow  rounded-lg bg-white hover:scale-105">
           <div className="stat-figure">

@@ -1,15 +1,13 @@
-import { useContext } from "react";
-
 // Components
 import RegisterBody from "../../components/Register/RegisterBody";
 import RegisterHeader from "../../components/Register/RegisterHeader";
 import Alert from "../../components/Shared/Alert";
 
-// Context
-import CreateContext from "../../context/CreateContext";
+//Hooks
+import useCreate from "../../hooks/useCreate";
 
 function Student() {
-  const { success } = useContext(CreateContext);
+  const { success } = useCreate();
 
   return (
     <>

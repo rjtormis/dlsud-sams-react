@@ -5,11 +5,11 @@ import RegisterHeader from "../../components/Register/RegisterHeader";
 import RegisterBody from "../../components/Register/RegisterBody";
 import Alert from "../../components/Shared/Alert";
 
-// Context
-import CreateContext from "../../context/CreateContext";
+// Hooks
+import useCreate from "../../hooks/useCreate";
 
 function Professor() {
-  const { success } = useContext(CreateContext);
+  const { success } = useCreate();
   return (
     <>
       <RegisterHeader type="professor" />
