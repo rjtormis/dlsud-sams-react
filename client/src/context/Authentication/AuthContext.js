@@ -1,21 +1,25 @@
 import axios from "axios";
-import { createContext, useEffect, useRef, useState } from "react";
-import useCookie from "../hooks/useCookie";
+import { createContext, useEffect, useReducer, useState } from "react";
+import useCookie, { getCookie } from "../../utilities/getCookie";
+
+// Reducers
+import AuthReducers from "./AuthReducers";
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState("");
-  const refresh = useCookie("csrf_refresh_token");
+  const initialState = {
+    loading: false,
+  };
+  const access = getCookie("csrf_access_token");
+  const refresh = getCookie("csrf_refresh_token");
+  const [state, dispatch] = useReducer(AuthReducers, initialState);
   const [auth, setAuth] = useState(() => {
     return JSON.parse(localStorage.getItem("user"));
   });
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(auth));
-    if (auth) {
-      setUser(auth.name);
-    }
   }, [auth]);
 
   useEffect(() => {
@@ -36,12 +40,13 @@ export const AuthContextProvider = ({ children }) => {
 
   const logout = () => {
     setAuth(null);
-    setUser(null);
     localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ auth, user, setAuth, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ auth, setAuth, logout, ...state, dispatch }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
