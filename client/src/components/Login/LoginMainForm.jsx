@@ -15,6 +15,7 @@ import useAuth from "../../hooks/useAuth";
 // Assets
 import logo from "../../assets/dlsu-d.png";
 import ClipLoader from "react-spinners/ClipLoader";
+import { getCookie } from "../../utilities/getCookie";
 
 function LoginMainForm() {
   const { setAuth, loading, dispatch } = useAuth();
@@ -34,8 +35,15 @@ function LoginMainForm() {
         }
       );
       const { id, type, name } = response.data.user;
-
-      setAuth({ id: id, type: type, name: name });
+      const access = getCookie("csrf_access_token");
+      const refresh = getCookie("csrf_refresh_token");
+      setAuth({
+        id: id,
+        type: type,
+        name: name,
+        csrf_access_token: access,
+        csrf_refresh_token: refresh,
+      });
       dispatch({
         type: "SET_LOADING_FALSE",
       });

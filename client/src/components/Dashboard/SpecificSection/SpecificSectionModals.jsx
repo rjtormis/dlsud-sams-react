@@ -1,26 +1,24 @@
 import axios from "axios";
 import { AiOutlineWechat, AiOutlineEdit } from "react-icons/ai";
 import { BsCreditCard2FrontFill, BsFillTrashFill } from "react-icons/bs";
-import { Formik } from "formik";
-import { Navigate } from "react-router-dom";
+import { Formik, replace } from "formik";
+import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
 // Components
-import Modal from "../../components/Shared/Modal";
-import CustomInput from "../../components/Shared/CustomInput";
-import CustomSelect from "../Shared/CustomSelect";
+import Modal from "../../Shared/Modal";
+import CustomInput from "../../Shared/CustomInput";
+import CustomSelect from "../../Shared/CustomSelect";
 import { useState } from "react";
 
 // Hooks
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 function SpecificSectionModals({ name, data }) {
   const { auth } = useAuth();
-  const [isDeleted, setIsDeleted] = useState(false);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  if (isDeleted) {
-    return <Navigate to="/dashboard/sections" />;
-  }
+
   const handleCreate = async (state, action) => {
     try {
       const response = await axios.post(
@@ -28,7 +26,7 @@ function SpecificSectionModals({ name, data }) {
         { sectionName: name, ...state },
         {
           headers: {
-            "X-CSRF-TOKEN": 1234,
+            "X-CSRF-TOKEN": auth.csrf_access_token,
           },
         }
       );
@@ -40,7 +38,14 @@ function SpecificSectionModals({ name, data }) {
 
   const handleEdit = async (state, action) => {
     try {
-      const response = await axios.post();
+      const response = await axios.put(
+        `/api/v1/sections/${name}`,
+        { ...state },
+        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+      );
+      if (response.status === 200) {
+        navigate(`/dashboard/sections/${response.data.section.full}`, { replace: true });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -50,9 +55,9 @@ function SpecificSectionModals({ name, data }) {
     e.preventDefault();
     try {
       const response = await axios.delete(`/api/v1/sections/${name}`, {
-        headers: { "X-CSRF-TOKEN": 123 },
+        headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
       });
-      setIsDeleted(true);
+      navigate("/dashboard/sections", { replace: true });
     } catch (e) {
       console.log(e);
     }

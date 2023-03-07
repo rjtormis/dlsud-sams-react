@@ -1,21 +1,26 @@
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { useState } from "react";
-import { Formik } from "formik";
+import { Formik, replace } from "formik";
+import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
 
 // Components
-import CustomSelect from "../../components/Shared/CustomSelect";
-import Modal from "../../components/Shared/Modal";
+import CustomSelect from "../../Shared/CustomSelect";
+import Modal from "../../Shared/Modal";
 
 // Schema
-import { registerClassroomSchema } from "../../schemas/RegisterSchema";
+import { registerClassroomSchema } from "../../../schemas/RegisterSchema";
 
-import { getCookie } from "../../utilities/getCookie";
+// Hooks
+import useAuth from "../../../hooks/useAuth";
+import useAllSection from "../../../hooks/useAllSection";
 
 function AllSectionModal() {
   const [isLoading, setIsLoading] = useState(false);
-  const access = getCookie("csrf_access_token");
+  const { auth } = useAuth();
+  const { sections, dispatch } = useAllSection();
+  const navigate = useNavigate();
 
   const handleSubmit = async (state, action) => {
     setIsLoading(true);
@@ -29,11 +34,12 @@ function AllSectionModal() {
       const response = await axios.post("/api/v1/sections", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          "X-CSRF-TOKEN": access,
+          "X-CSRF-TOKEN": auth.csrf_access_token,
         },
       });
-
+      const section = response.data;
       setIsLoading(false);
+      dispatch({ type: "GET_ALL_SECTIONS", payload: { ...sections, section } });
     } catch (e) {
       setIsLoading(false);
       console.log(e);
