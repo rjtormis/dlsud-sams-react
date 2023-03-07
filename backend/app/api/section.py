@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from datetime import datetime
 from app import app, db, jwt_required, get_jwt_identity
 
 # Model
@@ -81,7 +82,8 @@ def specificSection(name):
 
     Arguments : name - Name of the section.
     Return :
-             PUT : STATUS 200
+             GET : STATUS 200
+             PUT : STATUS 200(success) , 409(conflict/section already exists)
              DELETE : STATUS 200
     """
 
@@ -103,9 +105,35 @@ def specificSection(name):
 
     if request.method == "PUT":
         data = request.get_json()
-        print(data)
+        full = f"{data['course']} {data['year']}{data['section']}"
+        query_section = Section.query.filter_by(section_full=full).first()
 
-        return jsonify({"msg": "Section editted successfully."})
+        if query_section:
+            return jsonify({"msg": "Section already exists"}), 409
+
+        section.section_full = full
+        section.section_course = data["course"]
+        section.section_year = data["year"]
+        section.section_level = data["section"]
+        section.updated = datetime.utcnow()
+
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    "msg": "Section editted successfully.",
+                    "section": {
+                        "full": section.section_full,
+                        "course": section.section_course,
+                        "year": section.section_year,
+                        "section": section.section_level,
+                        "adviser": f"{section.professor.first_name} {section.professor.middle_initial} {section.professor.last_name}",
+                    },
+                }
+            ),
+            200,
+        )
 
     if request.method == "DELETE":
         db.session.delete(section)
