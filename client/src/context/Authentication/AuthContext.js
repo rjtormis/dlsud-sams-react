@@ -30,10 +30,11 @@ export const AuthContextProvider = ({ children }) => {
             headers: { "X-CSRF-TOKEN": refresh },
           });
           console.log(response);
+          console.log(auth);
         } catch (e) {
           console.log(e);
         }
-      }, 1000 * 60 * 8);
+      }, 1000 * 60 * 2);
       return () => clearInterval(requestAccessToken);
     }
   }, [auth, refresh]);
