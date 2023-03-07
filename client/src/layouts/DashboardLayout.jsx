@@ -7,17 +7,13 @@ import axios from "axios";
 import logo from "../assets/dlsu-d.png";
 import profile from "../assets/sample-profile.jfif";
 
-// Utilities
-import { getCookie } from "../utilities/getCookie";
-
 // Hooks
 import useAuth from "../hooks/useAuth";
 
 function DashboardLayout() {
   const navigate = useNavigate();
 
-  const { auth, setAuth, logout } = useAuth();
-
+  const { logout } = useAuth();
   const handleLogout = async () => {
     try {
       const response = await axios.post("/logout", {});
