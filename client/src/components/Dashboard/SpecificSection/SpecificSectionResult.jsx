@@ -1,6 +1,7 @@
 import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-function SpecificSectionResult() {
+function SpecificSectionResult({ name }) {
   return (
     <>
       <div id="subject-container" className="flex-1 mt-2 rounded-t-lg">
@@ -15,9 +16,12 @@ function SpecificSectionResult() {
               <p>Professor: TITA R HERRADURA</p>
               <p>Schedule: TITA R HERRADURA</p>
               <div className="card-actions justify-end">
-                <button className="btn btn-white btn-square btn-xs">
+                <Link
+                  to={`/dashboard/sections/${name}/test`}
+                  className="btn btn-white btn-square btn-xs"
+                >
                   <MdOutlineKeyboardArrowRight size={16} />
-                </button>
+                </Link>
                 <button className="btn btn-white btn-square btn-xs">
                   <MdEdit size={16} />
                 </button>

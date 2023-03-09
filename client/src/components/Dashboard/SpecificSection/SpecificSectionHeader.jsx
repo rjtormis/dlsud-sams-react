@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { MdDelete, MdEdit, MdAdd } from "react-icons/md";
 
 // Hooks
-import useFetch from "../../../hooks/useFetch";
+import useSpecificSection from "../../../hooks/useSpecificSection";
+function SpecificSectionHeader() {
+  const { sectionName, isAdviser } = useSpecificSection();
 
-function SpecificSectionHeader({ name }) {
-  const { data, error, loading } = useFetch(`/api/v1/sections/${name}/adviser`, "isAdviser");
   return (
     <>
       <div className="text-sm breadcrumbs">
@@ -17,7 +17,7 @@ function SpecificSectionHeader({ name }) {
             </Link>
           </li>
           <li>
-            <p className=" text-green-800">{name}</p>
+            <p className=" text-green-800">{sectionName}</p>
           </li>
         </ul>
       </div>
@@ -28,7 +28,7 @@ function SpecificSectionHeader({ name }) {
             <MdAdd size={20} />
           </a>
         </div>
-        {data ? (
+        {isAdviser ? (
           <>
             <div className="tooltip tooltip-primary" data-tip="Edit">
               <a

@@ -9,21 +9,21 @@ import ClipLoader from "react-spinners/ClipLoader";
 import Modal from "../../Shared/Modal";
 import CustomInput from "../../Shared/CustomInput";
 import CustomSelect from "../../Shared/CustomSelect";
-import { useState } from "react";
 
 // Hooks
 import useAuth from "../../../hooks/useAuth";
+import useSpecificSection from "../../../hooks/useSpecificSection";
 
-function SpecificSectionModals({ name, data }) {
+function SpecificSectionModals() {
   const { auth } = useAuth();
+  const { loading, section } = useSpecificSection();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreate = async (state, action) => {
     try {
       const response = await axios.post(
         "/api/v1/subjects",
-        { sectionName: name, ...state },
+        { sectionName: section.full, ...state },
         {
           headers: {
             "X-CSRF-TOKEN": auth.csrf_access_token,
@@ -39,7 +39,7 @@ function SpecificSectionModals({ name, data }) {
   const handleEdit = async (state, action) => {
     try {
       const response = await axios.put(
-        `/api/v1/sections/${name}`,
+        `/api/v1/sections/${section.full}`,
         { ...state },
         { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
       );
@@ -54,7 +54,7 @@ function SpecificSectionModals({ name, data }) {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.delete(`/api/v1/sections/${name}`, {
+      const response = await axios.delete(`/api/v1/sections/${section.full}`, {
         headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
       });
       navigate("/dashboard/sections", { replace: true });
@@ -94,7 +94,9 @@ function SpecificSectionModals({ name, data }) {
                 <option value="Friday">Friday</option>
                 <option value="Saturday">Saturday</option>
               </CustomSelect>
-              <input type="submit" value="CREATE" className="btn btn-primary mt-4" />
+              <div className="flex justify-center mt-4">
+                <input type="submit" value="CREATE" className="btn btn-primary w-full" />
+              </div>
             </form>
           )}
         </Formik>
@@ -107,9 +109,9 @@ function SpecificSectionModals({ name, data }) {
         </div>
         <Formik
           initialValues={{
-            course: data ? data.course : "",
-            year: data ? data.year : "",
-            section: data ? data.section : "",
+            course: section.course,
+            year: section.year,
+            section: section.section,
             file: undefined,
           }}
           onSubmit={handleEdit}
@@ -179,7 +181,7 @@ function SpecificSectionModals({ name, data }) {
                 />
               </div>
               <div className="flex justify-center mt-4">
-                {isLoading ? (
+                {loading ? (
                   <ClipLoader />
                 ) : (
                   <input
@@ -202,7 +204,7 @@ function SpecificSectionModals({ name, data }) {
               <h3 className="text-xl text-green-700 font-bold">Delete Section</h3>
             </div>
             <p className="text-center mt-4">
-              Are you sure that you want to delete <span>{name}</span>
+              Are you sure that you want to delete <span>{section.full}</span>
             </p>
 
             <input type="submit" value="YES" className="btn btn-error mt-4" />
