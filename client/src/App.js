@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import DashboardLayout from "./layouts/DashboardLayout";
 import RegisterLayout from "./layouts/RegisterLayout";
 import SpecificSection from "./pages/Dashboard/SpecificSection";
+import Subject from "./pages/Dashboard/Subject";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
         <Route index element={<Main />} />
         <Route path="sections" element={<AllSection />} />
         <Route path="sections/:name" element={<SpecificSection />} />
+        <Route path="sections/:name/:subject_name" element={<Subject />} />
       </Route>
     </>
   )
