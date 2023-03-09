@@ -6,29 +6,31 @@ import SpecificSectionModals from "../../components/Dashboard/SpecificSection/Sp
 import SpecificSectionResult from "../../components/Dashboard/SpecificSection/SpecificSectionResult";
 import SpecificSectionHeader from "../../components/Dashboard/SpecificSection/SpecificSectionHeader";
 
-// Specific
+// context
+import { SpecificSectionContextProvider } from "../../context/Dashboard/SpecificSection/SpecificSectionContext";
 
 // Hooks
 import useFetch from "../../hooks/useFetch";
+import useSpecificSection from "../../hooks/useSpecificSection.js";
+import { useEffect } from "react";
 
 function SpecificSection() {
   const params = useParams();
-  const {
-    data: section_edit,
-    loading: section_loading,
-    error: section_error,
-  } = useFetch(`/api/v1/sections/${params.name}`, "section");
+  const { loading, dispatch } = useSpecificSection();
+  useEffect(() => {
+    dispatch({ type: "SET_SECTION_NAME", payload: params.name });
+  }, [dispatch, params.name]);
   return (
     <>
-      {section_loading ? (
+      {loading ? (
         <ClipLoader />
       ) : (
         <>
-          <SpecificSectionHeader name={params.name} />
+          <SpecificSectionHeader />
 
           <SpecificSectionResult />
 
-          <SpecificSectionModals name={params.name} data={section_edit} />
+          <SpecificSectionModals />
         </>
       )}
     </>

@@ -1,7 +1,14 @@
 import React from "react";
+import SubjectHeader from "../../components/Dashboard/Subject/SubjectHeader";
+import SubjectStudentsEnrolled from "../../components/Dashboard/Subject/SubjectStudentsEnrolled";
 
 function Subject() {
-  return <div>Subject</div>;
+  return (
+    <>
+      <SubjectHeader />
+      <SubjectStudentsEnrolled />
+    </>
+  );
 }
 
 export default Subject;
