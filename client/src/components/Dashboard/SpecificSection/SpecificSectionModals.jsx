@@ -16,14 +16,14 @@ import useSpecificSection from "../../../hooks/useSpecificSection";
 
 function SpecificSectionModals() {
   const { auth } = useAuth();
-  const { loading, section } = useSpecificSection();
+  const { loading, section, subjectName } = useSpecificSection();
   const navigate = useNavigate();
-
+  console.log(subjectName);
   const handleCreate = async (state, action) => {
     try {
       const response = await axios.post(
         "/api/v1/subjects",
-        { sectionName: section.full, ...state },
+        { sectionName: section.section_full, ...state },
         {
           headers: {
             "X-CSRF-TOKEN": auth.csrf_access_token,
@@ -39,7 +39,7 @@ function SpecificSectionModals() {
   const handleEdit = async (state, action) => {
     try {
       const response = await axios.put(
-        `/api/v1/sections/${section.full}`,
+        `/api/v1/sections/${section.section_full}`,
         { ...state },
         { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
       );
@@ -62,6 +62,7 @@ function SpecificSectionModals() {
       console.log(e);
     }
   };
+
   return (
     <>
       <Modal id="create_subject">
@@ -109,9 +110,9 @@ function SpecificSectionModals() {
         </div>
         <Formik
           initialValues={{
-            course: section.course,
-            year: section.year,
-            section: section.section,
+            course: section.section_course,
+            year: section.section_year,
+            section: section.section_section,
             file: undefined,
           }}
           onSubmit={handleEdit}

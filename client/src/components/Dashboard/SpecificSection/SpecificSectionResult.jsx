@@ -1,7 +1,21 @@
-import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
+import useSpecificSection from "../../../hooks/useSpecificSection";
+import SpecificSectionSubjectItem from "./SpecificSectionSubjectItem";
 
-function SpecificSectionResult({ name }) {
+function SpecificSectionResult() {
+  const { section, dispatch, subject } = useSpecificSection();
+  const [deleteSub, setDeleteSub] = useState("");
+  const [editSub, setEditSub] = useState({});
+  const subjects = section.subjects;
+
+  useEffect(() => {
+    dispatch({ type: "SET_SUBJECT", payload: { ...editSub } });
+  }, [dispatch, editSub]);
+
+  useEffect(() => {
+    dispatch({ type: "SET_SUBJECT_NAME", payload: deleteSub });
+  }, [dispatch, deleteSub]);
   return (
     <>
       <div id="subject-container" className="flex-1 mt-2 rounded-t-lg">
@@ -10,27 +24,20 @@ function SpecificSectionResult({ name }) {
           <button className="text-white">HANDLED</button>
         </div>
         <div className="grid grid-cols-4 p-2 gap-4">
-          <div id="subject" className="card card-compact w-full  shadow-xl text-white">
-            <div className="card-body flex">
-              <h2 className="card-title">Software Engineering</h2>
-              <p>Professor: TITA R HERRADURA</p>
-              <p>Schedule: TITA R HERRADURA</p>
-              <div className="card-actions justify-end">
-                <Link
-                  to={`/dashboard/sections/${name}/test`}
-                  className="btn btn-white btn-square btn-xs"
-                >
-                  <MdOutlineKeyboardArrowRight size={16} />
-                </Link>
-                <button className="btn btn-white btn-square btn-xs">
-                  <MdEdit size={16} />
-                </button>
-                <button className="btn btn-white btn-square btn-xs">
-                  <MdDelete size={16} />
-                </button>
-              </div>
-            </div>
-          </div>
+          {subjects === undefined ? (
+            <ClipLoader />
+          ) : (
+            subjects.map((subject) => (
+              <SpecificSectionSubjectItem
+                key={subject.id}
+                name={subject.subject_name}
+                professor={subject.handled_by}
+                schedule={subject.schedule}
+                onDelete={() => setDeleteSub(subject.subject_name)}
+                onEdit={() => setEditSub(subject)}
+              />
+            ))
+          )}
         </div>
       </div>
     </>

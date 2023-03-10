@@ -12,7 +12,6 @@ import useAllSection from "../../../hooks/useAllSection";
 function AllSectionList() {
   const { sections, loading, dispatch } = useAllSection();
   const { data, error } = useFetch("/api/v1/sections", "sections");
-
   useEffect(() => {
     if (data !== null) {
       dispatch({ type: "GET_ALL_SECTIONS", payload: data });
