@@ -29,8 +29,6 @@ export const AuthContextProvider = ({ children }) => {
           const response = await axios.post("/refresh_token", null, {
             headers: { "X-CSRF-TOKEN": refresh },
           });
-          console.log(response);
-          console.log(auth);
         } catch (e) {
           console.log(e);
         }

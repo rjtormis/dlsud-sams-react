@@ -8,8 +8,12 @@ const SpecificSectionReducer = (state, action) => {
       return { ...state, section: action.payload, loading: false };
     case "IS_ADVISER":
       return { ...state, isAdviser: action.payload, loading: false };
-    case "GET_ALL_SUBJECTS":
-      return { ...state, subjects: action.payload };
+    case "SET_SUBJECT_NAME":
+      return { ...state, subjectName: action.payload, loading: false };
+    case "SET_SUBJECT":
+      return { ...state, subject: action.payload, loading: false };
+    case "CLEAR_SUBJECT":
+      return { ...state, subject: {}, loading: true };
 
     default:
       return state;
