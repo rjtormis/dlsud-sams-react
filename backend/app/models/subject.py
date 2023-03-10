@@ -33,10 +33,11 @@ class Subject(db.Model, Details):
         return {
             "id": self.id,
             "code": self.code,
-            "section": self.section.section_name,
-            "handled_by": f"{self.professor_subject.first_name} {self.professor_subject.middle_intial}. {self.professor_subject.last_name}",
+            "subject_name": self.subject_name,
+            "section": self.section.section_full,
+            "handled_by": f"{self.professor_subject.first_name} {self.professor_subject.middle_initial}. {self.professor_subject.last_name}",
             "schedule": f"{self.start} TO {self.end} {self.day}",
         }
 
     def __repr__(self):
-        return f"Subject:{self.subject_name} Section:{self.section.section_name}"
+        return f"Subject:{self.subject_name} Section:{self.section.section_full}"
