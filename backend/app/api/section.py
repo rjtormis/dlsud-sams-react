@@ -5,6 +5,7 @@ from app import app, db, jwt_required, get_jwt_identity
 # Model
 from ..models.professor import Professor
 from ..models.section import Section
+from ..models.subject import Subject
 
 # Helper
 from ..utils.push_to_database import push_to_database
@@ -23,7 +24,6 @@ def allSections():
 
     if request.method == "GET":
         get_sections = Section.query.order_by(Section.created.desc()).all()
-
         sections = []
 
         for i in get_sections:
@@ -78,7 +78,7 @@ def isSectionAdviser(name):
 def specificSection(name):
 
     """
-    REST API that handles the editting and deleting the section
+    REST API that handles the editing and deleting the section
 
     Arguments : name - Name of the section.
     Return :
@@ -89,19 +89,14 @@ def specificSection(name):
 
     current_user = get_jwt_identity()
     section = Section.query.filter_by(section_full=name).first()
+    allSubjects = Subject.query.filter_by(section_id=section.id).all()
+    subject = []
 
     if request.method == "GET":
-        return jsonify(
-            {
-                "section": {
-                    "full": section.section_full,
-                    "course": section.section_course,
-                    "year": section.section_year,
-                    "section": section.section_level,
-                    "adviser": f"{section.professor.first_name} {section.professor.middle_initial} {section.professor.last_name}",
-                }
-            }
-        )
+        for i in allSubjects:
+            subject.append(i.json_format())
+
+        return jsonify({"section": section.json_format()})
 
     if request.method == "PUT":
         data = request.get_json()
@@ -123,13 +118,7 @@ def specificSection(name):
             jsonify(
                 {
                     "msg": "Section editted successfully.",
-                    "section": {
-                        "full": section.section_full,
-                        "course": section.section_course,
-                        "year": section.section_year,
-                        "section": section.section_level,
-                        "adviser": f"{section.professor.first_name} {section.professor.middle_initial} {section.professor.last_name}",
-                    },
+                    "section": section.json_format(),
                 }
             ),
             200,
