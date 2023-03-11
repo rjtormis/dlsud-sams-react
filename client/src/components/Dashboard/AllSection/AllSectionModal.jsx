@@ -39,7 +39,7 @@ function AllSectionModal() {
       });
       const section = response.data;
       setIsLoading(false);
-      dispatch({ type: "GET_ALL_SECTIONS", payload: { ...sections, section } });
+      navigate(`/dashboard/sections/${section.section_full}`);
     } catch (e) {
       setIsLoading(false);
       console.log(e);

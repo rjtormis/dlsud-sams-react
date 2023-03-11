@@ -10,7 +10,9 @@ function SpecificSectionSubjectItem({ name, professor, schedule, onDelete, onEdi
       <div className="card-body flex">
         <h2 className="card-title">{name}</h2>
         <p>Professor: {professor}</p>
-        <p>Schedule: {schedule}</p>
+        <p>
+          Schedule: {schedule.start} TO {schedule.end} {schedule.day}
+        </p>
         <div className="card-actions justify-end">
           <Link to={`/dashboard/sections/${name}/test`} className="btn btn-white btn-square btn-xs">
             <MdOutlineKeyboardArrowRight size={16} />

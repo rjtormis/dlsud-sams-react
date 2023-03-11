@@ -14,11 +14,18 @@ import CustomSelect from "../../Shared/CustomSelect";
 import useAuth from "../../../hooks/useAuth";
 import useSpecificSection from "../../../hooks/useSpecificSection";
 
+// Schema
+import {
+  addSubjectSchema,
+  editSectionSchema,
+  editSubjectSchema,
+} from "../../../schemas/SpecificSectionSchema";
+
 function SpecificSectionModals() {
   const { auth } = useAuth();
-  const { loading, section, subjectName } = useSpecificSection();
+  const { loading, section, subjectName, subject, dispatch } = useSpecificSection();
   const navigate = useNavigate();
-  console.log(subjectName);
+
   const handleCreate = async (state, action) => {
     try {
       const response = await axios.post(
@@ -54,10 +61,28 @@ function SpecificSectionModals() {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.delete(`/api/v1/sections/${section.full}`, {
+      const response = await axios.delete(`/api/v1/sections/${section.section_full}`, {
         headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
       });
       navigate("/dashboard/sections", { replace: true });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleEditSubject = (state, action) => {
+    console.log(state);
+  };
+
+  const handleDeleteSubject = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.delete(
+        `/api/v1/subjects/${section.section_full}/${subjectName}`,
+        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+      );
+      console.log(response.data);
     } catch (e) {
       console.log(e);
     }
@@ -77,6 +102,7 @@ function SpecificSectionModals() {
             end: "",
             day: "",
           }}
+          validationSchema={addSubjectSchema}
           onSubmit={handleCreate}
         >
           {(props) => (
@@ -86,7 +112,7 @@ function SpecificSectionModals() {
                 <CustomInput page="register" label="Start" type="time" name="start" />
                 <CustomInput page="register" label="End" type="time" name="end" />
               </div>
-              <CustomSelect page="Register" label="Day" name="day">
+              <CustomSelect page="register" label="Day" name="day">
                 <option value="0">Select schedule day</option>
                 <option value="Monday">Monday</option>
                 <option value="Tuesday">Tuesday</option>
@@ -115,6 +141,7 @@ function SpecificSectionModals() {
             section: section.section_section,
             file: undefined,
           }}
+          validationSchema={editSectionSchema}
           onSubmit={handleEdit}
         >
           {(props) => (
@@ -205,9 +232,80 @@ function SpecificSectionModals() {
               <h3 className="text-xl text-green-700 font-bold">Delete Section</h3>
             </div>
             <p className="text-center mt-4">
-              Are you sure that you want to delete <span>{section.full}</span>
+              Are you sure that you want to delete <b>{section.section_full}</b>
             </p>
+            <input type="submit" value="YES" className="btn btn-error mt-4" />
+          </div>
+        </form>
+      </Modal>
 
+      <Modal id="edit_subject">
+        <Formik
+          enableReinitialize
+          initialValues={{
+            subjectName: subject.subject_name ? subject.subject_name : "",
+            start: subject.schedule ? subject.schedule.start : "",
+            end: subject.schedule ? subject.schedule.end : "",
+            day: subject.schedule ? subject.schedule.day : "",
+          }}
+          validationSchema={editSubjectSchema}
+          onSubmit={handleEditSubject}
+        >
+          {(props) => (
+            <form className="flex flex-col" onSubmit={props.handleSubmit}>
+              <div className="flex">
+                <BsCreditCard2FrontFill size={30} className="mr-4" />
+                <h3 className="text-xl font-bold text-green-700">EDIT SUBJECT</h3>
+              </div>
+
+              <CustomInput
+                page="register"
+                label="Subject Name"
+                type="text"
+                name="subjectName"
+                value={props.values.subjectName || ""}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <CustomInput
+                  page="register"
+                  label="Start"
+                  type="time"
+                  name="start"
+                  value={props.values.start || ""}
+                />
+                <CustomInput
+                  page="register"
+                  label="End"
+                  type="time"
+                  name="end"
+                  value={props.values.end || ""}
+                />
+              </div>
+              <CustomSelect page="Register" label="Day" name="day" value={props.values.day || ""}>
+                <option value="0">Select schedule day</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+              </CustomSelect>
+              <div className="flex justify-center mt-4">
+                <input type="submit" value="CREATE" className="btn btn-primary w-full" />
+              </div>
+            </form>
+          )}
+        </Formik>
+      </Modal>
+
+      <Modal id="delete_subject">
+        <form onSubmit={handleDeleteSubject}>
+          <div className="flex flex-col">
+            <div className="flex">
+              <BsFillTrashFill size={30} className="mr-4" />
+              <h3 className="text-xl text-green-700 font-bold">Delete Subject</h3>
+            </div>
+            <p className="text-center mt-4">Are you sure that you want to delete this subject?</p>
             <input type="submit" value="YES" className="btn btn-error mt-4" />
           </div>
         </form>

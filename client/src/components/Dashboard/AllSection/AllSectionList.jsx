@@ -11,13 +11,7 @@ import useAllSection from "../../../hooks/useAllSection";
 
 function AllSectionList() {
   const { sections, loading, dispatch } = useAllSection();
-  const { data, error } = useFetch("/api/v1/sections", "sections");
-  useEffect(() => {
-    if (data !== null) {
-      dispatch({ type: "GET_ALL_SECTIONS", payload: data });
-    }
-  }, [data, dispatch]);
-
+  console.log(sections);
   return (
     <>
       {loading ? (
@@ -28,17 +22,13 @@ function AllSectionList() {
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-4 mt-4">
-          {loading ? (
-            <ClipLoader />
-          ) : (
-            sections.map((section) => (
-              <DashboardClassroomItem
-                key={section.id}
-                title={section.section_full}
-                adviser={section.section_adviser}
-              />
-            ))
-          )}
+          {sections.map((section) => (
+            <DashboardClassroomItem
+              key={section.id}
+              title={section.section_full}
+              adviser={section.section_adviser}
+            />
+          ))}
         </div>
       )}
     </>
