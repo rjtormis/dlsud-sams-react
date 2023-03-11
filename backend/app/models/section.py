@@ -14,7 +14,7 @@ class Section(db.Model, Details):
     section_level = db.Column(db.String(length=1), nullable=False)
     section_image = db.Column(db.String(length=100))
 
-    subjects = db.relationship("Subject", backref="section")
+    subjects = db.relationship("Subject", backref="section", cascade="all,delete")
 
     def json_format(self):
         return {
@@ -34,7 +34,11 @@ class Section(db.Model, Details):
                     "subject_name": subject.subject_name,
                     "section": subject.section.section_full,
                     "handled_by": f"{subject.professor_subject.first_name} {subject.professor_subject.middle_initial}. {subject.professor_subject.last_name}",
-                    "schedule": f"{subject.start} TO {subject.end} {subject.day}",
+                    "schedule": {
+                        "start": subject.start,
+                        "end": subject.end,
+                        "day": subject.day,
+                    },
                 }
                 for subject in self.subjects
             ],

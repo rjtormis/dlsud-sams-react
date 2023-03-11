@@ -36,7 +36,7 @@ class Subject(db.Model, Details):
             "subject_name": self.subject_name,
             "section": self.section.section_full,
             "handled_by": f"{self.professor_subject.first_name} {self.professor_subject.middle_initial}. {self.professor_subject.last_name}",
-            "schedule": f"{self.start} TO {self.end} {self.day}",
+            "schedule": {"start": self.start, "end": self.end, "day": self.day},
         }
 
     def __repr__(self):
