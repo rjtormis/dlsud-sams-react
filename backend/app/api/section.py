@@ -89,13 +89,12 @@ def specificSection(name):
 
     current_user = get_jwt_identity()
     section = Section.query.filter_by(section_full=name).first()
-    allSubjects = Subject.query.filter_by(section_id=section.id).all()
-    subject = []
 
     if request.method == "GET":
+        allSubjects = Subject.query.filter_by(section_id=section.id).all()
+        subject = []
         for i in allSubjects:
             subject.append(i.json_format())
-
         return jsonify({"section": section.json_format()})
 
     if request.method == "PUT":
@@ -125,7 +124,7 @@ def specificSection(name):
         )
 
     if request.method == "DELETE":
+        print(section)
         db.session.delete(section)
         db.session.commit()
-
         return jsonify({"msg": "Section deleted successfully."}), 200
