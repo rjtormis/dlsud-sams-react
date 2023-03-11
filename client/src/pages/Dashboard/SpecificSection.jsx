@@ -10,7 +10,6 @@ import SpecificSectionHeader from "../../components/Dashboard/SpecificSection/Sp
 import { SpecificSectionContextProvider } from "../../context/Dashboard/SpecificSection/SpecificSectionContext";
 
 // Hooks
-import useFetch from "../../hooks/useFetch";
 import useSpecificSection from "../../hooks/useSpecificSection.js";
 import { useEffect } from "react";
 
