@@ -23,7 +23,7 @@ import {
 
 function SpecificSectionModals() {
   const { auth } = useAuth();
-  const { loading, section, subjectName, subject, dispatch } = useSpecificSection();
+  const { loading, section, subjectName, editSubject, dispatch } = useSpecificSection();
   const navigate = useNavigate();
 
   const handleCreate = async (state, action) => {
@@ -37,7 +37,8 @@ function SpecificSectionModals() {
           },
         }
       );
-      console.log(response);
+      action.resetForm();
+      dispatch({ type: "SET_SUBJECT", payload: response.data.subject });
     } catch (e) {
       console.log(e);
     }
@@ -54,7 +55,11 @@ function SpecificSectionModals() {
         navigate(`/dashboard/sections/${response.data.section.full}`, { replace: true });
       }
     } catch (e) {
-      console.log(e);
+      if (e.response.status === 409) {
+        action.setFieldError("course", e.response.data["msg"]);
+        action.setFieldError("year", "‎");
+        action.setFieldError("section", "‎");
+      }
     }
   };
 
@@ -65,14 +70,28 @@ function SpecificSectionModals() {
         headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
       });
       navigate("/dashboard/sections", { replace: true });
-      console.log(response);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleEditSubject = (state, action) => {
-    console.log(state);
+  const handleEditSubject = async (state, action) => {
+    try {
+      const response = await axios.patch(
+        `/api/v1/subjects/${section.section_full}/${editSubject.subject_name}`,
+        { ...state },
+        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+      );
+      action.resetForm();
+      console.log(response);
+    } catch (e) {
+      if (e.response.status === 409) {
+        action.setFieldError("subjectName", e.response.data["msg"]);
+        action.setFieldError("start", "‎");
+        action.setFieldError("end", "‎");
+        action.setFieldError("day", "‎");
+      }
+    }
   };
 
   const handleDeleteSubject = async (e) => {
@@ -243,10 +262,10 @@ function SpecificSectionModals() {
         <Formik
           enableReinitialize
           initialValues={{
-            subjectName: subject.subject_name ? subject.subject_name : "",
-            start: subject.schedule ? subject.schedule.start : "",
-            end: subject.schedule ? subject.schedule.end : "",
-            day: subject.schedule ? subject.schedule.day : "",
+            subjectName: editSubject.subject_name ? editSubject.subject_name : "",
+            start: editSubject.schedule ? editSubject.schedule.start : "",
+            end: editSubject.schedule ? editSubject.schedule.end : "",
+            day: editSubject.schedule ? editSubject.schedule.day : "",
           }}
           validationSchema={editSubjectSchema}
           onSubmit={handleEditSubject}
@@ -291,7 +310,7 @@ function SpecificSectionModals() {
                 <option value="Saturday">Saturday</option>
               </CustomSelect>
               <div className="flex justify-center mt-4">
-                <input type="submit" value="CREATE" className="btn btn-primary w-full" />
+                <input type="submit" value="EDIT" className="btn btn-primary w-full" />
               </div>
             </form>
           )}

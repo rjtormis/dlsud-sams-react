@@ -39,10 +39,15 @@ function AllSectionModal() {
       });
       const section = response.data;
       setIsLoading(false);
+      action.resetForm();
       navigate(`/dashboard/sections/${section.section_full}`);
     } catch (e) {
       setIsLoading(false);
-      console.log(e);
+      if (e.response.status === 409) {
+        action.setFieldError("course", `${e.response.data["msg"]}`);
+        action.setFieldError("year", "‎");
+        action.setFieldError("section", "‎");
+      }
     }
   };
 

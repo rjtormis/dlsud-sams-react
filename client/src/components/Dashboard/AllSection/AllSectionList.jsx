@@ -11,7 +11,6 @@ import useAllSection from "../../../hooks/useAllSection";
 
 function AllSectionList() {
   const { sections, loading, dispatch } = useAllSection();
-  console.log(sections);
   return (
     <>
       {loading ? (

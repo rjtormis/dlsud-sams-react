@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-function SubjectHeader({ name, subject_name }) {
+import useSpecificSection from "../../../hooks/useSpecificSection";
+function SubjectHeader() {
+  const { subject } = useSpecificSection();
   return (
     <>
       <div className="text-sm breadcrumbs">
@@ -10,19 +12,18 @@ function SubjectHeader({ name, subject_name }) {
             </Link>
           </li>
           <li>
-            <Link to={`/dashboard/sections/${name}`} className=" text-green-800">
-              {name}
+            <Link to={`/dashboard/sections/${subject.section}`} className=" text-green-800">
+              {subject.section}
             </Link>
           </li>
           <li>
-            {" "}
-            <p className=" text-green-800">{subject_name}</p>
+            <p className=" text-green-800">{subject.subject_name}</p>
           </li>
         </ul>
       </div>
 
-      <div className="flex justify-end">
-        <h1 className="text-md">COURSE CODE: 123456</h1>
+      <div className="flex mb-4">
+        <h1 className="text-md">COURSE CODE: {subject.code}</h1>
       </div>
     </>
   );

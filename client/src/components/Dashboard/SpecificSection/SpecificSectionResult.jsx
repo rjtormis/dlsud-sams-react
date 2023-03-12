@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
+import useAuth from "../../../hooks/useAuth";
 import useSpecificSection from "../../../hooks/useSpecificSection";
 import SpecificSectionSubjectItem from "./SpecificSectionSubjectItem";
 
 function SpecificSectionResult() {
+  const { auth } = useAuth();
   const { section, dispatch } = useSpecificSection();
   const subjects = section.subjects;
+  console.log(subjects);
 
   return (
     <>
@@ -23,10 +26,12 @@ function SpecificSectionResult() {
                   name={subject.subject_name}
                   professor={subject.handled_by}
                   schedule={subject.schedule}
+                  isProfessor={auth.id === subject.handler_id}
+                  onVisit={() => dispatch({ type: "SET_SUBJECT", payload: { ...subject } })}
                   onDelete={() =>
                     dispatch({ type: "SET_SUBJECT_NAME", payload: subject.subject_name })
                   }
-                  onEdit={() => dispatch({ type: "SET_SUBJECT", payload: { ...subject } })}
+                  onEdit={() => dispatch({ type: "SET_EDIT_SUBJECT", payload: { ...subject } })}
                 />
               ))}
         </div>
