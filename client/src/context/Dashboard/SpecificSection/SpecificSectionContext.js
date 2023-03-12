@@ -11,6 +11,8 @@ export const SpecificSectionContextProvider = ({ children }) => {
     section: {},
     subjectName: "",
     subject: {},
+    editSubject: {},
+    enrolled: [],
     isAdviser: false,
     loading: false,
   };
@@ -27,7 +29,7 @@ export const SpecificSectionContextProvider = ({ children }) => {
           const fetchAdviser = await axios.get(`/api/v1/sections/${state.sectionName}/adviser`);
           const [section, adviser] = await Promise.all([fetchSection, fetchAdviser]);
           dispatch({ type: "SET_SECTION", payload: section.data.section });
-          dispatch({ type: "IS_ADVISER", payload: adviser.data });
+          dispatch({ type: "IS_ADVISER", payload: adviser.data.isAdviser });
         } catch (e) {
           console.log(e);
         }
