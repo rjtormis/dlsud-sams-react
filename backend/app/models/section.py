@@ -20,6 +20,7 @@ class Section(db.Model, Details):
         return {
             "id": self.id,
             "section_full": self.section_full,
+            "section_adviser_id": f"{self.professor.id}",
             "section_adviser": f"{self.professor.first_name} {self.professor.middle_initial} {self.professor.last_name}",
             "section_course": self.section_course,
             "section_year": self.section_year,
@@ -34,6 +35,7 @@ class Section(db.Model, Details):
                     "subject_name": subject.subject_name,
                     "section": subject.section.section_full,
                     "handled_by": f"{subject.professor_subject.first_name} {subject.professor_subject.middle_initial}. {subject.professor_subject.last_name}",
+                    "handler_id": f"{subject.professor_subject.id}",
                     "schedule": {
                         "start": subject.start,
                         "end": subject.end,
