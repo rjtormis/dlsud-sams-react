@@ -69,10 +69,8 @@ function LoginMainForm() {
         </section>
 
         <section id="regInput" className="my-auto mx-5 flex flex-col sm:block ">
-          <h2 className="text-green-700 text-3xl text-center sm:text-4xl xl:text-start">
-            Welcome back
-          </h2>
-          <p className="text-center xl:text-start">Welcome back! Please enter your details</p>
+          <h2 className="text-green-700 text-3xl text-center sm:text-4xl ">Welcome back</h2>
+          <p className="text-center ">Welcome back! Please enter your details</p>
 
           <Formik
             initialValues={{ email: "", password: "" }}
