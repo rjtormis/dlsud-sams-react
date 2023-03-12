@@ -8,7 +8,7 @@ from ..models.section import Section
 from ..models.subject import Subject
 
 # Helper
-from ..utils.push_to_database import push_to_database
+from ..utils.database_utilities import push_to_database
 
 
 @app.route("/api/v1/sections", methods=["GET", "POST"])
@@ -39,7 +39,7 @@ def allSections():
         query_section = Section.query.filter_by(section_full=full).first()
 
         if query_section:
-            return jsonify({"msg": "Section already taken"}), 401
+            return jsonify({"msg": "Section already taken"}), 409
 
         new_section = Section(
             section_full=full,

@@ -8,7 +8,7 @@ from ..models.professor import Professor
 from ..models.collegiate import Collegiate
 
 # Helper
-from ..utils.push_to_database import push_to_database
+from ..utils.database_utilities import push_to_database
 
 
 @app.route("/api/v1/users", methods=["GET", "POST"])
