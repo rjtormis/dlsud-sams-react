@@ -6,8 +6,8 @@ const moment = require("moment");
 
 export const editSectionSchema = yup.object().shape({
   course: yup.string().oneOf(["IT", "CS"], "Please select a course").required("Required *"),
-  year: yup.number().oneOf([numbers], "Please select year level").required("Required *"),
-  section: yup.number().oneOf([numbers], "Please section level").required("Required *"),
+  year: yup.number().oneOf([1, 2, 3, 4], "Please select year level").required("Required *"),
+  section: yup.number().oneOf([1, 2, 3, 4], "Please section level").required("Required *"),
 });
 
 // Subjects
