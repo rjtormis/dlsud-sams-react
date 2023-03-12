@@ -10,3 +10,12 @@ def push_to_database(data):
         db.session.commit()
     except:
         return jsonify({"msg": "Error occured"}), 500
+
+
+def remove_in_database(data):
+    """Helper Function that removes data directly into the database."""
+    try:
+        db.session.remove(data)
+        db.session.commit()
+    except:
+        return jsonify({"msg": "Error occured"}), 500
