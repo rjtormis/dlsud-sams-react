@@ -20,8 +20,6 @@ export const AllSectionContextProvider = ({ children }) => {
     }
   }, [data, dispatch]);
 
-  useEffect(() => {});
-
   return (
     <AllSectionContext.Provider value={{ ...state, dispatch }}>
       {children}
