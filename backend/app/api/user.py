@@ -6,6 +6,7 @@ from ..models.user import User
 from ..models.student import Student
 from ..models.professor import Professor
 from ..models.collegiate import Collegiate
+from ..models.profile import ProfessorProfile
 
 # Helper
 from ..utils.database_utilities import push_to_database
@@ -91,7 +92,10 @@ def users():
                 emailAddress=emailAddress,
                 password=confirmPassword,
             )
-
             push_to_database(new_professor)
+            new_professor_profile = ProfessorProfile(
+                id=new_professor.id, collegiate=new_professor.collegiate_id
+            )
+            push_to_database(new_professor_profile)
 
         return jsonify({"msg": "Successful"}), 201
