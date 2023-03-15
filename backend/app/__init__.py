@@ -18,7 +18,7 @@ jwt = JWTManager(app)
 
 
 # Esential API Imports
-from .api import section, user, auth, dashboard, subject
+from .api import section, user, auth, dashboard, subject, profile, collegiate
 
 # Essential Model Imports
 from .models.user import User
@@ -26,6 +26,7 @@ from .models.student import Student
 from .models.collegiate import Collegiate
 from .models.section import Section
 from .models.subject import Subject
+from .models.profile import ProfessorProfile
 
 
 # Scripts
