@@ -51,3 +51,7 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
 #subject {
   background:url('assets/bg.jpg') no-repeat center center/cover;
 }
+
+#socials a:not(:first-child){
+  margin-left: 16px;
+}
