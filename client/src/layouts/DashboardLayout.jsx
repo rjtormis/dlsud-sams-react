@@ -10,6 +10,7 @@ import profile from "../assets/sample-profile.jfif";
 // Hooks
 import useAuth from "../hooks/useAuth";
 import { SpecificSectionContextProvider } from "../context/Dashboard/SpecificSection/SpecificSectionContext";
+import { ProfileContextProvider } from "../context/Dashboard/Profile/ProfileContext";
 
 function DashboardLayout() {
   const navigate = useNavigate();
@@ -41,10 +42,10 @@ function DashboardLayout() {
               className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
-                <a>Item 1</a>
+                <Link to="/dashboard/profile">Profile</Link>
               </li>
               <li>
-                <a>Item 2</a>
+                <Link onClick={handleLogout}>Logout</Link>
               </li>
             </ul>
           </div>
@@ -69,7 +70,7 @@ function DashboardLayout() {
               </Link>
             </li>
             <li className="mt-4 tooltip tooltip-right tooltip-primary" data-tip="Profile">
-              <Link to="dashboard/profile" className="flex btn btn-ghost btn-square">
+              <Link to="/dashboard/profile" className="flex btn btn-ghost btn-square">
                 <div>
                   <RiUserSettingsFill color="#224429" size={25} className="block m-auto" />
                 </div>
@@ -90,9 +91,11 @@ function DashboardLayout() {
 
         {/* INSERT HERE */}
         <div id="dashboard-main" className="flex-1 flex flex-col  p-5">
-          <SpecificSectionContextProvider>
-            <Outlet />
-          </SpecificSectionContextProvider>
+          <ProfileContextProvider>
+            <SpecificSectionContextProvider>
+              <Outlet />
+            </SpecificSectionContextProvider>
+          </ProfileContextProvider>
         </div>
       </div>
     </div>
