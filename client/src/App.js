@@ -12,13 +12,14 @@ import Main from "./pages/Dashboard/Main";
 import AllSection from "./pages/Dashboard/AllSection";
 import Student from "./pages/Register/Student";
 import Professor from "./pages/Register/Professor";
+import Subject from "./pages/Dashboard/Subject";
+import Profile from "./pages/Dashboard/Profile";
 import NotFound from "./pages/NotFound";
 
 // Layouts
 import DashboardLayout from "./layouts/DashboardLayout";
 import RegisterLayout from "./layouts/RegisterLayout";
 import SpecificSection from "./pages/Dashboard/SpecificSection";
-import Subject from "./pages/Dashboard/Subject";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
         <Route path="sections" element={<AllSection />} />
         <Route path="sections/:name" element={<SpecificSection />} />
         <Route path="sections/:name/:subject_name" element={<Subject />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
     </>
   )
