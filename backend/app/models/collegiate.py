@@ -14,3 +14,16 @@ class Collegiate(db.Model, Details):
     collegiate_name = db.Column(db.String(length=100), unique=True, nullable=False)
 
     professor = db.relationship("Professor", backref="professor_collegiate")
+    professor_profile = db.relationship(
+        "ProfessorProfile", backref="professor_profile_collegiate"
+    )
+
+    def json_format(self):
+        return {
+            "id": self.id,
+            "shorten": self.collegiate_shorten,
+            "name": self.collegiate_name,
+        }
+
+    def __repr__(self):
+        return f"Collegiate: {self.collegiate_name}"

@@ -12,4 +12,5 @@ class Professor(User):
 
     sections = db.relationship("Section", backref="professor")
     subjects = db.relationship("Subject", backref="professor_subject")
+    profile = db.relationship("ProfessorProfile", backref="professor_profile")
     __mapper_args__ = {"polymorphic_identity": "professor"}
