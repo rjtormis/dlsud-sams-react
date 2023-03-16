@@ -23,12 +23,23 @@ import useAuth from "../../../hooks/useAuth";
 
 function ProfileBody() {
   const { profile, collegiates, setProfile } = useProfile();
-  const { auth } = useAuth();
+  const [imagePreview, setImagePreview] = useState("");
+  const { auth, setAuth } = useAuth();
   const [edit, setEdit] = useState(false);
   const fileInputRef = useRef(null);
-  console.log(profile);
+
+  const handleImageChange = (e, props) => {
+    props.setFieldValue("file", e.currentTarget.files[0]);
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+  };
 
   const handleEdit = () => {
+    setImagePreview("");
     setEdit(!edit);
   };
   const handleUploadClick = () => {
@@ -36,17 +47,26 @@ function ProfileBody() {
   };
 
   const handleOnSubmit = async (state, action) => {
-    try {
-      const response = await axios.patch(
-        `/api/v1/profiles/${profile.id}`,
-        { ...state },
-        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
-      );
-      setProfile({ ...state });
-      setEdit(false);
-    } catch (e) {
-      console.log(e);
-    }
+    console.log(state.file !== "");
+
+    // try {
+
+    //   const test = await axios.post(
+    //     "/api/v1/user/get-pre-signed-url-profile",
+    //     { id: auth.id, type: auth.type },
+    //     { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+    //   );
+    //   const response = await axios.patch(
+    //     `/api/v1/profiles/${profile.id}`,
+    //     { ...state },
+    //     { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+    //   );
+    //   setAuth({ ...auth, name: state.name });
+    //   setProfile({ ...state });
+    //   setEdit(false);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   };
   return (
     <div className="flex-1 flex flex-col justify-center">
@@ -62,6 +82,7 @@ function ProfileBody() {
             linkedIn: profile.socials.linkedIn,
             twitter: profile.socials.twitter,
           },
+          file: "",
         }}
         onSubmit={handleOnSubmit}
       >
@@ -81,11 +102,20 @@ function ProfileBody() {
                         <p className="text-white text-xl text-center">Upload Photo</p>
                       </div>
                     </div>
-                    <input type="file" hidden ref={fileInputRef} />
+                    <input
+                      type="file"
+                      name="file"
+                      onChange={(e) => handleImageChange(e, props)}
+                      hidden
+                      ref={fileInputRef}
+                    />
                   </>
                 ) : null}
                 <div className="rounded-xl">
-                  <img src={profile_img} alt="profile" />
+                  <img
+                    src={imagePreview !== "" ? imagePreview : auth.profile_image}
+                    alt="profile"
+                  />
                 </div>
               </div>
               <div className="col-span-2">

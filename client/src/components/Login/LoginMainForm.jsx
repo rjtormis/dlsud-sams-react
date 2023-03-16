@@ -34,7 +34,7 @@ function LoginMainForm() {
           },
         }
       );
-      const { id, type, name } = response.data.user;
+      const { id, type, name, profile_image } = response.data.user;
       const access = getCookie("csrf_access_token");
       const refresh = getCookie("csrf_refresh_token");
       setAuth({
@@ -43,6 +43,7 @@ function LoginMainForm() {
         name: name,
         csrf_access_token: access,
         csrf_refresh_token: refresh,
+        profile_image: profile_image,
       });
       dispatch({
         type: "SET_LOADING_FALSE",
