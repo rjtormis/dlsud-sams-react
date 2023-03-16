@@ -1,4 +1,4 @@
-from app import app, db
+from app import app, db, s3, s3_bucket_name
 from flask import request, jsonify
 
 # Models
@@ -97,5 +97,23 @@ def users():
                 id=new_professor.id, collegiate=new_professor.collegiate_id
             )
             push_to_database(new_professor_profile)
+            new_professor.check_user_folder(
+                s3_bucket_name, f"user/professor/{new_professor.id}"
+            )
 
         return jsonify({"msg": "Successful"}), 201
+
+
+@app.route("/api/v1/user/get-pre-signed-url-profile", methods=["POST"])
+def generate_presigned_profile():
+    if request.method == "POST":
+        data = request.get_json()
+        response = s3.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": s3_bucket_name,
+                "Key": f"user/{data['type']}/{data['id']}",
+            },
+            ExpiresIn=300,
+        )
+        return jsonify({"signed_url": response})

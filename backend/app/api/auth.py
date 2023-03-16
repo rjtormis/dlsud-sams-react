@@ -42,6 +42,7 @@ def auth():
                         "id": query_email.id,
                         "name": f"{query_email.first_name} {query_email.middle_initial}. {query_email.last_name}",
                         "type": query_email.type,
+                        "profile_image": query_email.profile_image_link,
                     }
                 }
             )
