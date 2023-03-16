@@ -1,5 +1,6 @@
+import boto3
 from flask import Flask
-from app.config import ApplicationConfig
+from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
@@ -16,9 +17,29 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_KEY,
+    region_name="ap-southeast-1",
+)
+
+s3_resource = boto3.resource(
+    "s3", aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY
+)
+s3_bucket_name = "aws-sams-storage"
+
 
 # Esential API Imports
-from .api import section, user, auth, dashboard, subject, profile, collegiate
+from .api import (
+    section,
+    user,
+    auth,
+    dashboard,
+    subject,
+    profile,
+    collegiate,
+)
 
 # Essential Model Imports
 from .models.user import User
