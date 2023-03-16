@@ -15,7 +15,8 @@ import { ProfileContextProvider } from "../context/Dashboard/Profile/ProfileCont
 function DashboardLayout() {
   const navigate = useNavigate();
 
-  const { logout } = useAuth();
+  const { auth, logout } = useAuth();
+  console.log(auth);
   const handleLogout = async () => {
     try {
       const response = await axios.post("/logout", {});
@@ -35,7 +36,7 @@ function DashboardLayout() {
 
           <div className="ml-auto avatar dropdown dropdown-end hover:cursor-pointer">
             <div className="w-8 h-8 rounded-xl" tabIndex={0}>
-              <img src={profile} alt="" className="" />
+              <img src={auth.profile_image} alt="" className="" />
             </div>
             <ul
               tabIndex={0}
