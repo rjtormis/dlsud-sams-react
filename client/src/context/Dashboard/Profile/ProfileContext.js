@@ -7,7 +7,7 @@ const ProfileContext = createContext();
 export const ProfileContextProvider = ({ children }) => {
   const [profile, setProfile] = useState({});
   const [collegiates, setCollegiate] = useState();
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   useEffect(() => {
     if (auth !== null) {
