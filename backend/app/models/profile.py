@@ -47,6 +47,7 @@ class ProfessorProfile(db.Model, Details):
         instagram,
         linkedIn,
         twitter,
+        profile_image,
     ):
         """
         Updates the user model.
@@ -58,7 +59,8 @@ class ProfessorProfile(db.Model, Details):
         self.professor_profile.first_name = " ".join(f_name)
         self.professor_profile.middle_initial = name_split_reverse[1]
         self.professor_profile.last_name = name_split_reverse[0]
-        # self.professor_profile.profile_image_link = image_link
+        if profile_image != "":
+            self.professor_profile.profile_image_link = profile_image
 
         self.bio = bio
         self.collegiate = collegiate_id
