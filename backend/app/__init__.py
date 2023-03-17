@@ -1,6 +1,6 @@
 import boto3
 from flask import Flask
-from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY
+from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_KEY
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
