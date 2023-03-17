@@ -1,18 +1,34 @@
+import { createContext, useEffect, useRef, useReducer } from "react";
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+
+// Hooks
 import useAuth from "../../../hooks/useAuth";
+
+// Reducer
+import ProfileReducer from "./ProfileReducer";
 
 const ProfileContext = createContext();
 
 export const ProfileContextProvider = ({ children }) => {
-  const [profile, setProfile] = useState({});
-  const [collegiates, setCollegiate] = useState();
-  const { auth, setAuth } = useAuth();
+  const initialValues = {
+    profile: {},
+    loading: false,
+    collegiates: [],
+    imagePreview: "",
+    onEdit: false,
+  };
+
+  const [state, dispatch] = useReducer(ProfileReducer, initialValues);
+
+  const fileInputRef = useRef(null);
+
+  const { auth } = useAuth();
 
   useEffect(() => {
     if (auth !== null) {
       const test = async () => {
         try {
+          dispatch({ type: "SET_LOADING_TRUE" });
           const profile = await axios.get(`/api/v1/profiles/${auth.id}`, {
             headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
           });
@@ -20,10 +36,14 @@ export const ProfileContextProvider = ({ children }) => {
             headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
           });
           const [profile_result, collegiate_result] = await Promise.all([profile, collegiate]);
-          setProfile(profile_result.data.user);
-          setCollegiate(collegiate_result.data.collegiates);
+          dispatch({
+            type: "SET_PROFILE_&_COLLEGIATE",
+            profile: profile_result.data.user,
+            collegiates: collegiate_result.data.collegiates,
+          });
         } catch (e) {
           console.log(e);
+          dispatch({ type: "SET_LOADING_FALSE" });
         }
       };
       test();
@@ -31,7 +51,7 @@ export const ProfileContextProvider = ({ children }) => {
   }, [auth]);
 
   return (
-    <ProfileContext.Provider value={{ profile, setProfile, collegiates }}>
+    <ProfileContext.Provider value={{ ...state, dispatch, fileInputRef }}>
       {children}
     </ProfileContext.Provider>
   );

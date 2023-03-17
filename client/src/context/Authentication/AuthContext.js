@@ -10,6 +10,7 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const initialState = {
     loading: false,
+    update_profile: false,
   };
   const access = getCookie("csrf_access_token");
   const refresh = getCookie("csrf_refresh_token");
