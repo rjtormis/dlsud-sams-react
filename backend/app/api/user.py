@@ -10,6 +10,7 @@ from ..models.profile import ProfessorProfile
 
 # Helper
 from ..utils.database_utilities import push_to_database
+from ..utils.generate_unique_code import unique_identifier_file
 
 
 @app.route("/api/v1/users", methods=["GET", "POST"])
@@ -109,7 +110,7 @@ def users():
 def generate_presigned_profile():
     if request.method == "POST":
         data = request.get_json()
-        Key = f"user/{data['type']}/{data['id']}/{data['fileName']}"
+        Key = f"user/{data['type']}/{data['id']}/{unique_identifier_file()}_{data['fileName']}"
         response = s3.generate_presigned_post(s3_bucket_name, Key, ExpiresIn=300)
         return jsonify(
             {
