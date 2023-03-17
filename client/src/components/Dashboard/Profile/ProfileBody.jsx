@@ -47,26 +47,44 @@ function ProfileBody() {
   };
 
   const handleOnSubmit = async (state, action) => {
-    console.log(state.file !== "");
+    const { file, ...rest } = state;
+    try {
+      if (file !== "") {
+        const file = state.file;
+        const formData = new FormData();
+        const file_extension = file.name.split(".")[1];
 
-    // try {
+        const getPresignedURL = await axios.post(
+          "/api/v1/user/get-pre-signed-url-profile",
+          { id: auth.id, type: auth.type, fileName: `p_${auth.id}.${file_extension}` },
+          {
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
+          }
+        );
+        const { fields, url } = getPresignedURL.data.signed_url;
+        const location = getPresignedURL.data.location;
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formData.append("file", file);
+        const upload_to_s3 = await axios.post(url, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
-    //   const test = await axios.post(
-    //     "/api/v1/user/get-pre-signed-url-profile",
-    //     { id: auth.id, type: auth.type },
-    //     { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
-    //   );
-    //   const response = await axios.patch(
-    //     `/api/v1/profiles/${profile.id}`,
-    //     { ...state },
-    //     { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
-    //   );
-    //   setAuth({ ...auth, name: state.name });
-    //   setProfile({ ...state });
-    //   setEdit(false);
-    // } catch (e) {
-    //   console.log(e);
-    // }
+        const response = await axios.patch(
+          `/api/v1/profiles/${profile.id}`,
+          { ...rest, profile_image: location },
+          { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+        );
+
+        setAuth({ ...auth, name: state.name, profile_image: location });
+      }
+
+      setProfile({ ...state });
+      setEdit(false);
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <div className="flex-1 flex flex-col justify-center">
