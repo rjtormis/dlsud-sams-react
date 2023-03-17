@@ -16,7 +16,6 @@ function DashboardLayout() {
   const navigate = useNavigate();
 
   const { auth, logout } = useAuth();
-  console.log(auth);
   const handleLogout = async () => {
     try {
       const response = await axios.post("/logout", {});
