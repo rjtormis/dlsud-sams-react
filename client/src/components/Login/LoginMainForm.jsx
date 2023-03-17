@@ -45,9 +45,6 @@ function LoginMainForm() {
         csrf_refresh_token: refresh,
         profile_image: profile_image,
       });
-      dispatch({
-        type: "SET_LOADING_FALSE",
-      });
       navigate("/dashboard");
     } catch (e) {
       if (e.response.status === 404) {
