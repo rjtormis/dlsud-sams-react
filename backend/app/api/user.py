@@ -1,4 +1,4 @@
-from app import app, db, s3, s3_bucket_name
+from app import app, db, s3, s3_bucket_name, jwt_required
 from flask import request, jsonify
 
 # Models
@@ -105,15 +105,15 @@ def users():
 
 
 @app.route("/api/v1/user/get-pre-signed-url-profile", methods=["POST"])
+@jwt_required()
 def generate_presigned_profile():
     if request.method == "POST":
         data = request.get_json()
-        response = s3.generate_presigned_url(
-            "put_object",
-            Params={
-                "Bucket": s3_bucket_name,
-                "Key": f"user/{data['type']}/{data['id']}",
-            },
-            ExpiresIn=300,
+        Key = f"user/{data['type']}/{data['id']}/{data['fileName']}"
+        response = s3.generate_presigned_post(s3_bucket_name, Key, ExpiresIn=300)
+        return jsonify(
+            {
+                "signed_url": response,
+                "location": f"https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com/{Key}",
+            }
         )
-        return jsonify({"signed_url": response})
