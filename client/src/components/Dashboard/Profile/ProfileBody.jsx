@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ImOffice } from "react-icons/im";
 import { BsClockFill } from "react-icons/bs";
 import { MdUpload } from "react-icons/md";
@@ -9,16 +8,24 @@ import {
   SlSocialTwitter,
 } from "react-icons/sl";
 import { Formik } from "formik";
-import ClipLoader from "react-spinners/ClipLoader";
+import HashLoader from "react-spinners/HashLoader";
 
 // Components
 import Select from "../../Shared/Select";
 import Input from "../../Shared/Input";
+import Loader from "../../Shared/Loader";
 
 // Context
 import { useProfile } from "../../../context/ProfileContext";
 import { useAuth } from "../../../context/AuthContext";
 import { getPresignedURL, update_profile, upload_to_s3 } from "../../../actions/Profile";
+import { profileSchema } from "../../../schemas/ProfileSchema";
+
+// Helper
+import { maxFileSize, supported_file_format } from "../../../schemas/Helper";
+
+// Assets
+import invalid from "../../../assets/invalid.png";
 
 function ProfileBody() {
   const {
@@ -32,17 +39,29 @@ function ProfileBody() {
     setImagePreview,
     fileInputRef,
     dispatch,
+    setFileError,
+    setFileErrorMsg,
   } = useProfile();
 
   const { auth, setUpdated, setAuth } = useAuth();
+
   const handleImageChange = (e, props) => {
+    setFileError(false);
+    setFileErrorMsg("");
+    setImagePreview("");
     props.setFieldValue("file", e.currentTarget.files[0]);
     const file = e.target.files[0];
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
+    if (file.size <= maxFileSize && supported_file_format.includes(file.type)) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+    } else {
+      setFileError(true);
+      setFileErrorMsg("Unsupported File Format or File is too large.");
+      setImagePreview(invalid);
+    }
   };
 
   const handleEdit = () => {
@@ -60,37 +79,57 @@ function ProfileBody() {
       if (file === "") {
         await update_profile(profile, auth, "", false, rest);
         setAuth({ ...auth, name: state.name });
+        dispatch({ type: "SET_UPLOAD_SUCCESS", profile: { ...state } });
+        setLoading(false);
+        setUpdated(false);
+        setOnEdit(false);
+        setImagePreview("");
       } else {
-        setUpdated(true);
-        const formData = new FormData();
-        const file_extension = file.name.split(".")[1];
-        const presignedURL = await getPresignedURL(auth, file_extension);
-        const { fields, url } = presignedURL.data.signed_url;
-        const location = presignedURL.data.location;
-        Object.entries(fields).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
-        formData.append("file", file);
-        await upload_to_s3(url, formData);
-        await update_profile(profile, auth, true, location, rest);
-        setAuth({ ...auth, name: state.name, profile_image: location });
+        if (file.size <= maxFileSize && supported_file_format.includes(file.type)) {
+          setFileError(false);
+          setFileErrorMsg("");
+          setUpdated(true);
+          const formData = new FormData();
+          const file_extension = file.name.split(".")[1];
+          const presignedURL = await getPresignedURL(auth, file_extension);
+          const { fields, url } = presignedURL.data.signed_url;
+          const location = presignedURL.data.location;
+          Object.entries(fields).forEach(([key, value]) => {
+            formData.append(key, value);
+          });
+          formData.append("file", file);
+          await upload_to_s3(url, formData);
+          await update_profile(profile, auth, true, location, rest);
+          setAuth({ ...auth, name: state.name, profile_image: location });
+          dispatch({ type: "SET_UPLOAD_SUCCESS", profile: { ...state } });
+          setLoading(false);
+          setUpdated(false);
+          setOnEdit(false);
+          setImagePreview("");
+        } else {
+          action.setFieldError("file", "Unsupported File Format or File is too large.");
+          setFileError(true);
+          setFileErrorMsg("Unsupported File Format or File is too large.");
+          setLoading(false);
+          setImagePreview(invalid);
+        }
       }
-      dispatch({ type: "SET_UPLOAD_SUCCESS", profile: { ...state } });
-      setLoading(false);
-      setUpdated(false);
-      setOnEdit(false);
-      setImagePreview("");
     } catch (e) {
       console.log(e);
       setLoading(false);
     }
   };
   return (
-    <div className="flex-1 flex flex-col justify-center">
+    <>
       {loading ? (
-        <ClipLoader />
+        <div className="flex-1 flex flex-col justify-center">
+          <Loader
+            style_div="text-center"
+            type={<HashLoader color="#436147" className="m-auto" size={120} />}
+          />
+        </div>
       ) : (
-        <>
+        <div className="flex-1 flex flex-col justify-center">
           <Formik
             initialValues={{
               name: profile.name,
@@ -106,6 +145,7 @@ function ProfileBody() {
               file: "",
             }}
             onSubmit={handleOnSubmit}
+            validationSchema={profileSchema}
           >
             {(props) => (
               <form action="" onSubmit={props.handleSubmit}>
@@ -132,7 +172,8 @@ function ProfileBody() {
                         />
                       </>
                     ) : null}
-                    <div className="rounded-xl">
+                    <div className="rounded-xl ">
+                      {/* outline-error outline-3 outline */}
                       <img
                         src={imagePreview !== "" ? imagePreview : auth.profile_image}
                         alt="profile"
@@ -296,9 +337,9 @@ function ProfileBody() {
               </form>
             )}
           </Formik>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
