@@ -20,8 +20,7 @@ def professor_profile(id):
 
     if request.method == "PATCH":
         data = request.get_json()
-        print(data)
-
+        
         user = Professor.query.filter_by(id=id).first()
         collegiate_ = Collegiate.query.filter_by(
             collegiate_name=data["collegiate"]
