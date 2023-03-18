@@ -1,3 +1,5 @@
+import { Helmet } from "react-helmet";
+
 import { Link } from "react-router-dom";
 import { FaHome, FaUserTie, FaUserGraduate } from "react-icons/fa";
 
