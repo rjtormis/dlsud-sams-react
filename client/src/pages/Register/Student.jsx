@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+
 // Components
 import RegisterBody from "../../components/Register/RegisterBody";
 import RegisterHeader from "../../components/Register/RegisterHeader";
@@ -10,7 +12,13 @@ function Student() {
   return (
     <>
       <RegisterHeader type="student" />
-      {success ? <Alert custom={"mt-4"} /> : null}
+      {success ? (
+        <Alert
+          icon={<AiOutlineCheckCircle />}
+          msg="Account created sucessfully."
+          custom="alert-success mt-4"
+        />
+      ) : null}
       <RegisterBody success={(e) => setSuccess(e)} type="student" />
     </>
   );
