@@ -2,26 +2,26 @@ import { MdDashboard } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
 
 import logo from "../assets/dlsu-d.png";
 
-// Hooks
-import useAuth from "../hooks/useAuth";
-import { SpecificSectionContextProvider } from "../context/Dashboard/SpecificSection/SpecificSectionContext";
-import { ProfileContextProvider } from "../context/Dashboard/Profile/ProfileContext";
-import { useEffect } from "react";
+// Context
+import { useAuth } from "../context/AuthContext";
+import { SpecificSectionContextProvider } from "../context/SpecificSectionContext";
+import { ProfileContextProvider } from "../context/ProfileContext";
 
 function DashboardLayout() {
   const navigate = useNavigate();
 
-  const { auth, logout, loading, dispatch, update_profile } = useAuth();
+  const { auth, logout, loading, setLoading, updated } = useAuth();
   useEffect(() => {
     if (auth !== null) {
-      dispatch({ type: "SET_LOADING_FALSE" });
+      setLoading(false);
     }
-  }, [auth, dispatch]);
+  }, [auth, setLoading]);
   const handleLogout = async () => {
     try {
       const response = await axios.post("/logout", {});
@@ -45,7 +45,7 @@ function DashboardLayout() {
 
               <div className="ml-auto avatar dropdown dropdown-end hover:cursor-pointer">
                 <div className="w-8 h-8 rounded-xl" tabIndex={0}>
-                  {update_profile ? (
+                  {updated ? (
                     <ClipLoader size={30} />
                   ) : (
                     <img src={auth.profile_image} alt="" className="" />
