@@ -14,6 +14,8 @@ const ProfileContext = createContext();
 export const ProfileContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
+  const [fileErrorMsg, setFileErrorMsg] = useState("");
+  const [fileError, setFileError] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const initialValues = {
     profile: {},
@@ -59,6 +61,10 @@ export const ProfileContextProvider = ({ children }) => {
         setImagePreview,
         onEdit,
         setOnEdit,
+        fileError,
+        setFileError,
+        fileErrorMsg,
+        setFileErrorMsg,
       }}
     >
       {children}
