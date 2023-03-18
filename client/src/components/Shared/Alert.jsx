@@ -1,10 +1,11 @@
 import React from "react";
 
-function Alert({ custom }) {
+function Alert({ icon, custom, msg }) {
   return (
-    <div className={`alert alert-success shadow-lg ${custom}`}>
+    <div className={`alert  shadow-lg ${custom}`}>
       <div>
-        <span>Account created successfully.</span>
+        {icon}
+        <span>{msg}</span>
       </div>
     </div>
   );
