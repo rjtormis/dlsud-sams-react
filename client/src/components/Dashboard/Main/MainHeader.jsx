@@ -1,6 +1,5 @@
-// Custom Hook
-import useAuth from "../../../hooks/useAuth";
-
+// Context
+import { useAuth } from "../../../context/AuthContext";
 import BeatLoader from "react-spinners/BeatLoader";
 
 function MainHeader() {

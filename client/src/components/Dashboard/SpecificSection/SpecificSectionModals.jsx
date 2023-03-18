@@ -1,7 +1,6 @@
-import axios from "axios";
-import { AiOutlineWechat, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineWechat } from "react-icons/ai";
 import { BsCreditCard2FrontFill, BsFillTrashFill } from "react-icons/bs";
-import { Formik, replace } from "formik";
+import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -10,9 +9,9 @@ import Modal from "../../Shared/Modal";
 import CustomInput from "../../Shared/CustomInput";
 import CustomSelect from "../../Shared/CustomSelect";
 
-// Hooks
-import useAuth from "../../../hooks/useAuth";
-import useSpecificSection from "../../../hooks/useSpecificSection";
+// Context
+import { useAuth } from "../../../context/AuthContext";
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
 
 // Schema
 import {
@@ -21,38 +20,38 @@ import {
   editSubjectSchema,
 } from "../../../schemas/SpecificSectionSchema";
 
+// Actions
+import {
+  NewSubjectCreation,
+  EditSection,
+  DeleteSection,
+  EditSubject,
+  DeleteSubject,
+} from "../../../actions/SpecificSection";
+
 function SpecificSectionModals() {
   const { auth } = useAuth();
-  const { loading, section, subjectName, editSubject, dispatch } = useSpecificSection();
+  const { loading, setLoading, section, subjectName, editSubject, dispatch } = useSpecificSection();
   const navigate = useNavigate();
 
   const handleCreate = async (state, action) => {
     try {
-      const response = await axios.post(
-        "/api/v1/subjects",
-        { sectionName: section.section_full, ...state },
-        {
-          headers: {
-            "X-CSRF-TOKEN": auth.csrf_access_token,
-          },
-        }
-      );
+      setLoading(true);
+      const createSubject = await NewSubjectCreation(section, state, auth);
       action.resetForm();
-      dispatch({ type: "SET_SUBJECT", payload: response.data.subject });
+      dispatch({ type: "SET_SUBJECT", payload: createSubject.data.subject });
+      setLoading(false);
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
   };
 
   const handleEdit = async (state, action) => {
     try {
-      const response = await axios.put(
-        `/api/v1/sections/${section.section_full}`,
-        { ...state },
-        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
-      );
-      if (response.status === 200) {
-        navigate(`/dashboard/sections/${response.data.section.full}`, { replace: true });
+      const editSection = await EditSection(section, state, auth);
+      if (editSection.status === 200) {
+        navigate(`/dashboard/sections/${editSection.data.section.full}`, { replace: true });
       }
     } catch (e) {
       if (e.response.status === 409) {
@@ -66,9 +65,7 @@ function SpecificSectionModals() {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.delete(`/api/v1/sections/${section.section_full}`, {
-        headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
-      });
+      const deleteSection = await DeleteSection(section, auth);
       navigate("/dashboard/sections", { replace: true });
     } catch (e) {
       console.log(e);
@@ -77,13 +74,9 @@ function SpecificSectionModals() {
 
   const handleEditSubject = async (state, action) => {
     try {
-      const response = await axios.patch(
-        `/api/v1/subjects/${section.section_full}/${editSubject.subject_name}`,
-        { ...state },
-        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
-      );
+      const subject_to_edit = await EditSubject(section, state, auth, editSubject);
       action.resetForm();
-      console.log(response);
+      console.log(subject_to_edit);
     } catch (e) {
       if (e.response.status === 409) {
         action.setFieldError("subjectName", e.response.data["msg"]);
@@ -97,11 +90,8 @@ function SpecificSectionModals() {
   const handleDeleteSubject = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.delete(
-        `/api/v1/subjects/${section.section_full}/${subjectName}`,
-        { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
-      );
-      console.log(response.data);
+      const subject_to_delete = await DeleteSubject(section, subjectName, auth);
+      console.log(subject_to_delete.data);
     } catch (e) {
       console.log(e);
     }

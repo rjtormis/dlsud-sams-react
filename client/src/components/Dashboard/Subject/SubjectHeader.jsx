@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
-import useSpecificSection from "../../../hooks/useSpecificSection";
+
+// Context
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
+
 function SubjectHeader() {
   const { subject } = useSpecificSection();
   return (

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-
 import { FcReading, FcSms, FcGraduationCap } from "react-icons/fc";
+
 import BeatLoader from "react-spinners/BeatLoader";
 
+// Hooks
 import useFetch from "../../../hooks/useFetch";
 
 function MainTotal() {
-  const { data, error, loading } = useFetch("/api/v1/dashboard", "total");
+  const { data, loading } = useFetch("/api/v1/dashboard", "total");
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
   const [classrooms, setClassrooms] = useState(0);

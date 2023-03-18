@@ -2,8 +2,13 @@ import { Link } from "react-router-dom";
 import RegisterStudent from "../Register/RegisterStudent";
 import RegisterProfessor from "../Register/RegisterProfessor";
 
-function RegisterBody({ type }) {
-  const user_type = type === "student" ? <RegisterStudent /> : <RegisterProfessor />;
+function RegisterBody({ success, type }) {
+  const user_type =
+    type === "student" ? (
+      <RegisterStudent success={success} />
+    ) : (
+      <RegisterProfessor success={success} />
+    );
   return (
     <section id="regInput" className="p-0 relative top-0 left-0 xl:px-20">
       <h1 className="text-green-700  mt-4 text-3xl text-center sm:text-center md:text-center xl:text-start">

@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
-import axios from "axios";
 
 //Icons
 import { HiIdentification } from "react-icons/hi";
@@ -14,30 +13,21 @@ import { registerStudentSchema } from "../../schemas/RegisterSchema";
 import CustomInput from "../Shared/CustomInput";
 import CustomInputGroup from "../Shared/CustomInputGroup";
 import spinner from "../../assets/spinner.gif";
-
-// Hooks
-import useCreate from "../../hooks/useCreate";
 import Button from "../Shared/Button";
 
-function RegisterStudent() {
-  const { setSuccess } = useCreate();
+// Actions
+import { studentAccountCreation } from "../../actions/Register";
+
+function RegisterStudent({ success }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
     try {
       setLoading(true);
-      const response = await axios.post(
-        "/api/v1/users",
-        { ...state, type: "student" },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 201) {
+      const createStudentAccount = await studentAccountCreation(state);
+      if (createStudentAccount.status === 201) {
         setTimeout(() => {
-          setSuccess(true);
+          success(true);
           setLoading(false);
           action.resetForm();
         }, 1500);

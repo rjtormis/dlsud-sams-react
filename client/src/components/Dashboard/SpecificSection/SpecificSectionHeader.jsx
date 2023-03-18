@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import { MdDelete, MdEdit, MdAdd } from "react-icons/md";
 
-// Hooks
-import useSpecificSection from "../../../hooks/useSpecificSection";
+// Context
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
 function SpecificSectionHeader() {
   const { sectionName, isAdviser } = useSpecificSection();
 

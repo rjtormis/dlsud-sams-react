@@ -1,3 +1,4 @@
+import axios from "axios";
 import { ImOffice } from "react-icons/im";
 import { BsClockFill } from "react-icons/bs";
 import { MdUpload } from "react-icons/md";
@@ -7,38 +8,46 @@ import {
   SlSocialLinkedin,
   SlSocialTwitter,
 } from "react-icons/sl";
-import { useRef, useState } from "react";
 import { Formik } from "formik";
 import ClipLoader from "react-spinners/ClipLoader";
-
-import profile_img from "../../../assets/sample-profile.jfif";
 
 // Components
 import Select from "../../Shared/Select";
 import Input from "../../Shared/Input";
 
-// Hooks
-import useProfile from "../../../hooks/useProfile";
-import axios from "axios";
-import useAuth from "../../../hooks/useAuth";
+// Context
+import { useProfile } from "../../../context/ProfileContext";
+import { useAuth } from "../../../context/AuthContext";
+import { getPresignedURL, update_profile, upload_to_s3 } from "../../../actions/Profile";
 
 function ProfileBody() {
-  const { profile, collegiates, loading, onEdit, imagePreview, fileInputRef, dispatch } =
-    useProfile();
-  const { auth, setAuth, dispatch: dispatch_auth } = useAuth();
-  console.log(onEdit);
+  const {
+    profile,
+    collegiates,
+    loading,
+    setLoading,
+    onEdit,
+    setOnEdit,
+    imagePreview,
+    setImagePreview,
+    fileInputRef,
+    dispatch,
+  } = useProfile();
+
+  const { auth, setUpdated, setAuth } = useAuth();
   const handleImageChange = (e, props) => {
     props.setFieldValue("file", e.currentTarget.files[0]);
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      dispatch({ type: "SET_IMAGE_PREVIEW", payload: reader.result });
+      setImagePreview(reader.result);
     };
   };
 
   const handleEdit = () => {
-    dispatch({ type: "SET_IMAGEPREVIEW_&_EDIT", edit: !onEdit });
+    setImagePreview("");
+    setOnEdit(!onEdit);
   };
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -47,46 +56,34 @@ function ProfileBody() {
   const handleOnSubmit = async (state, action) => {
     const { file, ...rest } = state;
     try {
-      dispatch({ type: "SET_LOADING_TRUE" });
-      dispatch_auth({ type: "SET_UPDATE_PROFILE_TRUE" });
-      if (file !== "") {
+      setLoading(true);
+      if (file === "") {
+        await update_profile(profile, auth, "", false, rest);
+        setAuth({ ...auth, name: state.name });
+      } else {
+        setUpdated(true);
         const formData = new FormData();
         const file_extension = file.name.split(".")[1];
-
-        const getPresignedURL = await axios.post(
-          "/api/v1/user/get-pre-signed-url-profile",
-          { id: auth.id, type: auth.type, fileName: `p_${auth.id}.${file_extension}` },
-          {
-            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
-          }
-        );
-        const { fields, url } = getPresignedURL.data.signed_url;
-        const location = getPresignedURL.data.location;
+        const presignedURL = await getPresignedURL(auth, file_extension);
+        const { fields, url } = presignedURL.data.signed_url;
+        const location = presignedURL.data.location;
         Object.entries(fields).forEach(([key, value]) => {
           formData.append(key, value);
         });
         formData.append("file", file);
-        const upload_to_s3 = await axios.post(url, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        const response = await axios.patch(
-          `/api/v1/profiles/${profile.id}`,
-          { ...rest, profile_image: location },
-          { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
-        );
-
+        await upload_to_s3(url, formData);
+        await update_profile(profile, auth, true, location, rest);
         setAuth({ ...auth, name: state.name, profile_image: location });
       }
-
-      dispatch({ type: "SET_UPLOAD_SUCCESS", onEdit: false, profile: { ...state } });
-      dispatch_auth({ type: "SET_UPDATE_PROFILE_FALSE" });
+      dispatch({ type: "SET_UPLOAD_SUCCESS", profile: { ...state } });
+      setLoading(false);
+      setUpdated(false);
+      setOnEdit(false);
+      setImagePreview("");
     } catch (e) {
       console.log(e);
-      dispatch({ type: "SET_LOADING_FALSE" });
+      setLoading(false);
     }
-
-    console.log(auth);
   };
   return (
     <div className="flex-1 flex flex-col justify-center">
@@ -182,15 +179,14 @@ function ProfileBody() {
                             <div className="stat-tile font-bold">COLLEGIATE</div>
                             <div className="stat-desc">
                               {onEdit ? (
-                                <Select styles="select-sm">
+                                <Select
+                                  name="collegiate"
+                                  styles="select-sm"
+                                  value={props.values.collegiate}
+                                  onChange={props.handleChange}
+                                >
                                   {collegiates.map((collegiate, index) => (
-                                    <option
-                                      key={index}
-                                      value={collegiate.name}
-                                      selected={
-                                        profile.collegiate === collegiate.name ? true : false
-                                      }
-                                    >
+                                    <option key={index} value={collegiate.name}>
                                       {collegiate.name}
                                     </option>
                                   ))}

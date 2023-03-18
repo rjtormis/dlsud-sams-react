@@ -1,40 +1,34 @@
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEnvelope, FaShieldAlt } from "react-icons/fa";
 import { Formik } from "formik";
 
-// Schmeas
+// Schemas
 import { loginSchema } from "../../schemas/LoginSchema";
 
 // Components
 import CustomInput from "../Shared/CustomInput";
 
-// Hooks
-import useAuth from "../../hooks/useAuth";
+// Context
+import { useAuth } from "../../context/AuthContext";
 
 // Assets
 import logo from "../../assets/dlsu-d.png";
 import ClipLoader from "react-spinners/ClipLoader";
 import { getCookie } from "../../utilities/getCookie";
 
+// Actions
+import { loginAuthorization } from "../../actions/Auth";
+
 function LoginMainForm() {
-  const { setAuth, loading, dispatch } = useAuth();
+  const { setAuth, loading, setLoading } = useAuth();
 
   const navigate = useNavigate();
 
   const handleSubmit = async (state, action) => {
-    dispatch({ type: "SET_LOADING_TRUE" });
+    setLoading(true);
     try {
-      const response = await axios.post(
-        "/login",
-        { ...state },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const { id, type, name, profile_image } = response.data.user;
+      const authorization = await loginAuthorization(state);
+      const { id, type, name, profile_image } = authorization.data.user;
       const access = getCookie("csrf_access_token");
       const refresh = getCookie("csrf_refresh_token");
       setAuth({
@@ -48,13 +42,13 @@ function LoginMainForm() {
       navigate("/dashboard");
     } catch (e) {
       if (e.response.status === 404) {
-        dispatch({ type: "SET_LOADING_FALSE" });
+        setLoading(false);
         action.setFieldError("email", "Invalid credentials or account does not exists.");
         action.setFieldError("password", "‎");
       }
       if (e.response.status === 500) {
         // TODO
-        dispatch({ type: "SET_LOADING_FALSE" });
+        setLoading(false);
       }
     }
   };

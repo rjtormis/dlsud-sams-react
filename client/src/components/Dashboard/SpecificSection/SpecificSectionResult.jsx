@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
-import useAuth from "../../../hooks/useAuth";
-import useSpecificSection from "../../../hooks/useSpecificSection";
 import SpecificSectionSubjectItem from "./SpecificSectionSubjectItem";
+
+// Context
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
+import { useAuth } from "../../../context/AuthContext";
 
 function SpecificSectionResult() {
   const { auth } = useAuth();
-  const { section, dispatch } = useSpecificSection();
+  const { section, dispatch, setSubjectName } = useSpecificSection();
   const subjects = section.subjects;
   console.log(subjects);
 
@@ -28,9 +28,7 @@ function SpecificSectionResult() {
                   schedule={subject.schedule}
                   isProfessor={auth.id === subject.handler_id}
                   onVisit={() => dispatch({ type: "SET_SUBJECT", payload: { ...subject } })}
-                  onDelete={() =>
-                    dispatch({ type: "SET_SUBJECT_NAME", payload: subject.subject_name })
-                  }
+                  onDelete={() => setSubjectName(subject.subject_name)}
                   onEdit={() => dispatch({ type: "SET_EDIT_SUBJECT", payload: { ...subject } })}
                 />
               ))}

@@ -1,6 +1,5 @@
 import { Formik } from "formik";
 import { useState } from "react";
-import axios from "axios";
 
 // Components
 import CustomInput from "../Shared/CustomInput";
@@ -17,28 +16,19 @@ import { BsFillShieldLockFill, BsShieldFillExclamation } from "react-icons/bs";
 // Schema
 import { registerProfessorSchema } from "../../schemas/RegisterSchema";
 
-// Hooks
-import useCreate from "../../hooks/useCreate";
-function RegisterProfessor() {
-  const { setSuccess } = useCreate();
+// Actions
+import { professorAccountCreation } from "../../actions/Register";
 
+function RegisterProfessor({ success }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
     try {
       setLoading(true);
-      const response = await axios.post(
-        "/api/v1/users",
-        { ...state, type: "professor" },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 201) {
+      const createProfessorAccount = await professorAccountCreation(state);
+      if (createProfessorAccount.status === 201) {
         setTimeout(() => {
-          setSuccess(true);
+          success(true);
           setLoading(false);
           action.resetForm();
         }, 500);

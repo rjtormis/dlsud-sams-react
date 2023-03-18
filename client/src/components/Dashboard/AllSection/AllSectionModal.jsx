@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Formik, replace } from "formik";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
-import axios from "axios";
 
 // Components
 import CustomSelect from "../../Shared/CustomSelect";
@@ -12,9 +11,10 @@ import Modal from "../../Shared/Modal";
 // Schema
 import { registerClassroomSchema } from "../../../schemas/RegisterSchema";
 
-// Hooks
-import useAuth from "../../../hooks/useAuth";
-import useAllSection from "../../../hooks/useAllSection";
+// Context
+import { useAuth } from "../../../context/AuthContext";
+import { useAllSection } from "../../../context/AllSectionContext";
+import { NewSectionCreation } from "../../../actions/AllSection";
 
 function AllSectionModal() {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,13 +31,8 @@ function AllSectionModal() {
     formData.append("file", state.file);
 
     try {
-      const response = await axios.post("/api/v1/sections", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "X-CSRF-TOKEN": auth.csrf_access_token,
-        },
-      });
-      const section = response.data;
+      const createNewSection = await NewSectionCreation(auth, formData);
+      const section = createNewSection.data;
       setIsLoading(false);
       action.resetForm();
       navigate(`/dashboard/sections/${section.section_full}`);
