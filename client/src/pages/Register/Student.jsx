@@ -1,19 +1,17 @@
+import { useState } from "react";
 // Components
 import RegisterBody from "../../components/Register/RegisterBody";
 import RegisterHeader from "../../components/Register/RegisterHeader";
 import Alert from "../../components/Shared/Alert";
 
-//Hooks
-import useCreate from "../../hooks/useCreate";
-
 function Student() {
-  const { success } = useCreate();
+  const [success, setSuccess] = useState(false);
 
   return (
     <>
       <RegisterHeader type="student" />
       {success ? <Alert custom={"mt-4"} /> : null}
-      <RegisterBody type="student" />
+      <RegisterBody success={(e) => setSuccess(e)} type="student" />
     </>
   );
 }

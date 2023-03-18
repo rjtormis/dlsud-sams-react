@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -6,19 +7,16 @@ import SpecificSectionModals from "../../components/Dashboard/SpecificSection/Sp
 import SpecificSectionResult from "../../components/Dashboard/SpecificSection/SpecificSectionResult";
 import SpecificSectionHeader from "../../components/Dashboard/SpecificSection/SpecificSectionHeader";
 
-// context
-import { SpecificSectionContextProvider } from "../../context/Dashboard/SpecificSection/SpecificSectionContext";
-
-// Hooks
-import useSpecificSection from "../../hooks/useSpecificSection.js";
-import { useEffect } from "react";
+// Context
+import { useSpecificSection } from "../../context/SpecificSectionContext";
 
 function SpecificSection() {
   const params = useParams();
-  const { loading, dispatch } = useSpecificSection();
+  const { loading, setSectioName } = useSpecificSection();
+
   useEffect(() => {
-    dispatch({ type: "SET_SECTION_NAME", payload: params.name });
-  }, [dispatch, params.name]);
+    setSectioName(params.name);
+  }, [setSectioName, params.name]);
   return (
     <>
       {loading ? (
