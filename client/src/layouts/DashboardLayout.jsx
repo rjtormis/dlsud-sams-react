@@ -48,7 +48,14 @@ function DashboardLayout() {
                   {updated ? (
                     <ClipLoader size={30} />
                   ) : (
-                    <img src={auth.profile_image} alt="" className="" />
+                    <img
+                      src={
+                        "https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com" +
+                        auth.profile_image
+                      }
+                      alt="profile"
+                      className=""
+                    />
                   )}
                 </div>
                 <ul
