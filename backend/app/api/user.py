@@ -98,9 +98,7 @@ def users():
                 id=new_professor.id, collegiate=new_professor.collegiate_id
             )
             push_to_database(new_professor_profile)
-            new_professor.check_user_folder(
-                s3_bucket_name, f"user/professor/{new_professor.id}"
-            )
+            new_professor.check_user_folder(f"user/professor/{new_professor.id}")
 
         return jsonify({"msg": "Successful"}), 201
 
@@ -115,6 +113,6 @@ def generate_presigned_profile():
         return jsonify(
             {
                 "signed_url": response,
-                "location": f"https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com/{Key}",
+                "location": f"/{Key}",
             }
         )

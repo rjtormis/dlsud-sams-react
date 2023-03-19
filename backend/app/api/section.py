@@ -36,21 +36,27 @@ def allSections():
         section = request.values.get("section")
         full = f"{course} {year}{section}"
 
-        query_section = Section.query.filter_by(section_full=full).first()
+        file = request.values.get("file")
+        print(file)
 
-        if query_section:
-            return jsonify({"msg": "Section already taken"}), 409
+        return jsonify({"msg": "OK"})
 
-        new_section = Section(
-            section_full=full,
-            section_course=course,
-            section_adviser=current_user,
-            section_year=year,
-            section_level=section,
-        )
-        push_to_database(new_section)
+        # query_section = Section.query.filter_by(section_full=full).first()
 
-        return jsonify(new_section.json_format()), 201
+        # if query_section:
+        #     return jsonify({"msg": "Section already taken"}), 409
+
+        # new_section = Section(
+        #     section_full=full,
+        #     section_course=course,
+        #     section_adviser=current_user,
+        #     section_year=year,
+        #     section_level=section,
+        # )
+        # push_to_database(new_section)
+        # new_section.check_section_folder(f"section/{new_section.id}")
+
+        # return jsonify(new_section.json_format()), 201
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
@@ -128,3 +134,10 @@ def specificSection(name):
         db.session.delete(section)
         db.session.commit()
         return jsonify({"msg": "Section deleted successfully."}), 200
+
+
+@app.route("/api/v1/section/get-pre-signed-url-section", methods=["POST"])
+@jwt_required()
+def generate_presigned_section():
+    if request.method == "POST":
+        pass
