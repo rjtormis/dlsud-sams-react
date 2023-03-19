@@ -17,10 +17,9 @@ class User(db.Model, Details):
     middle_initial = db.Column(db.String(length=1), nullable=False)
     last_name = db.Column(db.String(length=20), nullable=False)
     emailAddress = db.Column(db.String(length=345), nullable=False, unique=True)
-    profile_image_id = db.Column(db.String(length=5), default="None")
     profile_image_link = db.Column(
         db.String(length=345),
-        default="/user/default_profile.jpg",
+        default="default_profile.jpg",
     )
     password_hash = db.Column(db.String(length=300), nullable=False)
     type = db.Column(db.String(length=15), nullable=False)

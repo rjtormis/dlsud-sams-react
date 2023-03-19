@@ -12,9 +12,8 @@ class Section(db.Model, Details):
     section_course = db.Column(db.String(length=10), nullable=False)
     section_year = db.Column(db.String(length=1), nullable=False)
     section_level = db.Column(db.String(length=1), nullable=False)
-    section_image_id = db.Column(db.String(length=5), default="None")
     section_image_link = db.Column(
-        db.String(length=100), default="/section/default_section_image.jpg"
+        db.String(length=100), default="default_section_image.jpg"
     )
 
     subjects = db.relationship("Subject", backref="section", cascade="all,delete")
@@ -67,8 +66,6 @@ class Section(db.Model, Details):
         except Exception as e:
             print("Error occured")
             return False
-
-        pass
 
     def __repr__(self) -> str:
         return f"Section {self.section_full} Adviser: {self.professor.first_name} {self.professor.middle_initial} {self.professor.last_name}"
