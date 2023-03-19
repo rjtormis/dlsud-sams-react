@@ -30,8 +30,10 @@ export const SpecificSectionContextProvider = ({ children }) => {
           const [section, adviser] = await fetchSpecificSectionDetails(sectionName);
           dispatch({ type: "SET_SECTION", payload: section.data.section });
           setIsAdviser(adviser.data.isAdviser);
+          setLoading(false);
         } catch (e) {
           console.log(e);
+          setLoading(false);
         }
       };
       fetchSectionData();
