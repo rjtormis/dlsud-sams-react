@@ -15,6 +15,7 @@ import { registerClassroomSchema } from "../../../schemas/RegisterSchema";
 import { useAuth } from "../../../context/AuthContext";
 import { useAllSection } from "../../../context/AllSectionContext";
 import { NewSectionCreation } from "../../../actions/AllSection";
+import { maxFileSize, supported_file_format } from "../../../schemas/Helper";
 
 function AllSectionModal() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,27 +24,30 @@ function AllSectionModal() {
   const navigate = useNavigate();
 
   const handleSubmit = async (state, action) => {
-    setIsLoading(true);
+    const { file, ...rest } = state;
+    // setIsLoading(true);
     const formData = new FormData();
-    formData.append("course", state.course);
-    formData.append("year", state.year);
-    formData.append("section", state.section);
-    formData.append("file", state.file);
+    formData.append("file", file);
 
-    try {
-      const createNewSection = await NewSectionCreation(auth, formData);
-      const section = createNewSection.data;
-      setIsLoading(false);
-      action.resetForm();
-      navigate(`/dashboard/sections/${section.section_full}`);
-    } catch (e) {
-      setIsLoading(false);
-      if (e.response.status === 409) {
-        action.setFieldError("course", `${e.response.data["msg"]}`);
-        action.setFieldError("year", "‎");
-        action.setFieldError("section", "‎");
-      }
-    }
+    // try {
+
+    //   if (file !== undefined && file.size <= maxFileSize && supported_file_format.includes(file.type)){
+
+    //   }
+
+    //   const createNewSection = await NewSectionCreation(auth, );
+    //   const section = createNewSection.data;
+    //   setIsLoading(false);
+    //   action.resetForm();
+    //   // navigate(`/dashboard/sections/${section.section_full}`);
+    // } catch (e) {
+    //   setIsLoading(false);
+    //   if (e.response.status === 409) {
+    //     action.setFieldError("course", `${e.response.data["msg"]}`);
+    //     action.setFieldError("year", "‎");
+    //     action.setFieldError("section", "‎");
+    //   }
+    // }
   };
 
   return (
