@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { name_regex_profile } from "./Helper";
+import { name_regex_profile } from "../utilities/Helper";
 
 export const profileSchema = yup.object().shape({
   name: yup.string().matches(name_regex_profile, "Characters only.").required("Required *"),

@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { email_regex } from "./Helper";
+import { email_regex } from "../utilities/Helper";
 
 export const loginSchema = yup.object().shape({
   email: yup
