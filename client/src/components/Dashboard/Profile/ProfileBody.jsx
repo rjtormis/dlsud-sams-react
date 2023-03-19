@@ -175,7 +175,12 @@ function ProfileBody() {
                     <div className="rounded-xl ">
                       {/* outline-error outline-3 outline */}
                       <img
-                        src={imagePreview !== "" ? imagePreview : auth.profile_image}
+                        src={
+                          imagePreview !== ""
+                            ? imagePreview
+                            : "https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com" +
+                              auth.profile_image
+                        }
                         alt="profile"
                       />
                     </div>
