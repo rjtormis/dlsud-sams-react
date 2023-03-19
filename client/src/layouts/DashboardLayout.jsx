@@ -12,6 +12,7 @@ import logo from "../assets/dlsu-d.png";
 import { useAuth } from "../context/AuthContext";
 import { SpecificSectionContextProvider } from "../context/SpecificSectionContext";
 import { ProfileContextProvider } from "../context/ProfileContext";
+import { aws_user_url } from "../utilities/Helper";
 
 function DashboardLayout() {
   const navigate = useNavigate();
@@ -48,14 +49,7 @@ function DashboardLayout() {
                   {updated ? (
                     <ClipLoader size={30} />
                   ) : (
-                    <img
-                      src={
-                        "https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com" +
-                        auth.profile_image
-                      }
-                      alt="profile"
-                      className=""
-                    />
+                    <img src={aws_user_url + auth.profile_image} alt="profile" className="" />
                   )}
                 </div>
                 <ul
