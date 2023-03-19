@@ -1,5 +1,5 @@
 import boto3
-from app import db, bcrypt, s3, s3_resource
+from app import db, bcrypt, s3, s3_resource, s3_bucket_name
 from datetime import datetime
 
 # Helper
@@ -17,9 +17,10 @@ class User(db.Model, Details):
     middle_initial = db.Column(db.String(length=1), nullable=False)
     last_name = db.Column(db.String(length=20), nullable=False)
     emailAddress = db.Column(db.String(length=345), nullable=False, unique=True)
+    profile_image_id = db.Column(db.String(length=5), default="None")
     profile_image_link = db.Column(
         db.String(length=345),
-        default="https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com/user/default_profile.jpg",
+        default="/user/default_profile.jpg",
     )
     password_hash = db.Column(db.String(length=300), nullable=False)
     type = db.Column(db.String(length=15), nullable=False)
@@ -36,21 +37,21 @@ class User(db.Model, Details):
             "utf-8"
         )
 
-    def check_user_folder(self, bucket_name, folder_path):
+    def check_user_folder(self, folder_path):
 
         """
         Check if the folder of the user already exists in AWS s3
 
         """
 
-        bucket = s3_resource.Bucket(bucket_name)
+        bucket = s3_resource.Bucket(s3_bucket_name)
 
         objs = list(bucket.objects.filter(Prefix=folder_path))
         if len(objs) > 0 and objs[0].key == folder_path + "/":
             return True
 
         try:
-            s3.put_object(Bucket=bucket_name, Key=(folder_path + "/"))
+            s3.put_object(Bucket=s3_bucket_name, Key=(folder_path + "/"))
         except Exception as e:
             print("Error occured")
             return False
