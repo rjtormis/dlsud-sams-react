@@ -14,40 +14,66 @@ import { registerClassroomSchema } from "../../../schemas/RegisterSchema";
 // Context
 import { useAuth } from "../../../context/AuthContext";
 import { useAllSection } from "../../../context/AllSectionContext";
-import { NewSectionCreation } from "../../../actions/AllSection";
-import { maxFileSize, supported_file_format } from "../../../schemas/Helper";
+
+// Actions
+import {
+  generatePresignedURLSection,
+  NewSectionCreation,
+  NewSectionImageUpload,
+} from "../../../actions/AllSection";
+
+// Helper
+import { maxFileSize, supported_file_format, upload_to_s3 } from "../../../utilities/Helper";
 
 function AllSectionModal() {
   const [isLoading, setIsLoading] = useState(false);
   const { auth } = useAuth();
-  const { sections, dispatch } = useAllSection();
   const navigate = useNavigate();
 
   const handleSubmit = async (state, action) => {
-    const { file, ...rest } = state;
-    // setIsLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
+    const { file, ...data } = state;
+    setIsLoading(true);
 
-    // try {
+    try {
+      if (
+        file !== undefined &&
+        file.size <= maxFileSize &&
+        supported_file_format.includes(file.type)
+      ) {
+        const formData = new FormData();
+        const file_extension = file.name.split(".")[1];
 
-    //   if (file !== undefined && file.size <= maxFileSize && supported_file_format.includes(file.type)){
-
-    //   }
-
-    //   const createNewSection = await NewSectionCreation(auth, );
-    //   const section = createNewSection.data;
-    //   setIsLoading(false);
-    //   action.resetForm();
-    //   // navigate(`/dashboard/sections/${section.section_full}`);
-    // } catch (e) {
-    //   setIsLoading(false);
-    //   if (e.response.status === 409) {
-    //     action.setFieldError("course", `${e.response.data["msg"]}`);
-    //     action.setFieldError("year", "‎");
-    //     action.setFieldError("section", "‎");
-    //   }
-    // }
+        const creatNewSection = await NewSectionCreation(auth, data);
+        const section = creatNewSection.data;
+        console.log(section);
+        const getPresignedURL = await generatePresignedURLSection(auth, section, file_extension);
+        console.log(getPresignedURL.data);
+        const { signed_url, location } = getPresignedURL.data;
+        const { fields, url } = signed_url;
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formData.append("file", file);
+        await upload_to_s3(url, formData);
+        await NewSectionImageUpload(auth, section, location);
+        setIsLoading(false);
+        action.resetForm();
+        navigate(`/dashboard/sections/${section.section_full}`);
+      } else {
+        const createNewSection = await NewSectionCreation(auth, data);
+        const section = createNewSection.data;
+        setIsLoading(false);
+        action.resetForm();
+        navigate(`/dashboard/sections/${section.section_full}`);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      if (e.response.status === 409) {
+        action.setFieldError("course", `${e.response.data["msg"]}`);
+        action.setFieldError("year", "‎");
+        action.setFieldError("section", "‎");
+      }
+    }
   };
 
   return (

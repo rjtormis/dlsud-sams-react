@@ -18,11 +18,16 @@ import Loader from "../../Shared/Loader";
 // Context
 import { useProfile } from "../../../context/ProfileContext";
 import { useAuth } from "../../../context/AuthContext";
-import { getPresignedURL, update_profile, upload_to_s3 } from "../../../actions/Profile";
+import { getPresignedURL, update_profile } from "../../../actions/Profile";
 import { profileSchema } from "../../../schemas/ProfileSchema";
 
 // Helper
-import { maxFileSize, supported_file_format } from "../../../schemas/Helper";
+import {
+  aws_user_url,
+  maxFileSize,
+  supported_file_format,
+  upload_to_s3,
+} from "../../../utilities/Helper";
 
 // Assets
 import invalid from "../../../assets/invalid.png";
@@ -175,12 +180,7 @@ function ProfileBody() {
                     <div className="rounded-xl ">
                       {/* outline-error outline-3 outline */}
                       <img
-                        src={
-                          imagePreview !== ""
-                            ? imagePreview
-                            : "https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com" +
-                              auth.profile_image
-                        }
+                        src={imagePreview !== "" ? imagePreview : aws_user_url + auth.profile_image}
                         alt="profile"
                       />
                     </div>
