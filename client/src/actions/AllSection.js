@@ -16,18 +16,25 @@ export const generatePresignedURLSection = (auth, section, file_extension) => {
   );
 };
 
-export const NewSectionCreation = (auth, with_file, location = "", rest) => {
-  if (with_file && location !== "") {
-  }
-
+export const NewSectionCreation = (auth, data) => {
+  console.log(data);
   return axios.post(
     "/api/v1/sections",
-    { ...rest },
+    { ...data },
     {
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": auth.csrf_access_token,
       },
     }
+  );
+};
+
+export const NewSectionImageUpload = (auth, section, link) => {
+  console.log(section);
+  return axios.post(
+    `/api/v1/sections/${section.id}/upload`,
+    { section_image: link },
+    { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
   );
 };

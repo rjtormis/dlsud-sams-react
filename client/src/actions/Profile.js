@@ -26,12 +26,6 @@ export const getPresignedURL = (auth, file_extension) => {
   );
 };
 
-export const upload_to_s3 = (url, data) => {
-  return axios.post(url, data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-};
-
 export const update_profile = (profile, auth, with_file, location = "", rest) => {
   if (with_file && location !== "") {
     return axios.patch(
