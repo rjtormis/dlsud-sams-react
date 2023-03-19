@@ -8,11 +8,26 @@ import axios from "axios";
  *  @param {data} - Contains all the form data to be submitted on the backend.
  */
 
-export const NewSectionCreation = (auth, data) => {
-  return axios.post("/api/v1/sections", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      "X-CSRF-TOKEN": auth.csrf_access_token,
-    },
-  });
+export const generatePresignedURLSection = (auth, section, file_extension) => {
+  return axios.post(
+    "/api/v1/section/get-pre-signed-url-section",
+    { id: section.id, fileName: `s_${section.id}.${file_extension}` },
+    { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+  );
+};
+
+export const NewSectionCreation = (auth, with_file, location = "", rest) => {
+  if (with_file && location !== "") {
+  }
+
+  return axios.post(
+    "/api/v1/sections",
+    { ...rest },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": auth.csrf_access_token,
+      },
+    }
+  );
 };
