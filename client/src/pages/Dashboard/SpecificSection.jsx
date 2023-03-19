@@ -6,7 +6,7 @@ import HashLoader from "react-spinners/HashLoader";
 
 // Components
 import SpecificSectionModals from "../../components/Dashboard/SpecificSection/SpecificSectionModals";
-import SpecificSectionResult from "../../components/Dashboard/SpecificSection/SpecificSectionResult";
+import SpecificSectionList from "../../components/Dashboard/SpecificSection/SpecificSectionList";
 import SpecificSectionHeader from "../../components/Dashboard/SpecificSection/SpecificSectionHeader";
 import Loader from "../../components/Shared/Loader";
 
@@ -36,7 +36,7 @@ function SpecificSection() {
         <>
           <SpecificSectionHeader />
 
-          <SpecificSectionResult />
+          <SpecificSectionList />
 
           <SpecificSectionModals />
         </>
