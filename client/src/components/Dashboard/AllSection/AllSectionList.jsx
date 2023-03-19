@@ -1,7 +1,7 @@
 import HashLoader from "react-spinners/HashLoader";
 
 // Components
-import DashboardClassroomItem from "../../Shared/DashboardClassroomItem";
+import AllSectionItem from "./AllSectionItem";
 import AllSectionPagination from "../AllSection/AllSectionPagination";
 import Loader from "../../Shared/Loader";
 
@@ -30,7 +30,7 @@ function AllSectionList() {
         <>
           <div className="grid grid-cols-4 gap-4 mt-4">
             {currentItemIndex.map((section) => (
-              <DashboardClassroomItem
+              <AllSectionItem
                 key={section.id}
                 title={section.section_full}
                 adviser={section.section_adviser}

@@ -1,10 +1,10 @@
-import SpecificSectionSubjectItem from "./SpecificSectionSubjectItem";
+import SpecificSectionItem from "./SpecificSectionItem";
 
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useAuth } from "../../../context/AuthContext";
 
-function SpecificSectionResult() {
+function SpecificSectionList() {
   const { auth } = useAuth();
   const { section, dispatch, setSubjectName } = useSpecificSection();
   const subjects = section.subjects;
@@ -21,7 +21,7 @@ function SpecificSectionResult() {
           {subjects === undefined
             ? null
             : subjects.map((subject) => (
-                <SpecificSectionSubjectItem
+                <SpecificSectionItem
                   key={subject.id}
                   name={subject.subject_name}
                   professor={subject.handled_by}
@@ -38,4 +38,4 @@ function SpecificSectionResult() {
   );
 }
 
-export default SpecificSectionResult;
+export default SpecificSectionList;

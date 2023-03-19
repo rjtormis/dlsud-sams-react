@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { aws_section_url } from "../../utilities/Helper";
+import { aws_section_url } from "../../../utilities/Helper";
 
 // To Refactor
-function DashboardClassroomItem({ title, adviser, image_link }) {
+function AllSectionItem({ title, adviser, image_link }) {
   return (
     <>
       <div className="card card-compact glass w-full hover:scale-105 bg-white hover:bg-green-800 hover:text-white">
@@ -24,4 +24,4 @@ function DashboardClassroomItem({ title, adviser, image_link }) {
   );
 }
 
-export default DashboardClassroomItem;
+export default AllSectionItem;

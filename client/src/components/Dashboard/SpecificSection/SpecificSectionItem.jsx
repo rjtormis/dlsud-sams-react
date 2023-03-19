@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
 
-function SpecificSectionSubjectItem({
+function SpecificSectionItem({
   name,
   professor,
   schedule,
@@ -50,7 +50,7 @@ function SpecificSectionSubjectItem({
   );
 }
 
-SpecificSectionSubjectItem.propTypes = {
+SpecificSectionItem.propTypes = {
   name: PropTypes.string.isRequired,
   professor: PropTypes.string.isRequired,
   schedule: PropTypes.string.isRequired,
@@ -60,4 +60,4 @@ SpecificSectionSubjectItem.propTypes = {
   isProfessor: PropTypes.bool.isRequired,
 };
 
-export default SpecificSectionSubjectItem;
+export default SpecificSectionItem;
