@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from datetime import datetime
-from app import app, db, jwt_required, get_jwt_identity
+from app import app, db, jwt_required, get_jwt_identity, s3, s3_bucket_name, s3_resource
 
 # Model
 from ..models.professor import Professor
@@ -9,6 +9,7 @@ from ..models.subject import Subject
 
 # Helper
 from ..utils.database_utilities import push_to_database
+from ..utils.generate_unique_code import unique_identifier_file
 
 
 @app.route("/api/v1/sections", methods=["GET", "POST"])
@@ -31,32 +32,28 @@ def allSections():
         return jsonify({"sections": sections})
 
     if request.method == "POST":
-        course = request.values.get("course")
-        year = request.values.get("year")
-        section = request.values.get("section")
+        data = request.get_json()
+        course = data["course"]
+        year = data["year"]
+        section = data["section"]
         full = f"{course} {year}{section}"
 
-        file = request.values.get("file")
-        print(file)
+        query_section = Section.query.filter_by(section_full=full).first()
 
-        return jsonify({"msg": "OK"})
+        if query_section:
+            return jsonify({"msg": "Section already taken"}), 409
 
-        # query_section = Section.query.filter_by(section_full=full).first()
+        new_section = Section(
+            section_full=full,
+            section_course=course,
+            section_adviser=current_user,
+            section_year=year,
+            section_level=section,
+        )
+        push_to_database(new_section)
+        new_section.check_section_folder(f"section/{new_section.id}")
 
-        # if query_section:
-        #     return jsonify({"msg": "Section already taken"}), 409
-
-        # new_section = Section(
-        #     section_full=full,
-        #     section_course=course,
-        #     section_adviser=current_user,
-        #     section_year=year,
-        #     section_level=section,
-        # )
-        # push_to_database(new_section)
-        # new_section.check_section_folder(f"section/{new_section.id}")
-
-        # return jsonify(new_section.json_format()), 201
+        return jsonify(new_section.json_format()), 201
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
@@ -130,7 +127,6 @@ def specificSection(name):
         )
 
     if request.method == "DELETE":
-        print(section)
         db.session.delete(section)
         db.session.commit()
         return jsonify({"msg": "Section deleted successfully."}), 200
@@ -140,4 +136,29 @@ def specificSection(name):
 @jwt_required()
 def generate_presigned_section():
     if request.method == "POST":
-        pass
+        data = request.get_json()
+        imgID = unique_identifier_file()
+        section = Section.query.filter_by(id=data["id"]).first()
+        if section.section_image_link != "default_section_image.jpg":
+            current_section_image = section.section_image_link.split("/")[1]
+            s3.delete_object(
+                Bucket=s3_bucket_name, Key=f"{section.id}/{current_section_image}"
+            )
+        Key = f"{data['id']}/{imgID}_{data['fileName']}"
+        print(Key)
+        response = s3.generate_presigned_post(
+            s3_bucket_name, Key=f"section/{Key}", ExpiresIn=300
+        )
+
+        return jsonify({"signed_url": response, "location": f"{Key}"})
+
+
+@app.route("/api/v1/sections/<int:id>/upload", methods=["POST"])
+@jwt_required()
+def specificSectionUpload(id):
+    if request.method == "POST":
+        data = request.get_json()
+        section = Section.query.filter_by(id=id).first()
+        section.section_image_link = data["section_image"]
+        db.session.commit()
+        return jsonify({"msg": "Success"}), 200

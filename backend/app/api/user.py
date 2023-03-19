@@ -1,4 +1,4 @@
-from app import app, db, s3, s3_bucket_name, jwt_required
+from app import app, db, s3, s3_bucket_name, s3_resource, jwt_required
 from flask import request, jsonify
 
 # Models
@@ -108,11 +108,24 @@ def users():
 def generate_presigned_profile():
     if request.method == "POST":
         data = request.get_json()
-        Key = f"user/{data['type']}/{data['id']}/{unique_identifier_file()}_{data['fileName']}"
-        response = s3.generate_presigned_post(s3_bucket_name, Key, ExpiresIn=300)
+        imgID = unique_identifier_file()
+        user = User.query.filter_by(id=data["id"]).first()
+
+        if user.profile_image_link != "default_profile.jpg":
+            current_profile = user.profile_image_link.split("/")[2]
+            s3.delete_object(
+                Bucket=s3_bucket_name,
+                Key=f"user/{user.type}/{user.id}/{current_profile}",
+            )
+
+        Key = f"{data['type']}/{data['id']}/{imgID}_{data['fileName']}"
+        response = s3.generate_presigned_post(
+            s3_bucket_name, Key=f"user/{Key}", ExpiresIn=300
+        )
+
         return jsonify(
             {
                 "signed_url": response,
-                "location": f"/{Key}",
+                "location": f"{Key}",
             }
         )
