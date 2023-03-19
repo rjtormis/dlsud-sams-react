@@ -2,30 +2,36 @@ import { Helmet } from "react-helmet";
 
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ClipLoader from "react-spinners/ClipLoader";
+import HashLoader from "react-spinners/HashLoader";
 
 // Components
 import SpecificSectionModals from "../../components/Dashboard/SpecificSection/SpecificSectionModals";
 import SpecificSectionResult from "../../components/Dashboard/SpecificSection/SpecificSectionResult";
 import SpecificSectionHeader from "../../components/Dashboard/SpecificSection/SpecificSectionHeader";
+import Loader from "../../components/Shared/Loader";
 
 // Context
 import { useSpecificSection } from "../../context/SpecificSectionContext";
 
 function SpecificSection() {
   const params = useParams();
-  const { loading, setSectioName, sectionName } = useSpecificSection();
-
+  const { loading, setSectionName, sectionName, setLoading } = useSpecificSection();
+  console.log(sectionName);
   useEffect(() => {
-    setSectioName(params.name);
-  }, [setSectioName, params.name]);
+    setSectionName(params.name);
+  }, [setSectionName, params.name]);
+
   return (
     <>
       <Helmet>
         <title>DLSUD SAMS | {sectionName}</title>
       </Helmet>
       {loading ? (
-        <ClipLoader />
+        <Loader
+          type={<HashLoader className="m-auto" color="#436147" size={120} />}
+          style_div="w-full m-auto text-center"
+          style_msg="text-2xl"
+        />
       ) : (
         <>
           <SpecificSectionHeader />
