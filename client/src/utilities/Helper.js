@@ -14,3 +14,7 @@ export const upload_to_s3 = (url, data) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+export const ObjectIsEmpty = (obj) => {
+  return Object.keys(obj).length === 0;
+};
