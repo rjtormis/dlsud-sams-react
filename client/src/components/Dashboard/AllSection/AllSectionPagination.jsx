@@ -6,7 +6,7 @@ function AllSectionPagination({ style_div, totalItems, ItemPerPage, setCurrentPa
   }
 
   return (
-    <div class={`btn-group self-center justify-self-center mt-4 ${style_div}`}>
+    <div className={`btn-group self-center justify-self-center mt-4 ${style_div}`}>
       {pages.map((page, index) => (
         <button
           key={index}
