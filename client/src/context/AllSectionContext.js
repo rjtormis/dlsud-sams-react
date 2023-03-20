@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect, useContext } from "react";
+import { createContext, useReducer, useEffect, useContext, useState } from "react";
 
 // Reducer
 import AllSectionReducer from "../reducers/AllSectionReducer";
@@ -8,23 +8,37 @@ import useFetch from "../hooks/useFetch";
 const AllSectionContext = createContext();
 
 export const AllSectionContextProvider = ({ children }) => {
+  const [section, setSection] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const initialValues = {
     sections: [],
-    loading: false,
   };
 
   const [state, dispatch] = useReducer(AllSectionReducer, initialValues);
   const { data } = useFetch("/api/v1/sections", "sections");
 
   useEffect(() => {
-    dispatch({ type: "SET_LOADING" });
+    setLoading(true);
     if (data !== null) {
       dispatch({ type: "GET_ALL_SECTIONS", payload: data });
+      setLoading(false);
     }
-  }, [data, dispatch]);
+  }, [data, setLoading]);
 
   return (
-    <AllSectionContext.Provider value={{ ...state, dispatch }}>
+    <AllSectionContext.Provider
+      value={{
+        ...state,
+        dispatch,
+        section,
+        setSection,
+        loading,
+        setLoading,
+        notFound,
+        setNotFound,
+      }}
+    >
       {children}
     </AllSectionContext.Provider>
   );
