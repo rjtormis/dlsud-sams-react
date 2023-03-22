@@ -3,27 +3,27 @@ import axios from "axios";
  * This file is all about SpecificSection actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
  *
- * fetchSpecificSectionDetails
+ * fetchSpecificSectionDetails @ Fetches the specific Section information
  *  @param {sectionName} - takes the sectionName once a specific section have been clicked
  *
- * EditSection, NewSubjectCreation,
+ * EditSection, NewSubjectCreation, @ Handles the edit of Section & Subject Creation.
  *  @param {section} - takes the section object
  *  @param {state} - accepts state object or the user input from the forms.
  *                 - check Formik documentation for more information.
  *  @param {auth} - takes the auth object that contains the user details.
  *
- * DeleteSection
+ * DeleteSection @ Handles the delete section
  *  @param {section} - takes the section object
  *  @param {auth} - takes the auth object that contains the user details.
  *
- * EditSubject
+ * EditSubject @ Handles the editing of subject
  *  @param {section} - takes the section object
  *  @param {state} - accepts state object or the user input from the forms.
  *                 - check Formik documentation for more information.
  *  @param {auth} - takes the auth object that contains the user details.
  *  @param {subject} -takes the subject object
  *
- *  DeleteSubject
+ *  DeleteSubject @ Handles the deleting of subject.
  * @param {section} - takes the section object
  * @param {subjectName} - takes the subjectName string
  * @param {auth} - takes the auth object that contains the user details.
