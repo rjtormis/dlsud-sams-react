@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AiOutlineWechat } from "react-icons/ai";
 import { BsCreditCard2FrontFill, BsFillTrashFill } from "react-icons/bs";
 import { Formik } from "formik";
@@ -28,12 +29,16 @@ import {
   EditSubject,
   DeleteSubject,
 } from "../../../actions/SpecificSection";
-import { useState } from "react";
+import { generatePresignedURLSection, NewSectionImageUpload } from "../../../actions/AllSection";
+
+// Helpers
+import { maxFileSize, supported_file_format, upload_to_s3 } from "../../../utilities/Helper";
 
 function SpecificSectionModals() {
   const [modalLoading, setModalLoading] = useState(false);
   const { auth } = useAuth();
-  const { loading, setLoading, section, subjectName, editSubject, dispatch } = useSpecificSection();
+  const { loading, setLoading, setSectioName, section, subjectName, editSubject, dispatch } =
+    useSpecificSection();
   const navigate = useNavigate();
 
   const handleCreate = async (state, action) => {
@@ -52,13 +57,33 @@ function SpecificSectionModals() {
 
   const handleEdit = async (state, action) => {
     setModalLoading(true);
-
+    const { file, ...data } = state;
+    console.log(state);
     try {
-      const editSection = await EditSection(section, state, auth);
-
+      if (
+        file !== undefined &&
+        file.size <= maxFileSize &&
+        supported_file_format.includes(file.type)
+      ) {
+        const formData = new FormData();
+        const file_extension = file.name.split(".")[1];
+        const {
+          data: {
+            signed_url: { fields, url },
+            location,
+          },
+        } = await generatePresignedURLSection(auth, section, file_extension);
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formData.append("file", file);
+        await upload_to_s3(url, formData);
+        await NewSectionImageUpload(auth, section, location);
+      }
+      const editSection = await EditSection(section, data, auth);
       if (editSection.status === 200) {
         setModalLoading(false);
-        navigate(`/dashboard/sections/${editSection.data.section.full}`, { replace: true });
+        navigate(`/dashboard/sections/${editSection.data.section.section_full}`, { replace: true });
       }
     } catch (e) {
       setModalLoading(false);

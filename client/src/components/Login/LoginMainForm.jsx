@@ -28,7 +28,9 @@ function LoginMainForm() {
     setLoading(true);
     try {
       const {
-        data: { id, type, name, profile_image },
+        data: {
+          user: { id, type, name, profile_image },
+        },
       } = await loginAuthorization(state);
       const access = getCookie("csrf_access_token");
       const refresh = getCookie("csrf_refresh_token");

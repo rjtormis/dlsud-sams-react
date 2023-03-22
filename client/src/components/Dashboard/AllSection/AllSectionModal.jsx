@@ -66,28 +66,32 @@ function AllSectionModal() {
         setReFetch(true);
         action.resetForm();
         setSubmitted(true);
+        setIsModalOpen(false);
+        navigate("/dashboard/sections");
       } else {
         await NewSectionCreation(auth, data);
         setLoading(false);
         action.resetForm();
         setReFetch(true);
         setSubmitted(true);
+        setIsModalOpen(false);
+        navigate("/dashboard/sections");
       }
     } catch (e) {
       setLoading(false);
+      setIsModalOpen(true);
+
       if (e.response.status === 409) {
         action.setFieldError("course", `${e.response.data["msg"]}`);
         action.setFieldError("year", "‎");
         action.setFieldError("section", "‎");
       }
     }
-    setIsModalOpen(false);
-    navigate("/dashboard/sections");
   };
   return (
     <>
       {isModalOpen ? (
-        <Modal id="create" onSubmit={submitted}>
+        <Modal id="create">
           <div className="flex">
             <AiOutlineAppstoreAdd className="block mr-2" size={30} />
             <h3 className="font-bold text-xl text-green-700">ADD CLASSROOM</h3>

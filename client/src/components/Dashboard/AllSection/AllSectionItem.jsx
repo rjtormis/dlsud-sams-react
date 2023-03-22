@@ -2,8 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { aws_section_url } from "../../../utilities/Helper";
 
-// To Refactor
 function AllSectionItem({ title, adviser, image_link }) {
+  /**
+   * AllSectionItem
+   *  Consider this as a List Item (<li> tag).
+   *  The main purpose of this component is it acts as the container for all of the objects inside the sections array.
+   *
+   */
   return (
     <>
       <div className="card card-compact glass w-full bg-white hover:cursor-pointer hover:scale-105  hover:bg-green-800 hover:text-white">
