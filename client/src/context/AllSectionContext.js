@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useReducer, useEffect, useContext, useState } from "react";
 
 // Reducer
@@ -11,13 +12,15 @@ export const AllSectionContextProvider = ({ children }) => {
   const [section, setSection] = useState({});
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [reFetch, setReFetch] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const initialValues = {
     sections: [],
   };
 
   const [state, dispatch] = useReducer(AllSectionReducer, initialValues);
-  const { data } = useFetch("/api/v1/sections", "sections");
 
+  const { data } = useFetch("/api/v1/sections", "sections");
   useEffect(() => {
     setLoading(true);
     if (data !== null) {
@@ -25,6 +28,26 @@ export const AllSectionContextProvider = ({ children }) => {
       setLoading(false);
     }
   }, [data, setLoading]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await axios.get("/api/v1/sections");
+        dispatch({ type: "GET_ALL_SECTIONS", payload: data.data.sections });
+        setLoading(false);
+        setReFetch(false);
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+        setReFetch(false);
+      }
+    };
+
+    if (reFetch === true) {
+      fetchData();
+    }
+  }, [reFetch]);
 
   return (
     <AllSectionContext.Provider
@@ -37,6 +60,10 @@ export const AllSectionContextProvider = ({ children }) => {
         setLoading,
         notFound,
         setNotFound,
+        reFetch,
+        setReFetch,
+        isModalOpen,
+        setIsModalOpen,
       }}
     >
       {children}
