@@ -16,7 +16,6 @@ import { useSpecificSection } from "../../context/SpecificSectionContext";
 function SpecificSection() {
   const params = useParams();
   const { loading, setSectionName, sectionName, setLoading } = useSpecificSection();
-  console.log(sectionName);
   useEffect(() => {
     setSectionName(params.name);
   }, [setSectionName, params.name]);
