@@ -106,6 +106,14 @@ def users():
 @app.route("/api/v1/user/get-pre-signed-url-profile", methods=["POST"])
 @jwt_required()
 def generate_presigned_profile():
+    """
+    REST API that gets pre signed url for AWS s3 storage then saves the image location e.g
+    https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com/user/default_profile.jpg    to the aws s3.
+
+    Return:
+            POST : STATUS 200 (Success)
+    """
+
     if request.method == "POST":
         data = request.get_json()
         imgID = unique_identifier_file()

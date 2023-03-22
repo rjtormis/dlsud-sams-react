@@ -11,6 +11,15 @@ from ..models.profile import ProfessorProfile
 @app.route("/api/v1/profiles/<string:id>", methods=["GET", "PATCH"])
 @jwt_required()
 def professor_profile(id):
+    """
+    REST API that handles the GET Profile and PATCH Profile (update profile)
+
+    Parameters: ID - id of the user
+
+    Return:
+            GET : STATUS 200(Success) - Returns the profile / user details
+            PATCH : Status 200(Success) - Returns success if the profile has / have been successfully edited
+    """
 
     current_user = get_jwt_identity()
     if request.method == "GET":

@@ -102,11 +102,19 @@ def specificSection(name):
 
     if request.method == "PUT":
         data = request.get_json()
+        print(data)
         full = f"{data['course']} {data['year']}{data['section']}"
         query_section = Section.query.filter_by(section_full=full).first()
 
         if query_section:
-            return jsonify({"msg": "Section already exists"}), 409
+
+            # If the user wants to edit minor details of the section this will trigger
+            # @todo
+            if query_section.section_full == name:
+                pass
+            # else 409 will trigger which means it already exists
+            else:
+                return jsonify({"msg": "Section already exists"}), 409
 
         section.section_full = full
         section.section_course = data["course"]
@@ -119,7 +127,7 @@ def specificSection(name):
         return (
             jsonify(
                 {
-                    "msg": "Section editted successfully.",
+                    "msg": "Section edited successfully.",
                     "section": section.json_format(),
                 }
             ),
@@ -137,6 +145,15 @@ def specificSection(name):
 @app.route("/api/v1/section/get-pre-signed-url-section", methods=["POST"])
 @jwt_required()
 def generate_presigned_section():
+    """
+    REST API that gets pre signed url for AWS s3 storage then saves the image location e.g
+    https://s3.console.aws.amazon.com/s3/object/aws-sams-storage?region=ap-southeast-1&prefix=section/default_section_image.jpg
+    to the aws s3.
+
+    Return:
+            POST : STATUS 200 (Success)
+    """
+
     if request.method == "POST":
         data = request.get_json()
         imgID = unique_identifier_file()
@@ -144,7 +161,8 @@ def generate_presigned_section():
         if section.section_image_link != "default_section_image.jpg":
             current_section_image = section.section_image_link.split("/")[1]
             s3.delete_object(
-                Bucket=s3_bucket_name, Key=f"{section.id}/{current_section_image}"
+                Bucket=s3_bucket_name,
+                Key=f"section/{section.id}/{current_section_image}",
             )
         Key = f"{data['id']}/{imgID}_{data['fileName']}"
         response = s3.generate_presigned_post(
@@ -157,6 +175,11 @@ def generate_presigned_section():
 @app.route("/api/v1/sections/<int:id>/upload", methods=["POST"])
 @jwt_required()
 def specificSectionUpload(id):
+    """
+    NOT SURE IF I IMPLEMENTED THIS API IN THE FRONT END LMAO.
+    to check
+    """
+
     if request.method == "POST":
         data = request.get_json()
         section = Section.query.filter_by(id=id).first()
