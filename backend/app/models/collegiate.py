@@ -19,6 +19,7 @@ class Collegiate(db.Model, Details):
     )
 
     def json_format(self):
+
         return {
             "id": self.id,
             "shorten": self.collegiate_shorten,

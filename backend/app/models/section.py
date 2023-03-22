@@ -67,5 +67,12 @@ class Section(db.Model, Details):
             print("Error occured")
             return False
 
+    def update_section(self, folder_path):
+        """
+        Updates the section.
+        """
+
+        pass
+
     def __repr__(self) -> str:
         return f"Section {self.section_full} Adviser: {self.professor.first_name} {self.professor.middle_initial} {self.professor.last_name}"

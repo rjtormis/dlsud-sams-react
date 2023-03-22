@@ -50,7 +50,7 @@ class ProfessorProfile(db.Model, Details):
         profile_image,
     ):
         """
-        Updates the user model.
+        Updates the user & profile model.
         """
 
         name_split_reverse = name.split(" ")[::-1]
