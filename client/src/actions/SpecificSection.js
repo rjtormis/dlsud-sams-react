@@ -55,7 +55,7 @@ export const DeleteSection = (section, auth) => {
 // Subject
 
 export const NewSubjectCreation = (section, state, auth) => {
-  axios.post(
+  return axios.post(
     "/api/v1/subjects",
     { sectionName: section.section_full, ...state },
     {
