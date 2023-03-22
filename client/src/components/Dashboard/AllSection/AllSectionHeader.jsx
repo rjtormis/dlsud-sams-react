@@ -3,7 +3,7 @@ import { useAllSection } from "../../../context/AllSectionContext";
 
 function AllSectionHeader() {
   const [toSearch, setToSearch] = useState("");
-  const { sections, setSection, setNotFound, notFound } = useAllSection();
+  const { sections, setSection, setNotFound, notFound, setIsModalOpen } = useAllSection();
   const memoizedSection = useMemo(() => sections, [sections]);
 
   useEffect(() => {
@@ -31,7 +31,11 @@ function AllSectionHeader() {
     <>
       <h1 className="text-4xl text-green-800">SECTIONS</h1>
       <div className="flex justify-end">
-        <a href="#create" className="btn btn-md btn-primary mr-4">
+        <a
+          href="#create"
+          className="btn btn-md btn-primary mr-4"
+          onClick={() => setIsModalOpen(true)}
+        >
           CREATE
         </a>
 

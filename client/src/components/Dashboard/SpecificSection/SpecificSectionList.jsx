@@ -8,7 +8,6 @@ function SpecificSectionList() {
   const { auth } = useAuth();
   const { section, dispatch, setSubjectName } = useSpecificSection();
   const subjects = section.subjects;
-  console.log(subjects);
 
   return (
     <>

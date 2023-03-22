@@ -28,32 +28,41 @@ import {
   EditSubject,
   DeleteSubject,
 } from "../../../actions/SpecificSection";
+import { useState } from "react";
 
 function SpecificSectionModals() {
+  const [modalLoading, setModalLoading] = useState(false);
   const { auth } = useAuth();
   const { loading, setLoading, section, subjectName, editSubject, dispatch } = useSpecificSection();
   const navigate = useNavigate();
 
   const handleCreate = async (state, action) => {
+    setModalLoading(true);
     try {
-      setLoading(true);
       const createSubject = await NewSubjectCreation(section, state, auth);
+      console.log(createSubject);
       action.resetForm();
       dispatch({ type: "SET_SUBJECT", payload: createSubject.data.subject });
-      setLoading(false);
+      setModalLoading(false);
     } catch (e) {
       console.log(e);
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
   const handleEdit = async (state, action) => {
+    setModalLoading(true);
+
     try {
       const editSection = await EditSection(section, state, auth);
+
       if (editSection.status === 200) {
+        setModalLoading(false);
         navigate(`/dashboard/sections/${editSection.data.section.full}`, { replace: true });
       }
     } catch (e) {
+      setModalLoading(false);
+
       if (e.response.status === 409) {
         action.setFieldError("course", e.response.data["msg"]);
         action.setFieldError("year", "‎");
@@ -64,11 +73,14 @@ function SpecificSectionModals() {
 
   const handleDelete = async (e) => {
     e.preventDefault();
+    setModalLoading(true);
     try {
       const deleteSection = await DeleteSection(section, auth);
       navigate("/dashboard/sections", { replace: true });
+      setModalLoading(false);
     } catch (e) {
       console.log(e);
+      setModalLoading(false);
     }
   };
 
@@ -131,7 +143,11 @@ function SpecificSectionModals() {
                 <option value="Saturday">Saturday</option>
               </CustomSelect>
               <div className="flex justify-center mt-4">
-                <input type="submit" value="CREATE" className="btn btn-primary w-full" />
+                {modalLoading ? (
+                  <ClipLoader className="m-auto" />
+                ) : (
+                  <input type="submit" value="CREATE" className="btn btn-primary w-full" />
+                )}
               </div>
             </form>
           )}
@@ -218,8 +234,8 @@ function SpecificSectionModals() {
                 />
               </div>
               <div className="flex justify-center mt-4">
-                {loading ? (
-                  <ClipLoader />
+                {modalLoading ? (
+                  <ClipLoader className="m-auto" />
                 ) : (
                   <input
                     type="submit"
@@ -243,7 +259,13 @@ function SpecificSectionModals() {
             <p className="text-center mt-4">
               Are you sure that you want to delete <b>{section.section_full}</b>
             </p>
-            <input type="submit" value="YES" className="btn btn-error mt-4" />
+            <div className="flex justify-center mt-4">
+              {modalLoading ? (
+                <ClipLoader className="m-auto" />
+              ) : (
+                <input type="submit" value="YES" className="btn btn-error w-full" />
+              )}
+            </div>
           </div>
         </form>
       </Modal>

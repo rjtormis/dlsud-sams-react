@@ -27,8 +27,9 @@ function LoginMainForm() {
   const handleSubmit = async (state, action) => {
     setLoading(true);
     try {
-      const authorization = await loginAuthorization(state);
-      const { id, type, name, profile_image } = authorization.data.user;
+      const {
+        data: { id, type, name, profile_image },
+      } = await loginAuthorization(state);
       const access = getCookie("csrf_access_token");
       const refresh = getCookie("csrf_refresh_token");
       setAuth({

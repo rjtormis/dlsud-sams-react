@@ -1,7 +1,7 @@
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, replace } from "formik";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
 // Components
@@ -26,14 +26,20 @@ import {
 import { maxFileSize, supported_file_format, upload_to_s3 } from "../../../utilities/Helper";
 
 function AllSectionModal() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { auth } = useAuth();
+  // React
   const navigate = useNavigate();
+
+  // Custom Hooks
+  const { setReFetch, isModalOpen, setIsModalOpen } = useAllSection();
+  const { auth } = useAuth();
+
+  // React useState Hooks
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
     const { file, ...data } = state;
-    setIsLoading(true);
-
+    setLoading(true);
     try {
       if (
         file !== undefined &&
@@ -43,117 +49,123 @@ function AllSectionModal() {
         const formData = new FormData();
         const file_extension = file.name.split(".")[1];
 
-        const creatNewSection = await NewSectionCreation(auth, data);
-        const section = creatNewSection.data;
-        console.log(section);
-        const getPresignedURL = await generatePresignedURLSection(auth, section, file_extension);
-        console.log(getPresignedURL.data);
-        const { signed_url, location } = getPresignedURL.data;
-        const { fields, url } = signed_url;
+        const { data: section } = await NewSectionCreation(auth, data);
+        const {
+          data: {
+            signed_url: { fields, url },
+            location,
+          },
+        } = await generatePresignedURLSection(auth, section, file_extension);
+
         Object.entries(fields).forEach(([key, value]) => {
           formData.append(key, value);
         });
         formData.append("file", file);
         await upload_to_s3(url, formData);
         await NewSectionImageUpload(auth, section, location);
-        setIsLoading(false);
+        setReFetch(true);
         action.resetForm();
-        navigate(`/dashboard/sections/${section.section_full}`);
+        setSubmitted(true);
       } else {
-        const createNewSection = await NewSectionCreation(auth, data);
-        const section = createNewSection.data;
-        setIsLoading(false);
+        await NewSectionCreation(auth, data);
+        setLoading(false);
         action.resetForm();
-        navigate(`/dashboard/sections/${section.section_full}`);
+        setReFetch(true);
+        setSubmitted(true);
       }
     } catch (e) {
-      setIsLoading(false);
+      setLoading(false);
       if (e.response.status === 409) {
         action.setFieldError("course", `${e.response.data["msg"]}`);
         action.setFieldError("year", "‎");
         action.setFieldError("section", "‎");
       }
     }
+    setIsModalOpen(false);
+    navigate("/dashboard/sections");
   };
-
   return (
     <>
-      <Modal id="create">
-        <div className="flex">
-          <AiOutlineAppstoreAdd className="block mr-2" size={30} />
-          <h3 className="font-bold text-xl text-green-700">ADD CLASSROOM</h3>
-        </div>
-        <Formik
-          initialValues={{
-            course: "",
-            year: "",
-            section: "",
-            file: undefined,
-          }}
-          validationSchema={registerClassroomSchema}
-          onSubmit={handleSubmit}
-        >
-          {(props) => (
-            <form
-              action=""
-              className="
+      {isModalOpen ? (
+        <Modal id="create" onSubmit={submitted}>
+          <div className="flex">
+            <AiOutlineAppstoreAdd className="block mr-2" size={30} />
+            <h3 className="font-bold text-xl text-green-700">ADD CLASSROOM</h3>
+          </div>
+          <Formik
+            initialValues={{
+              course: "",
+              year: "",
+              section: "",
+              file: undefined,
+            }}
+            validationSchema={registerClassroomSchema}
+            onSubmit={handleSubmit}
+          >
+            {(props) => (
+              <form
+                action=""
+                className="
             flex flex-col
           "
-              encType="multipart/form-data"
-              onSubmit={props.handleSubmit}
-            >
-              <CustomSelect page="register" label="Course" name="course">
-                <option value="">Select course</option>
-                <option value="IT">Information Technology</option>
-                <option value="CS">Computer Science</option>
-              </CustomSelect>
-              <div className="grid grid-cols-2 gap-2 mt-3">
-                <CustomSelect page="register" label="Year" name="year">
-                  <option value="0">Select section level</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
+                encType="multipart/form-data"
+                onSubmit={props.handleSubmit}
+              >
+                <CustomSelect page="register" label="Course" name="course">
+                  <option value="">Select course</option>
+                  <option value="IT">Information Technology</option>
+                  <option value="CS">Computer Science</option>
                 </CustomSelect>
-                <CustomSelect page="register" label="Section" name="section">
-                  <option value="0">Select year level</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </CustomSelect>
-              </div>
-              <div className="form-control mt-3">
-                <label htmlFor="" className="label">
-                  <span className="label-text">Custom Background (Optional)</span>
-                  {props.errors.file && (
-                    <p className={`custom-text-register text-error`}>{props.errors.file}</p>
-                  )}
-                </label>
-                <input
-                  type="file"
-                  name="file"
-                  onChange={(e) => {
-                    props.setFieldValue("file", e.currentTarget.files[0]);
-                  }}
-                  className="file-input file-input-ghost file-input-bordered"
-                />
-              </div>
-              <div className="flex justify-center mt-4">
-                {isLoading ? (
-                  <ClipLoader />
-                ) : (
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <CustomSelect page="register" label="Year" name="year">
+                    <option value="0">Select section level</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </CustomSelect>
+                  <CustomSelect page="register" label="Section" name="section">
+                    <option value="0">Select year level</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </CustomSelect>
+                </div>
+                <div className="form-control mt-3">
+                  <label htmlFor="" className="label">
+                    <span className="label-text">Custom Background (Optional)</span>
+                    {props.errors.file && (
+                      <p className={`custom-text-register text-error`}>{props.errors.file}</p>
+                    )}
+                  </label>
                   <input
-                    type="submit"
-                    className=" btn w-full btn-primary hover:btn-secondary"
-                    value="Submit"
+                    type="file"
+                    name="file"
+                    onChange={(e) => {
+                      props.setFieldValue("file", e.currentTarget.files[0]);
+                    }}
+                    className="file-input file-input-ghost file-input-bordered"
                   />
-                )}
-              </div>
-            </form>
-          )}
-        </Formik>
-      </Modal>
+                </div>
+                <div className="flex justify-center mt-4">
+                  {loading ? (
+                    <ClipLoader />
+                  ) : (
+                    <input
+                      type="submit"
+                      className=" btn w-full btn-primary hover:btn-secondary"
+                      value="Submit"
+                    />
+                  )}
+                </div>
+              </form>
+            )}
+          </Formik>
+        </Modal>
+      ) : (
+        ""
+      )}
     </>
   );
 }
