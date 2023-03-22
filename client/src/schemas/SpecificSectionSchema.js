@@ -6,6 +6,16 @@ export const editSectionSchema = yup.object().shape({
   course: yup.string().oneOf(["IT", "CS"], "Please select a course").required("Required *"),
   year: yup.number().oneOf([1, 2, 3, 4], "Please select year level").required("Required *"),
   section: yup.number().oneOf([1, 2, 3, 4], "Please section level").required("Required *"),
+  file: yup.mixed().test("fileFormat", "Unsupported File Type", (file) => {
+    let valid = true;
+    if (file) {
+      const supportedFormat = ["image/png", "image/jpeg", "image/jpg"];
+      if (!supportedFormat.includes(file.type)) {
+        valid = false;
+      }
+    }
+    return valid;
+  }),
 });
 
 // Subjects
