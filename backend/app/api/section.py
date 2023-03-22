@@ -127,6 +127,8 @@ def specificSection(name):
         )
 
     if request.method == "DELETE":
+        bucket = s3_resource.Bucket(s3_bucket_name)
+        bucket.objects.filter(Prefix=f"section/{section.id}").delete()
         db.session.delete(section)
         db.session.commit()
         return jsonify({"msg": "Section deleted successfully."}), 200
@@ -145,7 +147,6 @@ def generate_presigned_section():
                 Bucket=s3_bucket_name, Key=f"{section.id}/{current_section_image}"
             )
         Key = f"{data['id']}/{imgID}_{data['fileName']}"
-        print(Key)
         response = s3.generate_presigned_post(
             s3_bucket_name, Key=f"section/{Key}", ExpiresIn=300
         )
