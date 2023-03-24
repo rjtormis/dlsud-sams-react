@@ -6,6 +6,9 @@ from datetime import datetime
 from ..utils.generate_uuid import generate_uuid
 from .details import Details
 
+# Exception
+from ..exception import NotFound
+
 
 class User(db.Model, Details):
 
@@ -36,6 +39,30 @@ class User(db.Model, Details):
             "utf-8"
         )
 
+    @classmethod
+    def authenticate(
+        cls,
+        email,
+        password,
+    ):
+        """
+        Handles the user authentication
+        """
+
+        query_email = User.query.filter_by(emailAddress=email).first()
+        confirm_password = bcrypt.check_password_hash(
+            query_email.password_hash, password
+        )
+
+        if query_email:
+            if confirm_password:
+                return query_email.serialized(), query_email
+            else:
+                raise NotFound("Invalid credentials")
+        else:
+            raise NotFound("Invalid credentials")
+
+    @property
     def check_user_folder(self, folder_path):
 
         """
@@ -54,6 +81,15 @@ class User(db.Model, Details):
         except Exception as e:
             print("Error occured")
             return False
+
+    @property
+    def serialized(self):
+        return {
+            "id": self.id,
+            "name": f"{self.first_name} {self.middle_initial}. {self.last_name}",
+            "type": self.type,
+            "profile_image": self.profile_image_link,
+        }
 
     def __repr__(self):
         return f"User: {self.first_name} {self.middle_initial} {self.last_name}, Type:{self.type}"

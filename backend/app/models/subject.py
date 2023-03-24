@@ -29,7 +29,8 @@ class Subject(db.Model, Details):
         db.String(length=30), nullable=False, unique=True, default=id_generator
     )
 
-    def json_format(self):
+    @property
+    def serialized(self):
         return {
             "id": self.id,
             "code": self.code,

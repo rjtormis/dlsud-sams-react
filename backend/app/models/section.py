@@ -2,6 +2,12 @@ from app import app, db, s3, s3_resource, s3_bucket_name
 from flask import jsonify
 from .details import Details
 
+# Utilities
+from utils.database_utilities import push_to_database
+
+# Exception
+from exception import ConflictError
+
 
 class Section(db.Model, Details):
     __tablename__ = "sections"
@@ -18,7 +24,38 @@ class Section(db.Model, Details):
 
     subjects = db.relationship("Subject", backref="section", cascade="all,delete")
 
-    def json_format(self):
+    @classmethod
+    def create_section(cls, course, year, section, id):
+        full = f"{course} {year}{section}"
+
+        query_section = Section.query.filter_by(section_full=full).first()
+
+        if query_section:
+            raise ConflictError("Section already taken")
+        else:
+            new_section = Section(
+                section_full=full,
+                section_course=course,
+                section_adviser=id,
+                section_year=year,
+                section_level=section,
+            )
+            push_to_database(new_section)
+
+            new_section.check_section_folder(f"section/{new_section.id}")
+
+            return new_section.serialized()
+
+    @classmethod
+    def isAdviser(self, user):
+        """
+        Checks if the user  is the section adviser
+        """
+        query_section = Section.query.filter_by(section_full=user).first()
+        return query_section.section_adviser == user
+
+    @property
+    def serialized(self):
         return {
             "id": self.id,
             "section_full": self.section_full,
@@ -48,6 +85,7 @@ class Section(db.Model, Details):
             ],
         }
 
+    @property
     def check_section_folder(self, folder_path):
         """
         Check if folder exists in AWS s3.
@@ -71,6 +109,7 @@ class Section(db.Model, Details):
         """
         Updates the section.
         """
+        query_section = Section.query.filter_by(section_full=full).first()
 
         pass
 

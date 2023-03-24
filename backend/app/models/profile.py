@@ -3,6 +3,8 @@ from flask import jsonify
 from datetime import datetime
 
 # Models
+from ..models.professor import Professor
+from ..models.collegiate import Collegiate
 from ..models.details import Details
 
 
@@ -19,7 +21,8 @@ class ProfessorProfile(db.Model, Details):
     linkedIn_social = db.Column(db.String(length=50), default="None")
     twitter_social = db.Column(db.String(length=50), default="None")
 
-    def json_format(self):
+    @property
+    def serialized(self):
         return {
             "user": {
                 "id": self.id,
@@ -39,9 +42,10 @@ class ProfessorProfile(db.Model, Details):
 
     def update_professor_profile(
         self,
+        id,
         name,
         bio,
-        collegiate_id,
+        collegiate,
         consultation,
         fb,
         instagram,
@@ -52,18 +56,21 @@ class ProfessorProfile(db.Model, Details):
         """
         Updates the user & profile model.
         """
+        collegiate_ = Collegiate.query.filter_by(collegiate_name=collegiate).first()
 
         name_split_reverse = name.split(" ")[::-1]
+
         f_name = name_split_reverse[2:][::-1]
 
         self.professor_profile.first_name = " ".join(f_name)
         self.professor_profile.middle_initial = name_split_reverse[1]
         self.professor_profile.last_name = name_split_reverse[0]
+
         if profile_image != "":
             self.professor_profile.profile_image_link = profile_image
 
         self.bio = bio
-        self.collegiate = collegiate_id
+        self.collegiate = collegiate_.id
         self.consultation = consultation
         self.fb_social = fb
         self.instagram_social = instagram

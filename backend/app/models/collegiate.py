@@ -18,7 +18,8 @@ class Collegiate(db.Model, Details):
         "ProfessorProfile", backref="professor_profile_collegiate"
     )
 
-    def json_format(self):
+    @property
+    def serialized(self):
 
         return {
             "id": self.id,

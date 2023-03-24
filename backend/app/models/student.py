@@ -1,6 +1,13 @@
 from app import db
 
+# Model
 from .user import User
+
+# Utilities
+from ..utils.database_utilities import push_to_database
+
+# Exception
+from ..exception import ConflictError
 
 
 class Student(User):
@@ -9,6 +16,33 @@ class Student(User):
 
     student_no = db.Column(db.String(length=10), primary_key=True, nullable=False)
     __mapper_args__ = {"polymorphic_identity": "student"}
+
+    @classmethod
+    def create_student_account(cls, id, first, middle, last, type, email, password):
+        """
+        Creates a student account.
+        """
+        qEmail = User.query.filter_by(emailAddress=email).first()
+        qId = Student.query.filter_by(student_no=id).first()
+
+        if qEmail and qId:
+            raise ConflictError("Student number & Email already taken.")
+        if qEmail:
+            raise ConflictError("Email already taken.")
+        if qId:
+            raise ConflictError("Student no. already taken.")
+
+        new_student = Student(
+            first_name=first,
+            middle_initial=middle,
+            last_name=last,
+            student_no=id,
+            type=type,
+            emailAddress=email,
+            password=password,
+        )
+
+        push_to_database(new_student)
 
     def __repr__(self):
         return f"Student: {Student.emailAddress} ID:{self.student_no}"
