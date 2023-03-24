@@ -11,6 +11,12 @@ from ..models.subject import Subject
 from ..utils.database_utilities import push_to_database
 from ..utils.generate_unique_code import unique_identifier_file
 
+# Exception
+from ..exception import ConflictError
+
+# Error Handler
+from ..errors import handle_conflict_error
+
 
 @app.route("/api/v1/sections", methods=["GET", "POST"])
 @jwt_required()
@@ -28,7 +34,7 @@ def allSections():
         sections = []
 
         for i in get_sections:
-            sections.append(i.json_format())
+            sections.append(i.serialized())
         return jsonify({"sections": sections})
 
     if request.method == "POST":
@@ -36,24 +42,13 @@ def allSections():
         course = data["course"]
         year = data["year"]
         section = data["section"]
-        full = f"{course} {year}{section}"
 
-        query_section = Section.query.filter_by(section_full=full).first()
+        try:
+            new_section = Section.create_section(course, year, section, current_user)
+        except ConflictError as e:
+            return handle_conflict_error(e)
 
-        if query_section:
-            return jsonify({"msg": "Section already taken"}), 409
-
-        new_section = Section(
-            section_full=full,
-            section_course=course,
-            section_adviser=current_user,
-            section_year=year,
-            section_level=section,
-        )
-        push_to_database(new_section)
-        new_section.check_section_folder(f"section/{new_section.id}")
-
-        return jsonify(new_section.json_format()), 201
+        return jsonify(new_section.serialized()), 201
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
@@ -68,12 +63,9 @@ def isSectionAdviser(name):
 
     current_user = get_jwt_identity()
 
-    query_section = Section.query.filter_by(section_full=name).first()
+    adviser = Section.isAdviser(current_user)
 
-    if query_section.section_adviser == current_user:
-        return jsonify({"isAdviser": True}), 200
-    else:
-        return jsonify({"isAdviser": False}), 200
+    return jsonify({"isAdviser": adviser}), 200
 
 
 @app.route("/api/v1/sections/<string:name>", methods=["GET", "POST", "DELETE", "PUT"])
@@ -97,12 +89,11 @@ def specificSection(name):
         allSubjects = Subject.query.filter_by(section_id=section.id).all()
         subject = []
         for i in allSubjects:
-            subject.append(i.json_format())
-        return jsonify({"section": section.json_format()})
+            subject.append(i.serialized())
+        return jsonify({"section": section.serialized()})
 
     if request.method == "PUT":
         data = request.get_json()
-        print(data)
         full = f"{data['course']} {data['year']}{data['section']}"
         query_section = Section.query.filter_by(section_full=full).first()
 
@@ -128,13 +119,14 @@ def specificSection(name):
             jsonify(
                 {
                     "msg": "Section edited successfully.",
-                    "section": section.json_format(),
+                    "section": section.serialized(),
                 }
             ),
             200,
         )
 
     if request.method == "DELETE":
+
         bucket = s3_resource.Bucket(s3_bucket_name)
         bucket.objects.filter(Prefix=f"section/{section.id}").delete()
         db.session.delete(section)

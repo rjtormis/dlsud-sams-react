@@ -25,20 +25,16 @@ def professor_profile(id):
     if request.method == "GET":
         user = Professor.query.filter_by(id=id).first()
         current_profile = ProfessorProfile.query.filter_by(id=user.id).first()
-        return current_profile.json_format(), 200
+        return current_profile.serialized(), 200
 
     if request.method == "PATCH":
         data = request.get_json()
 
-        user = Professor.query.filter_by(id=id).first()
-        collegiate_ = Collegiate.query.filter_by(
-            collegiate_name=data["collegiate"]
-        ).first()
-        current_profile = ProfessorProfile.query.filter_by(id=user.id).first()
-        current_profile.update_professor_profile(
+        current_profile = ProfessorProfile.update_professor_profile(
+            current_user,
             data["name"],
             data["bio"],
-            collegiate_.id,
+            data["collegiate"],
             data["consultation"],
             data["socials"]["fb"],
             data["socials"]["instagram"],
@@ -46,4 +42,5 @@ def professor_profile(id):
             data["socials"]["twitter"],
             data["profile_image"],
         )
+
         return jsonify({"msg": "Account edited successfully!"}), 200

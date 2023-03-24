@@ -12,6 +12,12 @@ from app import app, db, jwt, bcrypt
 # Models
 from ..models.user import User
 
+# Exception
+from ..exception import NotFound
+
+# Error Handler
+from ..errors import handle_not_found_error
+
 
 @app.route("/login", methods=["POST"])
 def auth():
@@ -26,36 +32,16 @@ def auth():
     email = data["email"]
     password = data["password"]
 
-    query_email = User.query.filter_by(emailAddress=email).first()
-
-    if query_email:
-        confirm_password = bcrypt.check_password_hash(
-            query_email.password_hash, password
-        )
-        if confirm_password:
-            access_token = create_access_token(identity=query_email.id, fresh=True)
-            refresh_token = create_refresh_token(identity=query_email.id)
-
-            response = jsonify(
-                {
-                    "user": {
-                        "id": query_email.id,
-                        "name": f"{query_email.first_name} {query_email.middle_initial}. {query_email.last_name}",
-                        "type": query_email.type,
-                        "profile_image": query_email.profile_image_link,
-                    }
-                }
-            )
-            set_access_cookies(response, access_token)
-            set_refresh_cookies(response, refresh_token)
-
-            return response, 200
-
-        else:
-            return jsonify({"msg": "Invalid credentials"}), 404
-
-    else:
-        return jsonify({"msg": "Invalid credentials"}), 404
+    try:
+        serialized_user, user = User.authenticate(email, password)
+        access_token = create_access_token(identity=user.id, fresh=True)
+        refresh_token = create_refresh_token(identity=user.id)
+        response = jsonify({"user": serialized_user})
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        return response, 200
+    except NotFound as e:
+        handle_not_found_error(e)
 
 
 @app.route("/refresh_token", methods=["POST"])

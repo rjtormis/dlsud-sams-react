@@ -12,6 +12,12 @@ from ..models.profile import ProfessorProfile
 from ..utils.database_utilities import push_to_database
 from ..utils.generate_unique_code import unique_identifier_file
 
+# Exception
+from ..exception import ConflictError
+
+# Error Handler
+from ..errors import handle_conflict_error
+
 
 @app.route("/api/v1/users", methods=["GET", "POST"])
 def users():
@@ -21,86 +27,42 @@ def users():
     Return: STATUS 201(CREATED/SUCCESSFULL) , STATUS 409(CONFLICT/EXISTING ACCOUNT)
     """
 
-    if request.method == "GET":
-        return jsonify({"OK": "KEYO!"})
-
     if request.method == "POST":
 
         data = request.get_json()
-        (
-            first_name,
-            middle_initial,
-            last_name,
-            type,
-            emailAddress,
-            password,
-            confirmPassword,
-        ) = (
-            data["firstName"],
-            data["middleInitial"],
-            data["lastName"],
-            data["type"],
-            data["emailAddress"],
-            data["password"],
-            data["confirmPassword"],
-        )
 
         if type == "student":
 
             id = data["studentNumber"]
+            try:
 
-            query_email = User.query.filter_by(emailAddress=emailAddress).first()
-            query_id = Student.query.filter_by(student_no=id).first()
-
-            if query_email and query_id:
-                return jsonify({"msg": "Student number & Email already taken."}), 409
-
-            if query_id:
-                return jsonify({"msg": "Student no. already taken."}), 409
-
-            if query_email:
-                return jsonify({"msg": "Email already taken."}), 409
-
-            new_student = Student(
-                first_name=first_name,
-                middle_initial=middle_initial,
-                last_name=last_name,
-                student_no=id,
-                type=type,
-                emailAddress=emailAddress,
-                password=confirmPassword,
-            )
-            push_to_database(new_student)
+                Student.create_student_account(
+                    id,
+                    data["firstName"],
+                    data["middleInitial"],
+                    data["lastName"],
+                    data["type"],
+                    data["emailAddress"],
+                    data["password"],
+                    data["confirmPassword"],
+                )
+                return jsonify({"message": "Student account created"})
+            except ConflictError as e:
+                handle_conflict_error(e)
 
         if type == "professor":
-            query_email = User.query.filter_by(emailAddress=emailAddress).first()
-
-            if query_email:
-                return jsonify({"msg": "Email already taken."}), 409
-
-            collegiate_shorten = data["collegiate"]
-
-            collegiate = Collegiate.query.filter_by(
-                collegiate_shorten=collegiate_shorten
-            ).first()
-
-            new_professor = Professor(
-                first_name=first_name,
-                middle_initial=middle_initial,
-                last_name=last_name,
-                type=type,
-                collegiate_id=collegiate.id,
-                emailAddress=emailAddress,
-                password=confirmPassword,
-            )
-            push_to_database(new_professor)
-            new_professor_profile = ProfessorProfile(
-                id=new_professor.id, collegiate=new_professor.collegiate_id
-            )
-            push_to_database(new_professor_profile)
-            new_professor.check_user_folder(f"user/professor/{new_professor.id}")
-
-        return jsonify({"msg": "Successful"}), 201
+            try:
+                Professor.create_professor_account(
+                    data["firstName"],
+                    data["middleInitial"],
+                    data["lastName"],
+                    data["type"],
+                    data["collegiate"],
+                    data["emailAddress"],
+                    data["confirmPassword"],
+                )
+            except ConflictError as e:
+                handle_conflict_error(e)
 
 
 @app.route("/api/v1/user/get-pre-signed-url-profile", methods=["POST"])

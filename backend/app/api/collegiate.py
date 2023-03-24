@@ -19,5 +19,5 @@ def collegiates():
     if request.method == "GET":
         collegiates = Collegiate.query.all()
         return jsonify(
-            {"collegiates": [collegiate.json_format() for collegiate in collegiates]}
+            {"collegiates": [collegiate.serialized() for collegiate in collegiates]}
         )

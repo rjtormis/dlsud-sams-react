@@ -55,7 +55,7 @@ def subjects():
 
             push_to_database(new_subject)
 
-            return jsonify({"subject": new_subject.json_format()}), 200
+            return jsonify({"subject": new_subject.serialized()}), 200
 
 
 @app.route(
@@ -79,7 +79,7 @@ def specific_subject(section_name, sub):
 
     if request.method == "GET":
         pass
-        # return jsonify({"subject": subject.json_format()})
+        # return jsonify({"subject": subject.serialized()})
 
     if request.method == "PATCH":
         data = request.get_json()
