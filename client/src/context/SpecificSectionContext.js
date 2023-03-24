@@ -11,6 +11,7 @@ export const SpecificSectionContextProvider = ({ children }) => {
   const [subjectName, setSubjectName] = useState("");
   const [isAdviser, setIsAdviser] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState(false);
 
   const initialValues = {
     section: {},
@@ -51,6 +52,8 @@ export const SpecificSectionContextProvider = ({ children }) => {
         setIsAdviser,
         loading,
         setLoading,
+        filter,
+        setFilter,
         ...state,
         dispatch,
       }}
