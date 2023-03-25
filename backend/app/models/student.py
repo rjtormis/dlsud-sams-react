@@ -23,7 +23,7 @@ class Student(User):
         Creates a student account.
         """
         qEmail = User.query.filter_by(emailAddress=email).first()
-        qId = Student.query.filter_by(student_no=id).first()
+        qId = cls.query.filter_by(student_no=id).first()
 
         if qEmail and qId:
             raise ConflictError("Student number & Email already taken.")
@@ -32,7 +32,7 @@ class Student(User):
         if qId:
             raise ConflictError("Student no. already taken.")
 
-        new_student = Student(
+        new_student = cls(
             first_name=first,
             middle_initial=middle,
             last_name=last,

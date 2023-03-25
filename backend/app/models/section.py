@@ -1,12 +1,14 @@
 from app import app, db, s3, s3_resource, s3_bucket_name
 from flask import jsonify
 from .details import Details
+from datetime import datetime
 
 # Utilities
-from utils.database_utilities import push_to_database
+from ..utils.database_utilities import push_to_database, delete_in_database
+from ..utils.generate_unique_code import unique_identifier_file
 
 # Exception
-from exception import ConflictError
+from ..exception import ConflictError
 
 
 class Section(db.Model, Details):
@@ -28,12 +30,12 @@ class Section(db.Model, Details):
     def create_section(cls, course, year, section, id):
         full = f"{course} {year}{section}"
 
-        query_section = Section.query.filter_by(section_full=full).first()
+        query_section = cls.query.filter_by(section_full=full).first()
 
         if query_section:
             raise ConflictError("Section already taken")
         else:
-            new_section = Section(
+            new_section = cls(
                 section_full=full,
                 section_course=course,
                 section_adviser=id,
@@ -44,15 +46,67 @@ class Section(db.Model, Details):
 
             new_section.check_section_folder(f"section/{new_section.id}")
 
-            return new_section.serialized()
+            return new_section.serialized
 
     @classmethod
-    def isAdviser(self, user):
+    def isAdviser(cls, user, sectionName):
         """
         Checks if the user  is the section adviser
         """
-        query_section = Section.query.filter_by(section_full=user).first()
+        query_section = cls.query.filter_by(section_full=sectionName).first()
         return query_section.section_adviser == user
+
+    @classmethod
+    def update_section(cls, name, course, year, section, folder_path):
+        """
+        Updates the section.
+        """
+        section = cls.query.filter_by(section_full=name).first()
+
+        full = f"{course} {year}{section}"
+
+        qSection = cls.query.filter_by(section_full=full).first()
+
+        if qSection:
+
+            if qSection.section_full == name:
+                pass
+
+            else:
+                raise ConflictError("Section already exists")
+        section.section_full = full
+        section.section_course = course
+        section.section_year = year
+        section.section_level = section
+        section.updated = datetime.utcnow()
+
+        db.session.commit()
+
+    @classmethod
+    def delete_section(cls, section):
+        """
+        Deletes the section
+
+        """
+        bucket = s3_resource.Bucket(s3_bucket_name)
+        bucket.objects.filter(Prefix=f"section/{section.id}").delete()
+        delete_in_database(section)
+
+    @classmethod
+    def generate_presigned_url(cls, id, filename):
+        imgID = unique_identifier_file()
+        section = Section.query.filter_by(id=id).first()
+        if section.section_image_link != "default_section_image.jpg":
+            current_section_image = section.section_image_link.split("/")[1]
+            s3.delete_object(
+                Bucket=s3_bucket_name,
+                Key=f"section/{section.id}/{current_section_image}",
+            )
+        Key = f"{id}/{imgID}_{filename}"
+        response = s3.generate_presigned_post(
+            s3_bucket_name, Key=f"section/{Key}", ExpiresIn=300
+        )
+        return response, Key
 
     @property
     def serialized(self):
@@ -85,8 +139,8 @@ class Section(db.Model, Details):
             ],
         }
 
-    @property
-    def check_section_folder(self, folder_path):
+    @classmethod
+    def check_section_folder(cls, folder_path):
         """
         Check if folder exists in AWS s3.
 
@@ -104,14 +158,6 @@ class Section(db.Model, Details):
         except Exception as e:
             print("Error occured")
             return False
-
-    def update_section(self, folder_path):
-        """
-        Updates the section.
-        """
-        query_section = Section.query.filter_by(section_full=full).first()
-
-        pass
 
     def __repr__(self) -> str:
         return f"Section {self.section_full} Adviser: {self.professor.first_name} {self.professor.middle_initial} {self.professor.last_name}"

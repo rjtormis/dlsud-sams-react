@@ -2,9 +2,12 @@ import boto3
 from app import db, bcrypt, s3, s3_resource, s3_bucket_name
 from datetime import datetime
 
+# Models
+from .details import Details
+
 # Helper
 from ..utils.generate_uuid import generate_uuid
-from .details import Details
+from ..utils.generate_unique_code import unique_identifier_file
 
 # Exception
 from ..exception import NotFound
@@ -49,21 +52,42 @@ class User(db.Model, Details):
         Handles the user authentication
         """
 
-        query_email = User.query.filter_by(emailAddress=email).first()
-        confirm_password = bcrypt.check_password_hash(
-            query_email.password_hash, password
-        )
+        query_email = cls.query.filter_by(emailAddress=email).first()
 
         if query_email:
+            confirm_password = bcrypt.check_password_hash(
+                query_email.password_hash, password
+            )
             if confirm_password:
-                return query_email.serialized(), query_email
+                return query_email.serialized
             else:
-                raise NotFound("Invalid credentials")
+                raise NotFound("Invalid login credentials")
         else:
-            raise NotFound("Invalid credentials")
+            raise NotFound("Invalid login credentials")
 
-    @property
-    def check_user_folder(self, folder_path):
+    @classmethod
+    def generate_pre_signed_url(cls, id, type, filename):
+        """
+        Generates pre signed url
+
+        """
+
+        imgID = unique_identifier_file()
+        user = User.query.filter_by(id=id).first()
+        if user.profile_image_link != "default_profile.jpg":
+            current_profile = user.profile_image_link.split("/")[2]
+            s3.delete_object(
+                Bucket=s3_bucket_name,
+                Key=f"user/{user.type}/{user.id}/{current_profile}",
+            )
+        Key = f"{type}/{id}/{imgID}_{filename}"
+        response = s3.generate_presigned_post(
+            s3_bucket_name, Key=f"user/{Key}", ExpiresIn=300
+        )
+        return response, Key
+
+    @classmethod
+    def check_user_folder(cls, folder_path):
 
         """
         Check if the folder of the user already exists in AWS s3

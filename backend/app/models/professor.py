@@ -38,12 +38,12 @@ class Professor(User):
         if qEmail:
             raise ConflictError("Email already taken.")
 
-        new_professor = Professor(
+        new_professor = cls(
             first_name=first,
             middle_initial=middle,
             last_name=last,
             type=type,
-            collegiate_id=collegiate,
+            collegiate_id=collegiate.id,
             emailAddress=email,
             password=password,
         )
