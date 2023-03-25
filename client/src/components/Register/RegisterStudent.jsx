@@ -34,11 +34,12 @@ function RegisterStudent({ success }) {
       }
     } catch (e) {
       setLoading(false);
-      if (e.response.data["msg"] === "Student no. already taken.") {
-        action.setFieldError("studentNumber", "Student no. already exists.");
-      } else if (e.response.data["msg"] === "Email already taken.") {
-        action.setFieldError("emailAddress", "Email already exists.");
-      } else if (e.response.data["msg"] === "Student number & Email already taken.") {
+      const { message } = e.response.data;
+      if (message === "Student no. already taken.") {
+        action.setFieldError("studentNumber", message);
+      } else if (message === "Email already taken.") {
+        action.setFieldError("emailAddress", message);
+      } else if (message === "Student number & Email already taken.") {
         action.setFieldError("studentNumber", "Student no. already exists.");
         action.setFieldError("emailAddress", "Email already exists.");
       }

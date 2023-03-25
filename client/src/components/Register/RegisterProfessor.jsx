@@ -35,8 +35,9 @@ function RegisterProfessor({ success }) {
       }
     } catch (e) {
       setLoading(false);
-      if (e.response.data["msg"] === "Email already taken.") {
-        action.setFieldError("emailAddress", "Email already exists.");
+      const { error, message, status } = e.response.data;
+      if (status === 409) {
+        action.setFieldError("emailAddress", message);
       }
     }
   };

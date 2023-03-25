@@ -44,9 +44,10 @@ function LoginMainForm() {
       });
       navigate("/dashboard");
     } catch (e) {
-      if (e.response.status === 404) {
+      const { message, status } = e.response.data;
+      if (status === 404) {
         setLoading(false);
-        action.setFieldError("email", "Invalid credentials or account does not exists.");
+        action.setFieldError("email", message);
         action.setFieldError("password", "‎");
       }
       if (e.response.status === 500) {

@@ -67,6 +67,7 @@ function AllSectionModal() {
         action.resetForm();
         setSubmitted(true);
         setIsModalOpen(false);
+        setLoading(false);
         navigate("/dashboard/sections");
       } else {
         await NewSectionCreation(auth, data);
