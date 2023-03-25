@@ -33,15 +33,15 @@ def auth():
     password = data["password"]
 
     try:
-        serialized_user, user = User.authenticate(email, password)
-        access_token = create_access_token(identity=user.id, fresh=True)
-        refresh_token = create_refresh_token(identity=user.id)
+        serialized_user = User.authenticate(email, password)
+        access_token = create_access_token(identity=serialized_user["id"], fresh=True)
+        refresh_token = create_refresh_token(identity=serialized_user["id"])
         response = jsonify({"user": serialized_user})
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
         return response, 200
     except NotFound as e:
-        handle_not_found_error(e)
+        return handle_not_found_error(e)
 
 
 @app.route("/refresh_token", methods=["POST"])

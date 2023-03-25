@@ -25,12 +25,12 @@ def professor_profile(id):
     if request.method == "GET":
         user = Professor.query.filter_by(id=id).first()
         current_profile = ProfessorProfile.query.filter_by(id=user.id).first()
-        return current_profile.serialized(), 200
+        return current_profile.serialized, 200
 
     if request.method == "PATCH":
         data = request.get_json()
-
-        current_profile = ProfessorProfile.update_professor_profile(
+        print(data["profile_image"])
+        ProfessorProfile.update_professor_profile(
             current_user,
             data["name"],
             data["bio"],

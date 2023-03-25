@@ -31,7 +31,7 @@ def users():
 
         data = request.get_json()
 
-        if type == "student":
+        if data["type"] == "student":
 
             id = data["studentNumber"]
             try:
@@ -43,14 +43,13 @@ def users():
                     data["lastName"],
                     data["type"],
                     data["emailAddress"],
-                    data["password"],
                     data["confirmPassword"],
                 )
-                return jsonify({"message": "Student account created"})
+                return jsonify({"message": "Student account created"}), 201
             except ConflictError as e:
-                handle_conflict_error(e)
+                return handle_conflict_error(e)
 
-        if type == "professor":
+        if data["type"] == "professor":
             try:
                 Professor.create_professor_account(
                     data["firstName"],
@@ -61,8 +60,11 @@ def users():
                     data["emailAddress"],
                     data["confirmPassword"],
                 )
+
+                return jsonify({"message": "Professor account created"}), 201
             except ConflictError as e:
-                handle_conflict_error(e)
+
+                return handle_conflict_error(e)
 
 
 @app.route("/api/v1/user/get-pre-signed-url-profile", methods=["POST"])
@@ -78,19 +80,8 @@ def generate_presigned_profile():
 
     if request.method == "POST":
         data = request.get_json()
-        imgID = unique_identifier_file()
-        user = User.query.filter_by(id=data["id"]).first()
-
-        if user.profile_image_link != "default_profile.jpg":
-            current_profile = user.profile_image_link.split("/")[2]
-            s3.delete_object(
-                Bucket=s3_bucket_name,
-                Key=f"user/{user.type}/{user.id}/{current_profile}",
-            )
-
-        Key = f"{data['type']}/{data['id']}/{imgID}_{data['fileName']}"
-        response = s3.generate_presigned_post(
-            s3_bucket_name, Key=f"user/{Key}", ExpiresIn=300
+        response, Key = User.generate_pre_signed_url(
+            data["id"], data["type"], data["fileName"]
         )
 
         return jsonify(

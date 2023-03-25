@@ -9,7 +9,7 @@ from ..models.subject import Subject
 
 # Utils
 from ..utils.generate_unique_code import id_generator
-from ..utils.database_utilities import push_to_database, remove_in_database
+from ..utils.database_utilities import push_to_database, delete_in_database
 
 
 @app.route("/api/v1/subjects", methods=["GET", "POST", "DELETE"])
@@ -55,7 +55,7 @@ def subjects():
 
             push_to_database(new_subject)
 
-            return jsonify({"subject": new_subject.serialized()}), 200
+            return jsonify({"subject": new_subject.serialized}), 200
 
 
 @app.route(
@@ -79,7 +79,6 @@ def specific_subject(section_name, sub):
 
     if request.method == "GET":
         pass
-        # return jsonify({"subject": subject.serialized()})
 
     if request.method == "PATCH":
         data = request.get_json()
@@ -130,5 +129,5 @@ def specific_subject(section_name, sub):
 
     if request.method == "DELETE":
 
-        remove_in_database(current_subject)
+        delete_in_database(current_subject)
         return jsonify({"msg": "Subject deleted successfully."})

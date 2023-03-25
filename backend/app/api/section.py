@@ -34,21 +34,20 @@ def allSections():
         sections = []
 
         for i in get_sections:
-            sections.append(i.serialized())
+            sections.append(i.serialized)
         return jsonify({"sections": sections})
 
     if request.method == "POST":
         data = request.get_json()
-        course = data["course"]
-        year = data["year"]
-        section = data["section"]
 
         try:
-            new_section = Section.create_section(course, year, section, current_user)
+            new_section = Section.create_section(
+                data["course"], data["year"], data["section"], current_user
+            )
         except ConflictError as e:
             return handle_conflict_error(e)
 
-        return jsonify(new_section.serialized()), 201
+        return jsonify(new_section), 201
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
@@ -63,7 +62,7 @@ def isSectionAdviser(name):
 
     current_user = get_jwt_identity()
 
-    adviser = Section.isAdviser(current_user)
+    adviser = Section.isAdviser(current_user, name)
 
     return jsonify({"isAdviser": adviser}), 200
 
@@ -89,48 +88,21 @@ def specificSection(name):
         allSubjects = Subject.query.filter_by(section_id=section.id).all()
         subject = []
         for i in allSubjects:
-            subject.append(i.serialized())
-        return jsonify({"section": section.serialized()})
+            subject.append(i.serialized)
+        return jsonify({"section": section.serialized})
 
     if request.method == "PUT":
         data = request.get_json()
-        full = f"{data['course']} {data['year']}{data['section']}"
-        query_section = Section.query.filter_by(section_full=full).first()
 
-        if query_section:
-
-            # If the user wants to edit minor details of the section this will trigger
-            # @todo
-            if query_section.section_full == name:
-                pass
-            # else 409 will trigger which means it already exists
-            else:
-                return jsonify({"msg": "Section already exists"}), 409
-
-        section.section_full = full
-        section.section_course = data["course"]
-        section.section_year = data["year"]
-        section.section_level = data["section"]
-        section.updated = datetime.utcnow()
-
-        db.session.commit()
-
-        return (
-            jsonify(
-                {
-                    "msg": "Section edited successfully.",
-                    "section": section.serialized(),
-                }
-            ),
-            200,
-        )
+        try:
+            Section.update_section(name, data["course"], data["year"], data["section"])
+        except ConflictError as e:
+            return handle_conflict_error(e)
 
     if request.method == "DELETE":
 
-        bucket = s3_resource.Bucket(s3_bucket_name)
-        bucket.objects.filter(Prefix=f"section/{section.id}").delete()
-        db.session.delete(section)
-        db.session.commit()
+        Section.delete_section(section)
+
         return jsonify({"msg": "Section deleted successfully."}), 200
 
 
@@ -148,19 +120,7 @@ def generate_presigned_section():
 
     if request.method == "POST":
         data = request.get_json()
-        imgID = unique_identifier_file()
-        section = Section.query.filter_by(id=data["id"]).first()
-        if section.section_image_link != "default_section_image.jpg":
-            current_section_image = section.section_image_link.split("/")[1]
-            s3.delete_object(
-                Bucket=s3_bucket_name,
-                Key=f"section/{section.id}/{current_section_image}",
-            )
-        Key = f"{data['id']}/{imgID}_{data['fileName']}"
-        response = s3.generate_presigned_post(
-            s3_bucket_name, Key=f"section/{Key}", ExpiresIn=300
-        )
-
+        response, Key = Section.generate_presigned_url(data["id"], data["fileName"])
         return jsonify({"signed_url": response, "location": f"{Key}"})
 
 
