@@ -28,7 +28,6 @@ export const generatePresignedURLSection = (auth, section, file_extension) => {
 };
 
 export const NewSectionCreation = (auth, data) => {
-  console.log(data);
   return axios.post(
     "/api/v1/sections",
     { ...data },
@@ -42,7 +41,6 @@ export const NewSectionCreation = (auth, data) => {
 };
 
 export const NewSectionImageUpload = (auth, section, link) => {
-  console.log(section);
   return axios.post(
     `/api/v1/sections/${section.id}/upload`,
     { section_image: link },
