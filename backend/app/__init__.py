@@ -44,6 +44,7 @@ from .api import (
 # Essential Model Imports
 from .models.user import User
 from .models.student import Student
+from .models.professor import Professor
 from .models.collegiate import Collegiate
 from .models.section import Section
 from .models.subject import Subject
