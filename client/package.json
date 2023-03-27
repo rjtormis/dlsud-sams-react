@@ -26,7 +26,7 @@
     "yup": "^1.0.0"
   },
   "scripts": {
-    "dev": "concurrently \"npm run sass\" \"npm run start\"",
+    "developer": "concurrently \"npm run sass\" \"npm run start\"",
     "sass": "sass --no-source-map --watch src/scss/index.scss:src/index.css",
     "start": "react-scripts start",
     "build": "react-scripts build",
