@@ -15,10 +15,11 @@ import { useSpecificSection } from "../../context/SpecificSectionContext";
 
 function SpecificSection() {
   const params = useParams();
-  const { loading, setSectionName, sectionName, setLoading } = useSpecificSection();
+
+  const { loading, setSectionName, sectionName, dispatch } = useSpecificSection();
   useEffect(() => {
     setSectionName(params.name);
-  }, [setSectionName, params.name]);
+  }, [setSectionName, params.name, dispatch]);
 
   return (
     <>
@@ -36,10 +37,10 @@ function SpecificSection() {
           <SpecificSectionHeader />
 
           <SpecificSectionList />
-
-          <SpecificSectionModals />
         </>
       )}
+
+      <SpecificSectionModals />
     </>
   );
 }
