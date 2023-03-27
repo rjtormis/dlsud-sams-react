@@ -1,7 +1,7 @@
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
-import { useEffect, useState } from "react";
-import { Formik, replace } from "formik";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Formik } from "formik";
+import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
 // Components
@@ -26,15 +26,12 @@ import {
 import { maxFileSize, supported_file_format, upload_to_s3 } from "../../../utilities/Helper";
 
 function AllSectionModal() {
-  // React
+  //
   const navigate = useNavigate();
 
-  // Custom Hooks
   const { setReFetch, isModalOpen, setIsModalOpen } = useAllSection();
   const { auth } = useAuth();
 
-  // React useState Hooks
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (state, action) => {
@@ -65,7 +62,6 @@ function AllSectionModal() {
         await NewSectionImageUpload(auth, section, location);
         setReFetch(true);
         action.resetForm();
-        setSubmitted(true);
         setIsModalOpen(false);
         setLoading(false);
         navigate("/dashboard/sections");
@@ -74,16 +70,17 @@ function AllSectionModal() {
         setLoading(false);
         action.resetForm();
         setReFetch(true);
-        setSubmitted(true);
         setIsModalOpen(false);
         navigate("/dashboard/sections");
       }
     } catch (e) {
       setLoading(false);
       setIsModalOpen(true);
+      console.log(e);
+      const { status, message } = e.response.data;
 
-      if (e.response.status === 409) {
-        action.setFieldError("course", `${e.response.data["msg"]}`);
+      if (status === 409) {
+        action.setFieldError("course", `${message}`);
         action.setFieldError("year", "‎");
         action.setFieldError("section", "‎");
       }

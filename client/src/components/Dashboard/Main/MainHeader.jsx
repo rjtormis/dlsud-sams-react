@@ -1,9 +1,22 @@
+import { useEffect, useRef } from "react";
+import BeatLoader from "react-spinners/BeatLoader";
 // Context
 import { useAuth } from "../../../context/AuthContext";
-import BeatLoader from "react-spinners/BeatLoader";
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
 
 function MainHeader() {
   const { auth } = useAuth();
+  const { resetState } = useSpecificSection();
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if (isMounted) {
+      resetState();
+    }
+    return () => {
+      isMounted.current = true;
+    };
+  }, [isMounted, resetState]);
 
   return (
     <>

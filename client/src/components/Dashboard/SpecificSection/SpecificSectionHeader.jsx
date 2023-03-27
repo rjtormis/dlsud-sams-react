@@ -3,15 +3,23 @@ import { MdDelete, MdEdit, MdAdd, MdSubject } from "react-icons/md";
 
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
-function SpecificSectionHeader() {
-  const { sectionName, isAdviser, setFilter } = useSpecificSection();
 
+function SpecificSectionHeader() {
+  const { sectionName, isAdviser, setFilter, resetState, setIsModalOpen, dispatch } =
+    useSpecificSection();
+
+  const clearSection = () => {
+    dispatch({ type: "CLEAR_SECTION" });
+    dispatch({ type: "CLEAR_EDIT_SUBJECT" });
+    dispatch({ type: "CLEAR_SUBJECT" });
+    resetState();
+  };
   return (
     <>
       <div className="text-sm breadcrumbs">
         <ul>
           <li>
-            <Link to="/dashboard/sections" className=" text-green-800">
+            <Link to="/dashboard/sections" className=" text-green-800" onClick={clearSection}>
               Sections
             </Link>
           </li>
@@ -34,6 +42,7 @@ function SpecificSectionHeader() {
           <a
             href="#create_subject"
             className="btn btn-sm btn-ghost btn-square hover:btn-ghost hover:text-green-800"
+            onClick={() => setIsModalOpen(true)}
           >
             <MdAdd size={20} />
           </a>
@@ -45,6 +54,7 @@ function SpecificSectionHeader() {
               <a
                 href="#edit_section"
                 className="ml-2 btn btn-sm btn-ghost btn-square hover:btn-ghost hover:text-green-800"
+                onClick={() => setIsModalOpen(true)}
               >
                 <MdEdit size={20} />
               </a>
@@ -53,6 +63,7 @@ function SpecificSectionHeader() {
               <a
                 href="#delete_section"
                 className="ml-2 btn btn-sm btn-ghost btn-square hover:btn-ghost hover:text-green-800"
+                onClick={() => setIsModalOpen(true)}
               >
                 <MdDelete size={18} />
               </a>

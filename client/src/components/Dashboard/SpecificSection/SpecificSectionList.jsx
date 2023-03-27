@@ -3,12 +3,12 @@ import SpecificSectionItem from "./SpecificSectionItem";
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useAuth } from "../../../context/AuthContext";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 function SpecificSectionList() {
   const [filteredSubject, setFilteredSubject] = useState([]);
   const { auth } = useAuth();
-  const { section, dispatch, setSubjectName, filter } = useSpecificSection();
+  const { section, filter } = useSpecificSection();
   const subjects = section.subjects;
 
   useEffect(() => {
@@ -31,9 +31,7 @@ function SpecificSectionList() {
                 professor={subject.handled_by}
                 schedule={subject.schedule}
                 isProfessor={auth.id === subject.handler_id}
-                onVisit={() => dispatch({ type: "SET_SUBJECT", payload: { ...subject } })}
-                onDelete={() => setSubjectName(subject.subject_name)}
-                onEdit={() => dispatch({ type: "SET_EDIT_SUBJECT", payload: { ...subject } })}
+                subject={subject}
               />
             ))
           : subjects.map((subject) => (
@@ -43,9 +41,7 @@ function SpecificSectionList() {
                 professor={subject.handled_by}
                 schedule={subject.schedule}
                 isProfessor={auth.id === subject.handler_id}
-                onVisit={() => dispatch({ type: "SET_SUBJECT", payload: { ...subject } })}
-                onDelete={() => setSubjectName(subject.subject_name)}
-                onEdit={() => dispatch({ type: "SET_EDIT_SUBJECT", payload: { ...subject } })}
+                subject={subject}
               />
             ))}
       </div>

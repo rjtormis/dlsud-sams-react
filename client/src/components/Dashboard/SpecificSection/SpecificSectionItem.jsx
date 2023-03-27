@@ -2,16 +2,23 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
+function SpecificSectionItem({ name, professor, schedule, subject, isProfessor }) {
+  const { setIsModalOpen, dispatch, setSubjectName } = useSpecificSection();
 
-function SpecificSectionItem({
-  name,
-  professor,
-  schedule,
-  onDelete,
-  onEdit,
-  onVisit,
-  isProfessor,
-}) {
+  const onVisit = () => {
+    dispatch({ type: "SET_SUBJECT", payload: { ...subject } });
+  };
+
+  const onEdit = () => {
+    dispatch({ type: "SET_SUBJECT", payload: { ...subject } });
+    setIsModalOpen(true);
+  };
+  const onDelete = () => {
+    setSubjectName(subject.subject_name);
+    setIsModalOpen(true);
+  };
+
   return (
     <div id="subject" className="card card-compact w-full  shadow-xl text-white">
       <div className="card-body flex">

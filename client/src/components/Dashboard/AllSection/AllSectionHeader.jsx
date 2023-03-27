@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useAllSection } from "../../../context/AllSectionContext";
-
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
 function AllSectionHeader() {
   /**
    *  ALL SECTION HEADER
@@ -24,7 +24,21 @@ function AllSectionHeader() {
    */
   const [toSearch, setToSearch] = useState("");
   const { sections, setSection, setNotFound, notFound, setIsModalOpen } = useAllSection();
+
+  const { resetState } = useSpecificSection();
+
   const memoizedSection = useMemo(() => sections, [sections]);
+
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if (isMounted) {
+      resetState();
+    }
+    return () => {
+      isMounted.current = true;
+    };
+  }, [isMounted, resetState]);
 
   useEffect(() => {
     if (toSearch === "") {
