@@ -7,11 +7,23 @@ import { fetchSpecificSectionDetails } from "../actions/SpecificSection";
 const SpecificSectionContext = createContext();
 
 export const SpecificSectionContextProvider = ({ children }) => {
+  //
   const [sectionName, setSectionName] = useState("");
   const [subjectName, setSubjectName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fetchData, setFetchData] = useState(false);
   const [isAdviser, setIsAdviser] = useState(false);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(false);
+
+  const resetState = () => {
+    setSectionName("");
+    setSubjectName("");
+    setFetchData(false);
+    setIsAdviser(false);
+    setLoading(false);
+    setFilter(false);
+  };
 
   const initialValues = {
     section: {},
@@ -24,22 +36,28 @@ export const SpecificSectionContextProvider = ({ children }) => {
 
   // Fetch section details
   useEffect(() => {
+    const fetchSectionData = async () => {
+      try {
+        setLoading(true);
+        const [section, adviser] = await fetchSpecificSectionDetails(sectionName);
+        dispatch({ type: "SET_SECTION", payload: section.data.section });
+        setIsAdviser(adviser.data.isAdviser);
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+      }
+    };
+
     if (sectionName !== "") {
-      const fetchSectionData = async () => {
-        try {
-          setLoading(true);
-          const [section, adviser] = await fetchSpecificSectionDetails(sectionName);
-          dispatch({ type: "SET_SECTION", payload: section.data.section });
-          setIsAdviser(adviser.data.isAdviser);
-          setLoading(false);
-        } catch (e) {
-          console.log(e);
-          setLoading(false);
-        }
-      };
       fetchSectionData();
     }
-  }, [sectionName]);
+
+    if (fetchData) {
+      fetchSectionData();
+      setFetchData(false);
+    }
+  }, [sectionName, fetchData]);
 
   return (
     <SpecificSectionContext.Provider
@@ -54,6 +72,11 @@ export const SpecificSectionContextProvider = ({ children }) => {
         setLoading,
         filter,
         setFilter,
+        fetchData,
+        setFetchData,
+        resetState,
+        isModalOpen,
+        setIsModalOpen,
         ...state,
         dispatch,
       }}
