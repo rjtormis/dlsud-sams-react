@@ -130,8 +130,8 @@ class Section(db.Model, Details):
                     "handled_by": f"{subject.professor_subject.first_name} {subject.professor_subject.middle_initial}. {subject.professor_subject.last_name}",
                     "handler_id": f"{subject.professor_subject.id}",
                     "schedule": {
-                        "start": subject.start,
-                        "end": subject.end,
+                        "start": subject.start.strftime("%I:%M %p"),
+                        "end": subject.end.strftime("%I:%M %p"),
                         "day": subject.day,
                     },
                 }
