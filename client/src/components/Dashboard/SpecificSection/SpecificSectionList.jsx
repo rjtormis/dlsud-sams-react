@@ -27,9 +27,6 @@ function SpecificSectionList() {
           ? filteredSubject.map((subject) => (
               <SpecificSectionItem
                 key={subject.id}
-                name={subject.subject_name}
-                professor={subject.handled_by}
-                schedule={subject.schedule}
                 isProfessor={auth.id === subject.handler_id}
                 subject={subject}
               />
@@ -37,9 +34,6 @@ function SpecificSectionList() {
           : subjects.map((subject) => (
               <SpecificSectionItem
                 key={subject.id}
-                name={subject.subject_name}
-                professor={subject.handled_by}
-                schedule={subject.schedule}
                 isProfessor={auth.id === subject.handler_id}
                 subject={subject}
               />

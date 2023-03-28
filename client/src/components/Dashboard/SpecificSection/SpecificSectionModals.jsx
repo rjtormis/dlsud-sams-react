@@ -43,7 +43,6 @@ function SpecificSectionModals() {
 
   const { setFetchData, section, subjectName, editSubject, dispatch, isModalOpen, setIsModalOpen } =
     useSpecificSection();
-
   const handleCreate = async (state, action) => {
     setModalLoading(true);
     try {
@@ -56,8 +55,14 @@ function SpecificSectionModals() {
       navigate(`/dashboard/sections/${section.section_full}`);
       setIsModalOpen(false);
     } catch (e) {
-      console.log(e);
+      const { message, status } = e.response.data;
       setModalLoading(false);
+      if (status === 409) {
+        action.setFieldError("subjectName", `${message}`);
+        action.setFieldError("start", "‎");
+        action.setFieldError("end", "‎");
+        action.setFieldError("day", "‎");
+      }
     }
   };
 
@@ -145,7 +150,6 @@ function SpecificSectionModals() {
       setIsModalOpen(true);
     }
   };
-  console.log(isModalOpen);
 
   return (
     <>
@@ -372,7 +376,11 @@ function SpecificSectionModals() {
                     <option value="Saturday">Saturday</option>
                   </CustomSelect>
                   <div className="flex justify-center mt-4">
-                    <input type="submit" value="EDIT" className="btn btn-primary w-full" />
+                    {modalLoading ? (
+                      <ClipLoader className="m-auto mt-4" />
+                    ) : (
+                      <input type="submit" value="YES" className="btn btn-primary w-full" />
+                    )}
                   </div>
                 </form>
               )}
@@ -389,7 +397,11 @@ function SpecificSectionModals() {
                 <p className="text-center mt-4">
                   Are you sure that you want to delete this subject?
                 </p>
-                <input type="submit" value="YES" className="btn btn-error mt-4" />
+                {modalLoading ? (
+                  <ClipLoader className="m-auto mt-4" />
+                ) : (
+                  <input type="submit" value="YES" className="btn btn-error w-full mt-4" />
+                )}
               </div>
             </form>
           </Modal>
