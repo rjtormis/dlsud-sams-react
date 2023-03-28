@@ -44,10 +44,9 @@ def allSections():
             new_section = Section.create_section(
                 data["course"], data["year"], data["section"], current_user
             )
+            return jsonify(new_section), 201
         except ConflictError as e:
             return handle_conflict_error(e)
-
-        return jsonify(new_section), 201
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])

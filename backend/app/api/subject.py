@@ -11,6 +11,12 @@ from ..models.subject import Subject
 from ..utils.generate_unique_code import id_generator
 from ..utils.database_utilities import push_to_database, delete_in_database
 
+# Exceptions
+from ..exception import ConflictError
+
+# Error handler
+from ..errors import handle_conflict_error
+
 
 @app.route("/api/v1/subjects", methods=["GET", "POST", "DELETE"])
 @jwt_required()
@@ -24,38 +30,18 @@ def subjects():
 
     if request.method == "POST":
         data = request.get_json()
-
-        sectionName, subjectName, start, end, day = (
-            data["sectionName"],
-            data["subjectName"],
-            data["start"],
-            data["end"],
-            data["day"],
-        )
-        section = Section.query.filter_by(section_full=sectionName).first()
-        user = Professor.query.filter_by(id=current_user).first()
-        subject = Subject.query.filter_by(
-            section_id=section.id, subject_name=subjectName
-        ).first()
-
-        if subject:
-            return jsonify(
-                {"msg": f"Subject {subjectName} already exists in {sectionName} "}
+        try:
+            Subject.create_subject(
+                current_user,
+                data["sectionName"],
+                data["subjectName"],
+                data["start"],
+                data["end"],
+                data["day"],
             )
-
-        else:
-            new_subject = Subject(
-                section_id=section.id,
-                professor_id=user.id,
-                subject_name=subjectName,
-                start=start,
-                end=end,
-                day=day,
-            )
-
-            push_to_database(new_subject)
-
-            return jsonify({"subject": new_subject.serialized}), 200
+            return jsonify({"message": "Subject created successfully"})
+        except ConflictError as e:
+            return handle_conflict_error(e)
 
 
 @app.route(
