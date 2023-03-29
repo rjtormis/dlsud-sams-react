@@ -121,12 +121,18 @@ function SpecificSectionModals() {
 
   const handleEditSubject = async (state, action) => {
     try {
+      setModalLoading(true);
       await EditSubject(section, state, auth, editSubject);
       setFetchData(true);
+      setModalLoading(false);
       action.resetForm();
+      setIsModalOpen(false);
     } catch (e) {
-      if (e.response.status === 409) {
-        action.setFieldError("subjectName", e.response.data["msg"]);
+      setModalLoading(false);
+      setIsModalOpen(true);
+      const { status, message } = e.response.data;
+      if (status === 409) {
+        action.setFieldError("subjectName", message);
         action.setFieldError("start", "‎");
         action.setFieldError("end", "‎");
         action.setFieldError("day", "‎");
