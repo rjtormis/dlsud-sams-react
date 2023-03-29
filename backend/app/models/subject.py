@@ -38,6 +38,8 @@ class Subject(db.Model, Details):
 
     @classmethod
     def create_subject(cls, current_user, sectionName, subjectName, start, end, day):
+        """Creates a Subject"""
+
         section = Section.query.filter_by(section_full=sectionName).first()
         user = User.query.filter_by(id=current_user).first()
         subject = cls.query.filter_by(
@@ -69,7 +71,45 @@ class Subject(db.Model, Details):
 
             push_to_database(new_subject)
 
+    @classmethod
+    def update_subject(cls, section, subject, subjectName, start, end, day):
+        query_subject = cls.query.filter_by(
+            section_id=section.id, subject_name=subjectName
+        ).first()
+
+        conflicting_subjects = cls.query.filter_by(section_id=section.id, day=day).all()
+        for sub in conflicting_subjects:
+            if sub.id != subject.id:
+                if cls.overlapping_time(sub.start, sub.end, start, end):
+                    raise ConflictError("Time Conflict")
+
+        if query_subject:
+
+            # If the user only wants to edit minor details on the subject itself.
+            if query_subject.id == subject.id:
+                subject.subject_name = subjectName
+                subject.start = start
+                subject.end = end
+                subject.day = day
+                subject.updated = datetime.now()
+                db.session.commit()
+
+            else:
+                # Otherwise this will throw a conflict error if subject already exists.
+                raise ConflictError(f"{query_subject.subject_name} already exists")
+        else:
+
+            subject.subject_name = subjectName
+            subject.start = start
+            subject.end = end
+            subject.day = day
+            subject.updated = datetime.now()
+            db.session.commit()
+
     def overlapping_time(start1, end1, start2, end2):
+        """
+        Checks if the input time does not conflict with other subject.
+        """
 
         start2 = datetime.strptime(start2, "%H:%M").time()
         end2 = datetime.strptime(end2, "%H:%M").time()
