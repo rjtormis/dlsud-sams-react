@@ -74,44 +74,18 @@ def specific_subject(section_name, sub):
             data["end"],
             data["day"],
         )
-
-        query_subject = Subject.query.filter_by(
-            section_id=section.id, subject_name=subjectName
-        ).first()
-
-        if query_subject:
-
-            # If the user only wants to edit minor details on the subject itself.
-            if current_subject.id == query_subject.id:
-
-                current_subject.subject_name = subjectName
-                current_subject.start = start
-                current_subject.end = end
-                current_subject.day = day
-                current_subject.updated = datetime.now()
-                db.session.commit()
-
-                return jsonify({"msg": "Subject successfully edited"}), 200
-
-            # Otherwise this will trigger.
-            return (
-                jsonify(
-                    {
-                        "msg": f"Subject {subjectName} already exists in {section.section_full} "
-                    }
-                ),
-                409,
+        try:
+            Subject.update_subject(
+                section,
+                current_subject,
+                data["subjectName"],
+                data["start"],
+                data["end"],
+                data["day"],
             )
-
-        else:
-            current_subject.subject_name = subjectName
-            current_subject.start = start
-            current_subject.end = end
-            current_subject.day = day
-            current_subject.updated = datetime.utcnow()
-            db.session.commit()
-
             return jsonify({"msg": "Subject successfully edited"})
+        except ConflictError as e:
+            return handle_conflict_error(e)
 
     if request.method == "DELETE":
 
