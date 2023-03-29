@@ -1,12 +1,12 @@
 import React from "react";
 import SubjectHeader from "../../components/Dashboard/Subject/SubjectHeader";
-import SubjectStudentsEnrolled from "../../components/Dashboard/Subject/SubjectStudentsEnrolled";
+import SubjectBody from "../../components/Dashboard/Subject/SubjectBody";
 
 function Subject() {
   return (
     <>
       <SubjectHeader />
-      <SubjectStudentsEnrolled />
+      <SubjectBody />
     </>
   );
 }
