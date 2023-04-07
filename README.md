@@ -1,5 +1,5 @@
 # DLSUD-SAMS
-DLSUD SAMS aka as DLSUD- SMART ATTENDANCE MONITORING SYSTEM\
+DLSUD SAMS aka DLSUD - SMART ATTENDANCE MONITORING SYSTEM\
 A Capstone / Thesis Project based on the use of AI(Computer Vision) applied to a web application.
 
 # Technologies / Frameworks used
