@@ -5,15 +5,15 @@ import { useParams } from "react-router-dom";
 import HashLoader from "react-spinners/HashLoader";
 
 // Components
-import SpecificSectionModals from "../../components/Dashboard/SpecificSection/SpecificSectionModals";
-import SpecificSectionList from "../../components/Dashboard/SpecificSection/SpecificSectionList";
-import SpecificSectionHeader from "../../components/Dashboard/SpecificSection/SpecificSectionHeader";
+import SectionModals from "../../components/Dashboard/Section/SectionModals";
+import SectionList from "../../components/Dashboard/Section/SectionList";
+import SectionHeader from "../../components/Dashboard/Section/SectionHeader";
 import Loader from "../../components/Shared/Loader";
 
 // Context
 import { useSpecificSection } from "../../context/SpecificSectionContext";
 
-function SpecificSection() {
+function Section() {
   const params = useParams();
 
   const { loading, setSectionName, sectionName, dispatch } = useSpecificSection();
@@ -34,15 +34,15 @@ function SpecificSection() {
         />
       ) : (
         <>
-          <SpecificSectionHeader />
+          <SectionHeader />
 
-          <SpecificSectionList />
+          <SectionList />
         </>
       )}
 
-      <SpecificSectionModals />
+      <SectionModals />
     </>
   );
 }
 
-export default SpecificSection;
+export default Section;
