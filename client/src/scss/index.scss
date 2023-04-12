@@ -8,7 +8,6 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-
 #regBG {
   background: url("assets/Register/bg.jpg") no-repeat center center/cover;
 }
@@ -37,22 +36,43 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 #dashboard-main {
-  background: url('assets/testbg.svg') no-repeat center center/cover;
+  background: url("assets/testbg.svg") no-repeat center center/cover;
 }
 
-#subject-container{
-  background: rgba( 255, 255, 255, 0.35 );
-box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-backdrop-filter: blur( 17.5px );
--webkit-backdrop-filter: blur( 17.5px );
-border-radius: 10px;
-border: 1px solid rgba( 255, 255, 255, 0.18 );
+#subject-container {
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(17.5px);
+  -webkit-backdrop-filter: blur(17.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 #subject {
-  background:url('assets/bg.jpg') no-repeat center center/cover;
+  background: url("assets/bg.jpg") no-repeat center center/cover;
 }
 
-#socials a:not(:first-child){
+#socials a:not(:first-child) {
   margin-left: 16px;
 }
 
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #436147 #fdf7f7;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #fdf7f7;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #436147;
+  border-radius: 8px;
+  border: 3px solid #f8f1f1;
+}
