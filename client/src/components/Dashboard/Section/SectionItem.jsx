@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
-function SpecificSectionItem({ subject, isProfessor }) {
+function SectionItem({ subject, isProfessor }) {
   const { setIsModalOpen, dispatch, setSubjectName } = useSpecificSection();
 
   const onVisit = () => {
@@ -69,8 +69,8 @@ function SpecificSectionItem({ subject, isProfessor }) {
   );
 }
 
-SpecificSectionItem.propTypes = {
+SectionItem.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-export default SpecificSectionItem;
+export default SectionItem;

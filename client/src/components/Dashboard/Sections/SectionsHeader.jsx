@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useAllSection } from "../../../context/AllSectionContext";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
-function AllSectionHeader() {
+function SectionsHeader() {
   /**
    *  ALL SECTION HEADER
    *    contains the header information of the all section page.
@@ -85,4 +85,4 @@ function AllSectionHeader() {
   );
 }
 
-export default AllSectionHeader;
+export default SectionsHeader;

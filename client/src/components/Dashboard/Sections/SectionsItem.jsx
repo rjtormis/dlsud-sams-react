@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { aws_section_url } from "../../../utilities/Helper";
 
-function AllSectionItem({ title, adviser, image_link }) {
+function SectionsItem({ title, adviser, image_link }) {
   /**
-   * AllSectionItem
+   * SectionsItem
    *  Consider this as a List Item (<li> tag).
    *  The main purpose of this component is it acts as the container for all of the objects inside the sections array.
    *
@@ -33,4 +33,4 @@ function AllSectionItem({ title, adviser, image_link }) {
   );
 }
 
-export default AllSectionItem;
+export default SectionsItem;

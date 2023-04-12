@@ -24,10 +24,6 @@ function SubjectHeader() {
           </li>
         </ul>
       </div>
-
-      <div className="flex mb-4">
-        <h1 className="text-md">COURSE CODE: {subject.code}</h1>
-      </div>
     </>
   );
 }

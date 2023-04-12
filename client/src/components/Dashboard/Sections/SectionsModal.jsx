@@ -25,7 +25,7 @@ import {
 // Helper
 import { maxFileSize, supported_file_format, upload_to_s3 } from "../../../utilities/Helper";
 
-function AllSectionModal() {
+function SectionsModal() {
   //
   const navigate = useNavigate();
 
@@ -172,4 +172,4 @@ function AllSectionModal() {
   );
 }
 
-export default AllSectionModal;
+export default SectionsModal;

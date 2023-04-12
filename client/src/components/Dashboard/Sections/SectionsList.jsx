@@ -2,8 +2,8 @@ import HashLoader from "react-spinners/HashLoader";
 import { FaSadCry } from "react-icons/fa";
 
 // Components
-import AllSectionItem from "./AllSectionItem";
-import AllSectionPagination from "../AllSection/AllSectionPagination";
+import SectionsItem from "./SectionsItem";
+import SectionsPagination from "../Sections/SectionsPagination";
 import Loader from "../../Shared/Loader";
 
 // Context
@@ -11,7 +11,7 @@ import { useAllSection } from "../../../context/AllSectionContext";
 import { useState } from "react";
 import { ObjectIsEmpty } from "../../../utilities/Helper";
 
-function AllSectionList() {
+function SectionsList() {
   const { sections, section, loading } = useAllSection();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemPerPage, setItemPerPage] = useState(8);
@@ -38,7 +38,7 @@ function AllSectionList() {
       <div className="grid grid-cols-4 gap-4 mt-4">
         {user_search ? (
           currentItemIndex.map((section) => (
-            <AllSectionItem
+            <SectionsItem
               key={section.id}
               title={section.section_full}
               adviser={section.section_adviser}
@@ -46,7 +46,7 @@ function AllSectionList() {
             />
           ))
         ) : (
-          <AllSectionItem
+          <SectionsItem
             key={section.id}
             title={section.section_full}
             adviser={section.section_adviser}
@@ -55,7 +55,7 @@ function AllSectionList() {
         )}
       </div>
       {user_search ? (
-        <AllSectionPagination
+        <SectionsPagination
           style_div={currentItemIndex.length < 5 ? "absolute bottom-5" : "block"}
           totalItems={sections.length}
           ItemPerPage={itemPerPage}
@@ -69,4 +69,4 @@ function AllSectionList() {
   );
 }
 
-export default AllSectionList;
+export default SectionsList;

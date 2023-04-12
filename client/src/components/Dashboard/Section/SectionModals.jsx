@@ -34,7 +34,7 @@ import { generatePresignedURLSection, NewSectionImageUpload } from "../../../act
 // Helpers
 import { maxFileSize, supported_file_format, upload_to_s3 } from "../../../utilities/Helper";
 
-function SpecificSectionModals() {
+function SectionModals() {
   //
   const [modalLoading, setModalLoading] = useState(false);
 
@@ -419,4 +419,4 @@ function SpecificSectionModals() {
   );
 }
 
-export default SpecificSectionModals;
+export default SectionModals;

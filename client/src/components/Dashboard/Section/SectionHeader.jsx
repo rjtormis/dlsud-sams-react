@@ -4,7 +4,7 @@ import { MdDelete, MdEdit, MdAdd, MdSubject } from "react-icons/md";
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 
-function SpecificSectionHeader() {
+function SectionHeader() {
   const { sectionName, isAdviser, setFilter, resetState, setIsModalOpen, dispatch } =
     useSpecificSection();
 
@@ -77,4 +77,4 @@ function SpecificSectionHeader() {
   );
 }
 
-export default SpecificSectionHeader;
+export default SectionHeader;

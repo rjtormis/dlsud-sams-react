@@ -1,11 +1,11 @@
-import SpecificSectionItem from "./SpecificSectionItem";
+import SectionItem from "./SectionItem";
 
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useAuth } from "../../../context/AuthContext";
 import { useEffect, useState } from "react";
 
-function SpecificSectionList() {
+function SectionList() {
   const [filteredSubject, setFilteredSubject] = useState([]);
   const { auth } = useAuth();
   const { section, filter } = useSpecificSection();
@@ -25,14 +25,14 @@ function SpecificSectionList() {
           ? null
           : filter
           ? filteredSubject.map((subject) => (
-              <SpecificSectionItem
+              <SectionItem
                 key={subject.id}
                 isProfessor={auth.id === subject.handler_id}
                 subject={subject}
               />
             ))
           : subjects.map((subject) => (
-              <SpecificSectionItem
+              <SectionItem
                 key={subject.id}
                 isProfessor={auth.id === subject.handler_id}
                 subject={subject}
@@ -43,4 +43,4 @@ function SpecificSectionList() {
   );
 }
 
-export default SpecificSectionList;
+export default SectionList;

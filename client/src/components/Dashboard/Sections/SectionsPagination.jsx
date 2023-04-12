@@ -1,4 +1,4 @@
-function AllSectionPagination({ style_div, totalItems, ItemPerPage, setCurrentPage, currentPage }) {
+function SectionsPagination({ style_div, totalItems, ItemPerPage, setCurrentPage, currentPage }) {
   const pages = [];
 
   for (let i = 1; i <= Math.ceil(totalItems / ItemPerPage); i++) {
@@ -20,4 +20,4 @@ function AllSectionPagination({ style_div, totalItems, ItemPerPage, setCurrentPa
   );
 }
 
-export default AllSectionPagination;
+export default SectionsPagination;
