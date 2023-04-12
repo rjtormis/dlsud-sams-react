@@ -14,7 +14,6 @@ from ..exception import NotFound
 
 
 class User(db.Model, Details):
-
     __tablename__ = "users"
     id = db.Column(
         db.String(length=40), primary_key=True, unique=True, default=generate_uuid
@@ -88,7 +87,6 @@ class User(db.Model, Details):
 
     @classmethod
     def check_user_folder(cls, folder_path):
-
         """
         Check if the folder of the user already exists in AWS s3
 
