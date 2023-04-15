@@ -21,6 +21,7 @@ import NotFound from "./pages/NotFound";
 import DashboardLayout from "./layouts/DashboardLayout";
 import RegisterLayout from "./layouts/RegisterLayout";
 import StudentDashboardLayout from "./layouts/StudentDashboardLayout";
+import SMain from "./components/Student Dashboard/SMain";
 
 //
 // import StudentMain from "./components/Student Dashboard/StudentMain";
@@ -47,7 +48,9 @@ const router = createBrowserRouter(
         <Route path="profile" element={<Profile />} />
       </Route>
 
-      <Route path="/student-dashboard" element={<StudentDashboardLayout />}></Route>
+      <Route path="/student-dashboard" element={<StudentDashboardLayout />}>
+        <Route index element={<SMain />} />
+      </Route>
     </>
   )
 );
