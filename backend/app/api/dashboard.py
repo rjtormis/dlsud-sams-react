@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify
 from app import app, db, jwt_required, get_jwt_identity
 
 # Models
