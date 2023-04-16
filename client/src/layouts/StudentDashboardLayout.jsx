@@ -1,18 +1,37 @@
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
-import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
+import { ImBook } from "react-icons/im";
 import logo from "../assets/resized-logo.png";
-import profile from "../assets/spiderman.png";
+import { useAuth } from "../context/AuthContext.js";
+
+// Utilities
+import { aws_user_url } from "../utilities/Helper.js";
 function StudentDashboardLayout() {
+  const navigate = useNavigate();
+  const { auth, logout } = useAuth();
+
+  const handleLogOut = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <>
-      <div className="h-screen flex flex-col">
-        <header className="bg-sd-header h-[60px] flex justify-end border-b-[1px] border-solid border-[#35353530] ">
+      <div className="h-screen flex flex-col z-20">
+        <header
+          className={`bg-sd-header h-[60px] flex justify-end border-b-[1px] border-solid border-[#35353530]  `}
+        >
           <div className="ml-auto my-auto mr-4">
             <div className="avatar ">
               <div className="w-[40px] h-[40px] rounded-full border-secondary border-[1px] border-solid bg-white">
-                <img src={profile} alt="student profile" className="max-w-full max-h-full" />
+                <img
+                  src={aws_user_url + auth.profile_image}
+                  alt="student profile"
+                  className="max-w-full max-h-full"
+                />
               </div>
             </div>
           </div>
@@ -26,29 +45,33 @@ function StudentDashboardLayout() {
               className="tooltip tooltip-right tooltip-secondary mx-auto mb-3"
               data-tip="Dashboard"
             >
-              <button className="btn btn-ghost">
+              <Link to="/student-dashboard" className="btn btn-ghost">
                 <MdDashboard color="bg-secondary" size={25} />
-              </button>
+              </Link>
             </div>
             <div
               className="tooltip tooltip-right tooltip-secondary mx-auto mb-3"
-              data-tip="Classroom"
+              data-tip="My Subjects"
             >
-              <button className="btn btn-ghost">
-                <HiUserGroup color="bg-secondary" size={25} />
-              </button>
+              <Link to="/student-dashboard/classrooms" className="btn btn-ghost">
+                <ImBook color="bg-secondary" size={25} />
+              </Link>
             </div>
-            <div className="tooltip tooltip-right tooltip-secondary mx-auto" data-tip="Profile">
-              <button className="btn btn-ghost">
+            <div
+              id="dtest"
+              className="tooltip tooltip-right tooltip-secondary mx-auto z-20"
+              data-tip="Profile"
+            >
+              <Link to="/student-dashboard/profile" className="btn btn-ghost">
                 <RiUserSettingsFill color="bg-secondary" size={25} />
-              </button>
+              </Link>
             </div>
 
             <div
               className="tooltip tooltip-right tooltip-secondary mx-auto absolute bottom-4"
               data-tip="Logout"
             >
-              <button className="btn btn-ghost">
+              <button className="btn btn-ghost" onClick={handleLogOut}>
                 <RiLogoutBoxRFill color="bg-secondary" size={25} />
               </button>
             </div>
