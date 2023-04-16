@@ -42,7 +42,9 @@ function LoginMainForm() {
         csrf_refresh_token: refresh,
         profile_image: profile_image,
       });
-      navigate("/dashboard");
+      setLoading(false);
+      if (type === "professor") navigate("/dashboard");
+      if (type === "student") navigate("/student-dashboard");
     } catch (e) {
       const { message, status } = e.response.data;
       if (status === 404) {

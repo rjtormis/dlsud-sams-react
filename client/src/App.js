@@ -15,19 +15,17 @@ import Student from "./pages/Register/Student";
 import Professor from "./pages/Register/Professor";
 import Subject from "./pages/Dashboard/Subject";
 import Profile from "./pages/Dashboard/Profile";
+import SMain from "./pages/Student Dashboard/SMain";
+import SClassroom from "./pages/Student Dashboard/SClassroom";
+import SSubject from "./pages/Student Dashboard/SSubject";
+import SProfile from "./pages/Student Dashboard/SProfile";
 import NotFound from "./pages/NotFound";
 
 // Layouts
 import DashboardLayout from "./layouts/DashboardLayout";
 import RegisterLayout from "./layouts/RegisterLayout";
 import StudentDashboardLayout from "./layouts/StudentDashboardLayout";
-import SMain from "./components/Student Dashboard/SMain";
 
-//
-// import StudentMain from "./components/Student Dashboard/StudentMain";
-// import StudentClassroom from "./components/Student Dashboard/StudentClassroom";
-// import StudentProfile from "./components/Student Dashboard/StudentProfile";
-// import StudentUpload from "./components/Student Dashboard/StudentUpload";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -50,6 +48,9 @@ const router = createBrowserRouter(
 
       <Route path="/student-dashboard" element={<StudentDashboardLayout />}>
         <Route index element={<SMain />} />
+        <Route path="classrooms" element={<SClassroom />} />
+        <Route path="classrooms/:name" element={<SSubject />} />
+        <Route path="profile" element={<SProfile />} />
       </Route>
     </>
   )
