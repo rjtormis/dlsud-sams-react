@@ -39,6 +39,8 @@ from .api import (
     subject,
     profile,
     collegiate,
+    studentdashboard,
+    student,
 )
 
 # Essential Model Imports
@@ -49,6 +51,7 @@ from .models.collegiate import Collegiate
 from .models.section import Section
 from .models.subject import Subject
 from .models.profile import ProfessorProfile
+from .models.studentSubject import StudentSubject
 
 
 # Scripts
@@ -56,6 +59,5 @@ from .scripts.addCollegiate import collegiateScript
 
 # Disable this when developing
 # with app.app_context():
-
 #     db.create_all()
 #     collegiateScript()
