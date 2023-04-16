@@ -36,6 +36,8 @@ class Subject(db.Model, Details):
         db.String(length=30), nullable=False, unique=True, default=id_generator
     )
 
+    enrolledStudents = db.Relationship("StudentSubject", backref="studentsSubjects")
+
     @classmethod
     def create_subject(cls, current_user, sectionName, subjectName, start, end, day):
         """Creates a Subject"""
@@ -84,7 +86,6 @@ class Subject(db.Model, Details):
                     raise ConflictError("Time Conflict")
 
         if query_subject:
-
             # If the user only wants to edit minor details on the subject itself.
             if query_subject.id == subject.id:
                 subject.subject_name = subjectName
@@ -98,7 +99,6 @@ class Subject(db.Model, Details):
                 # Otherwise this will throw a conflict error if subject already exists.
                 raise ConflictError(f"{query_subject.subject_name} already exists")
         else:
-
             subject.subject_name = subjectName
             subject.start = start
             subject.end = end
