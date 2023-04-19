@@ -18,9 +18,9 @@ import axios from "axios";
  *  @param {rest} - The rest of the data which is also an object that contains name,collegiates and the likes
  */
 
-export const fetchProfilewithCollegiates = (auth) => {
+export const fetchProfilewithCollegiates = (auth, type) => {
   return Promise.all([
-    axios.get(`/api/v1/profiles/${auth.id}`, {
+    axios.get(`/api/v1/profiles/${auth.id}/${type}`, {
       headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
     }),
     axios.get(`/api/v1/collegiates`, {
