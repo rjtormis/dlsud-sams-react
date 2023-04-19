@@ -7,18 +7,22 @@ from ..models.collegiate import Collegiate
 from ..models.details import Details
 
 
-class ProfessorProfile(db.Model, Details):
-    __tablename__ = "professor_profile"
-    id = db.Column(db.String(length=40), db.ForeignKey("users.id"), primary_key=True)
+class Profile:
     bio = db.Column(db.String(length=500), default="No biography indicated")
     collegiate = db.Column(db.Integer(), db.ForeignKey("collegiates.id"))
-    consultation = db.Column(
-        db.String(length=50), default="Consultation hours not indicated"
-    )
     fb_social = db.Column(db.String(length=50), default="None")
+
     instagram_social = db.Column(db.String(length=50), default="None")
     linkedIn_social = db.Column(db.String(length=50), default="None")
     twitter_social = db.Column(db.String(length=50), default="None")
+
+
+class ProfessorProfile(db.Model, Profile, Details):
+    __tablename__ = "professor_profile"
+    id = db.Column(db.String(length=40), db.ForeignKey("users.id"), primary_key=True)
+    consultation = db.Column(
+        db.String(length=50), default="Consultation hours not indicated"
+    )
 
     @property
     def serialized(self):
@@ -84,3 +88,26 @@ class ProfessorProfile(db.Model, Details):
 
     def __repr__(self):
         return f"Profile: {self.id}"
+
+
+class StudentProfile(db.Model, Profile, Details):
+    __tablename__ = "student_profile"
+    id = db.Column(db.String(length=40), db.ForeignKey("users.id"), primary_key=True)
+
+    @property
+    def serialized(self):
+        return {
+            "user": {
+                "id": self.id,
+                "name": f"{self.student_profile.first_name} {self.student_profile.middle_initial}. {self.student_profile.last_name}",
+                "type": self.student_profile.type.upper(),
+                "collegiate": self.student_profile_collegiate.collegiate_name,
+                "bio": self.bio,
+                "socials": {
+                    "fb": self.fb_social,
+                    "instagram": self.instagram_social,
+                    "linkedIn": self.linkedIn_social,
+                    "twitter": self.twitter_social,
+                },
+            }
+        }
