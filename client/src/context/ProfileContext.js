@@ -33,7 +33,10 @@ export const ProfileContextProvider = ({ children }) => {
       const set_profile = async () => {
         try {
           setLoading(true);
-          const [profile_result, collegiate_result] = await fetchProfilewithCollegiates(auth);
+          const [profile_result, collegiate_result] = await fetchProfilewithCollegiates(
+            auth,
+            "professor"
+          );
           dispatch({
             type: "SET_PROFILE_&_COLLEGIATE",
             profile: profile_result.data.user,
