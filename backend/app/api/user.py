@@ -28,14 +28,11 @@ def users():
     """
 
     if request.method == "POST":
-
         data = request.get_json()
 
         if data["type"] == "student":
-
             id = data["studentNumber"]
             try:
-
                 Student.create_student_account(
                     id,
                     data["firstName"],
@@ -44,6 +41,7 @@ def users():
                     data["type"],
                     data["emailAddress"],
                     data["confirmPassword"],
+                    data["collegiate"],
                 )
                 return jsonify({"message": "Student account created"}), 201
             except ConflictError as e:
@@ -63,7 +61,6 @@ def users():
 
                 return jsonify({"message": "Professor account created"}), 201
             except ConflictError as e:
-
                 return handle_conflict_error(e)
 
 

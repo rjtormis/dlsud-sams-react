@@ -5,10 +5,11 @@ from datetime import datetime
 # Models
 from ..models.collegiate import Collegiate
 from ..models.professor import Professor
-from ..models.profile import ProfessorProfile
+from ..models.student import Student
+from ..models.profile import ProfessorProfile, StudentProfile
 
 
-@app.route("/api/v1/profiles/<string:id>", methods=["GET", "PATCH"])
+@app.route("/api/v1/profiles/<string:id>/professor", methods=["GET", "PATCH"])
 @jwt_required()
 def professor_profile(id):
     """
@@ -44,3 +45,15 @@ def professor_profile(id):
         )
 
         return jsonify({"msg": "Account edited successfully!"}), 200
+
+
+@app.route("/api/v1/profiles/<string:id>/student", methods=["GET", "POST"])
+@jwt_required()
+def student_profile(id):
+    current_user = get_jwt_identity()
+
+    if request.method == "GET":
+        user = Student.query.filter_by(id=id).first()
+        current_profile = StudentProfile.query.filter_by(id=user.id).first()
+
+        return current_profile.serialized, 200
