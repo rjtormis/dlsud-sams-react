@@ -12,6 +12,7 @@ import { registerStudentSchema } from "../../schemas/RegisterSchema";
 // Components
 import CustomInput from "../Shared/CustomInput";
 import CustomInputGroup from "../Shared/CustomInputGroup";
+import CustomSelect from "../Shared/CustomSelect";
 import spinner from "../../assets/spinner.gif";
 import Button from "../Shared/Button";
 
@@ -51,6 +52,7 @@ function RegisterStudent({ success }) {
       <Formik
         initialValues={{
           firstName: "",
+          collegiate: "",
           middleInitial: "",
           lastName: "",
           studentNumber: "",
@@ -110,6 +112,16 @@ function RegisterStudent({ success }) {
                 icon={<FaEnvelope />}
               />
             </div>
+            <CustomSelect label="Collegiate" page="register" name="collegiate">
+              <option value="">Select Colleigate</option>
+              <option value="CBAA">CBAA</option>
+              <option value="CCJE">CCJE</option>
+              <option value="CE">CE</option>
+              <option value="CEAT">CEAT</option>
+              <option value="CLAC">CLAC</option>
+              <option value="CSCS">CSCS</option>
+              <option value="CTHM">CTHM</option>
+            </CustomSelect>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <CustomInputGroup
