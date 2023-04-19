@@ -50,7 +50,7 @@ from .models.professor import Professor
 from .models.collegiate import Collegiate
 from .models.section import Section
 from .models.subject import Subject
-from .models.profile import ProfessorProfile
+from .models.profile import ProfessorProfile, StudentProfile
 from .models.studentSubject import StudentSubject
 
 
