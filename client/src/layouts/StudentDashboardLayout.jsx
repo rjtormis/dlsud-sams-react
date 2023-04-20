@@ -53,7 +53,7 @@ function StudentDashboardLayout() {
               className="tooltip tooltip-right tooltip-secondary mx-auto mb-3"
               data-tip="My Subjects"
             >
-              <Link to="/student-dashboard/classrooms" className="btn btn-ghost">
+              <Link to="/student-dashboard/subjects" className="btn btn-ghost">
                 <ImBook color="bg-secondary" size={25} />
               </Link>
             </div>
