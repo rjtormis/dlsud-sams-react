@@ -29,7 +29,6 @@ export const SpecificSectionContextProvider = ({ children }) => {
     section: {},
     subject: {},
     editSubject: {},
-    enrolled: [],
   };
 
   const [state, dispatch] = useReducer(SpecificSectionReducer, initialValues);
