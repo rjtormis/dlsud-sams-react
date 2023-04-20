@@ -48,8 +48,8 @@ const router = createBrowserRouter(
 
       <Route path="/student-dashboard" element={<StudentDashboardLayout />}>
         <Route index element={<SMain />} />
-        <Route path="classrooms" element={<SClassroom />} />
-        <Route path="classrooms/:name" element={<SSubject />} />
+        <Route path="subjects" element={<SClassroom />} />
+        <Route path="subjects/:name" element={<SSubject />} />
         <Route path="profile" element={<SProfile />} />
       </Route>
     </>
