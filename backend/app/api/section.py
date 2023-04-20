@@ -4,6 +4,7 @@ from app import app, db, jwt_required, get_jwt_identity, s3, s3_bucket_name, s3_
 
 # Model
 from ..models.professor import Professor
+from ..models.studentSubject import StudentSubject
 from ..models.section import Section
 from ..models.subject import Subject
 
@@ -62,6 +63,7 @@ def isSectionAdviser(name):
     current_user = get_jwt_identity()
 
     adviser = Section.isAdviser(current_user, name)
+    print(adviser)
 
     return jsonify({"isAdviser": adviser}), 200
 
@@ -69,7 +71,6 @@ def isSectionAdviser(name):
 @app.route("/api/v1/sections/<string:name>", methods=["GET", "POST", "DELETE", "PUT"])
 @jwt_required()
 def specificSection(name):
-
     """
     REST API that handles the editing and deleting the section
 
@@ -84,11 +85,23 @@ def specificSection(name):
     section = Section.query.filter_by(section_full=name).first()
 
     if request.method == "GET":
-        allSubjects = Subject.query.filter_by(section_id=section.id).all()
-        subject = []
-        for i in allSubjects:
-            subject.append(i.serialized)
-        return jsonify({"section": section.serialized})
+        return jsonify(
+            {
+                "section": {
+                    "id": section.id,
+                    "section_full": section.section_full,
+                    "section_adviser_id": f"{section.professor.id}",
+                    "section_adviser": f"{section.professor.first_name} {section.professor.middle_initial} {section.professor.last_name}",
+                    "section_course": section.section_course,
+                    "section_year": section.section_year,
+                    "section_section": section.section_level,
+                    "section_image_link": section.section_image_link,
+                    "created": section.created,
+                    "updated": section.updated,
+                    "subjects": [subject.serialized for subject in section.subjects],
+                }
+            }
+        )
 
     if request.method == "PUT":
         data = request.get_json()
@@ -99,7 +112,6 @@ def specificSection(name):
             return handle_conflict_error(e)
 
     if request.method == "DELETE":
-
         Section.delete_section(section)
 
         return jsonify({"msg": "Section deleted successfully."}), 200

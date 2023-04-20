@@ -4,8 +4,10 @@ from datetime import datetime
 
 # Models
 from ..models.professor import Professor
+from ..models.student import Student
 from ..models.section import Section
 from ..models.subject import Subject
+from ..models.studentSubject import StudentSubject
 
 # Utils
 from ..utils.generate_unique_code import id_generator
@@ -64,7 +66,7 @@ def specific_subject(section_name, sub):
     ).first()
 
     if request.method == "GET":
-        pass
+        print(current_subject)
 
     if request.method == "PATCH":
         data = request.get_json()
@@ -88,6 +90,5 @@ def specific_subject(section_name, sub):
             return handle_conflict_error(e)
 
     if request.method == "DELETE":
-
         delete_in_database(current_subject)
         return jsonify({"msg": "Subject deleted successfully."})

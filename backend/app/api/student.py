@@ -26,3 +26,20 @@ def enroll():
         return jsonify({"message": "Enrolled successfully"})
     except ConflictError as e:
         return handle_conflict_error(e)
+
+
+@app.route("/api/v1/students/<string:id>", methods=["GET", "POST"])
+@jwt_required()
+def student_subject(id):
+    current_user = get_jwt_identity()
+
+    if request.method == "GET":
+        qUser = Student.query.filter_by(id=current_user).first()
+        qSubjects = StudentSubject.query.filter_by(studentNo=qUser.student_no).all()
+        subjects = []
+
+        for i in qSubjects:
+            qSub = Subject.query.filter_by(code=i.sub_code).first()
+            subjects.append(qSub.serialized)
+
+        return jsonify(subjects), 200
