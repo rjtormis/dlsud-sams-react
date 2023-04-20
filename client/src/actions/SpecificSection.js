@@ -20,6 +20,7 @@ import axios from "axios";
  *  @param {section} - takes the section object
  *  @param {state} - accepts state object or the user input from the forms.
  *                 - check Formik documentation for more information.
+ *
  *  @param {auth} - takes the auth object that contains the user details.
  *  @param {subject} -takes the subject object
  *
