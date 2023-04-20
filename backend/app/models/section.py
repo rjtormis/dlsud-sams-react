@@ -68,7 +68,6 @@ class Section(db.Model, Details):
         qSection = cls.query.filter_by(section_full=full).first()
 
         if qSection:
-
             if qSection.section_full == name:
                 pass
 

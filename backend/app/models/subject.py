@@ -3,6 +3,7 @@ from datetime import datetime, time
 
 # Models
 from .user import User
+from .student import Student
 from .section import Section
 from .details import Details
 
@@ -117,17 +118,31 @@ class Subject(db.Model, Details):
 
     @property
     def serialized(self):
+        enrolled = []
+        for student in self.enrolledStudents:
+            qUser = Student.query.filter_by(student_no=student.studentNo).first()
+            enrolled.append(
+                {
+                    "name": f"{qUser.first_name} {qUser.middle_initial}. {qUser.last_name}",
+                    "profile": qUser.profile_image_link,
+                    "studentNo": student.studentNo,
+                    "emailAddress": qUser.emailAddress,
+                    "total_attendance": student.total_attendance,
+                }
+            )
         return {
             "id": self.id,
             "code": self.code,
             "subject_name": self.subject_name,
             "section": self.section.section_full,
             "handled_by": f"{self.professor_subject.first_name} {self.professor_subject.middle_initial}. {self.professor_subject.last_name}",
+            "handler_id": self.professor_subject.id,
             "schedule": {
                 "start": self.start.strftime("%I:%M %p"),
                 "end": self.end.strftime("%I:%M %p"),
                 "day": self.day,
             },
+            "enrolled": enrolled,
         }
 
     def __repr__(self):
