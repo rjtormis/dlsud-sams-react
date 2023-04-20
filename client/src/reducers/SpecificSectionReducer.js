@@ -1,5 +1,7 @@
 const SpecificSectionReducer = (state, action) => {
   switch (action.type) {
+    case "SET_ENROLLED":
+      return { ...state, subject: action.payload };
     case "SET_SECTION":
       return { ...state, section: action.payload };
     case "SET_SUBJECT":
@@ -12,6 +14,8 @@ const SpecificSectionReducer = (state, action) => {
       return { ...state, editSubject: {} };
     case "CLEAR_SUBJECT":
       return { ...state, subject: {} };
+    case "CLEAR_ENROLLED":
+      return { ...state, enrolled: {} };
 
     default:
       return state;
