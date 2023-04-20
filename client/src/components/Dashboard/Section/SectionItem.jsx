@@ -5,11 +5,10 @@ import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 function SectionItem({ subject, isProfessor }) {
   const { setIsModalOpen, dispatch, setSubjectName } = useSpecificSection();
-
   const onVisit = () => {
     dispatch({ type: "SET_SUBJECT", payload: { ...subject } });
   };
-
+  console.log(isProfessor);
   const onEdit = () => {
     let { schedule, ...data } = subject;
 
