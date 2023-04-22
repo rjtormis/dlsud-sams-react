@@ -20,7 +20,7 @@ from ..exception import ConflictError
 from ..errors import handle_conflict_error
 
 
-@app.route("/api/v1/subjects", methods=["GET", "POST", "DELETE"])
+@app.route("/api/v1/subjects", methods=["POST", "DELETE"])
 @jwt_required()
 def subjects():
     """
@@ -66,16 +66,25 @@ def specific_subject(section_name, sub):
     ).first()
 
     if request.method == "GET":
-        print(current_subject)
+        rankings = []
+        results = (
+            StudentSubject.query.filter_by(sub_code=current_subject.code)
+            .order_by(StudentSubject.total_attendance.desc())
+            .all()
+        )
 
+        for rank, student in enumerate(results, start=1):
+            qUser = Student.query.filter_by(student_no=student.studentNo).first()
+            obj = {
+                "rank": rank,
+                "user": qUser.serialized,
+                "total": student.total_attendance,
+            }
+            rankings.append(obj)
+        return jsonify({"ranking": rankings}), 200
     if request.method == "PATCH":
         data = request.get_json()
-        subjectName, start, end, day = (
-            data["subjectName"],
-            data["start"],
-            data["end"],
-            data["day"],
-        )
+
         try:
             Subject.update_subject(
                 section,
@@ -92,3 +101,33 @@ def specific_subject(section_name, sub):
     if request.method == "DELETE":
         delete_in_database(current_subject)
         return jsonify({"msg": "Subject deleted successfully."})
+
+
+@app.route(
+    "/api/v1/subjects/<string:code>/<string:id>/enrolled",
+    methods=["GET", "POST", "PATCH", "DELETE"],
+)
+@jwt_required()
+def remove_subject(code, id):
+    current_user = get_jwt_identity()
+
+    if request.method == "PATCH":
+        data = request.get_json()
+
+        qUser = StudentSubject.query.filter_by(
+            sub_code=f"{code}", studentNo=f"{id}"
+        ).first()
+
+        qUser.total_attendance = data["total"]
+
+        push_to_database(qUser)
+
+        return jsonify({"msg": "OK"}), 200
+
+    if request.method == "DELETE":
+        print(code, id)
+        qUser = StudentSubject.query.filter_by(
+            sub_code=f"{code}", studentNo=f"{id}"
+        ).first()
+        delete_in_database(qUser)
+        return jsonify({"message": "Student removed successfully"}), 200
