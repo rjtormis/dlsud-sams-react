@@ -119,6 +119,7 @@ class Subject(db.Model, Details):
     @property
     def serialized(self):
         enrolled = []
+
         for student in self.enrolledStudents:
             qUser = Student.query.filter_by(student_no=student.studentNo).first()
             enrolled.append(
