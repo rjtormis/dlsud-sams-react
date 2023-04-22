@@ -8,7 +8,6 @@ function SectionItem({ subject, isProfessor }) {
   const onVisit = () => {
     dispatch({ type: "SET_SUBJECT", payload: { ...subject } });
   };
-  console.log(isProfessor);
   const onEdit = () => {
     let { schedule, ...data } = subject;
 
@@ -67,9 +66,5 @@ function SectionItem({ subject, isProfessor }) {
     </div>
   );
 }
-
-SectionItem.propTypes = {
-  name: PropTypes.string.isRequired,
-};
 
 export default SectionItem;

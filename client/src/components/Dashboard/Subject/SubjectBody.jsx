@@ -1,12 +1,36 @@
-import SubjectStudentsTable from "./SubjectStudentsTable";
+import axios from "axios";
 import { AiFillCheckCircle, AiOutlineDownload, AiTwotoneTrophy } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
+import { AiFillDelete } from "react-icons/ai";
+
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
+import { useAuth } from "../../../context/AuthContext";
+// Components
+import Modal from "../../Shared/Modal";
+import SubjectStudentsTable from "./SubjectStudentsTable";
 import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
 
 function SubjectBody() {
-  const { subject } = useSpecificSection();
+  const { subject, studentToRemove, subjectToRemove } = useSpecificSection();
+  const { auth } = useAuth();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.delete(
+        `/api/v1/subjects/${subjectToRemove}/${studentToRemove}/enrolled`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": auth.csrf_access_token,
+          },
+        }
+      );
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <div className="flex-1">
       <div className="grid grid-cols-3 gap-4">
@@ -61,6 +85,22 @@ function SubjectBody() {
           </div>
         </div>
       </div>
+
+      <Modal id="remove_student">
+        <div className="flex">
+          <AiFillDelete size={20} className="my -auto mr-4" color="#E94951" />
+          <h1 className="text-xl font-[900]">Remove Student</h1>
+        </div>
+        <div className="w-full mt-4">
+          <p className="text-center">Would you like to remove {studentToRemove}?</p>
+          <form className="mt-4" onSubmit={handleSubmit}>
+            <button type="submit" value="" className="btn btn-error w-full">
+              Remove
+            </button>
+          </form>
+        </div>
+        {/* <input type="hidden" name="studentNo" value={sub.studentNo} /> */}
+      </Modal>
     </div>
   );
 }

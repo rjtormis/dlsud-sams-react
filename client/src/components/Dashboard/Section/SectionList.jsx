@@ -17,7 +17,6 @@ function SectionList() {
       setFilteredSubject(filter_sub);
     }
   }, [subjects, auth]);
-
   return (
     <>
       <div className="grid grid-cols-4 p-2 gap-4">

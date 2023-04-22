@@ -1,5 +1,27 @@
-import sample from "../../../assets/sample-profile.jfif";
+import axios from "axios";
+import { aws_user_url } from "../../../utilities/Helper";
+import { useSpecificSection } from "../../../context/SpecificSectionContext";
+import { useEffect, useState } from "react";
 function SubjectLeaderboardTable() {
+  const { subject } = useSpecificSection();
+
+  const [rankings, setRankings] = useState([]);
+  console.log(rankings);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const response = await axios.get(
+          `/api/v1/subjects/${subject.section}/${subject.subject_name}`
+        );
+        console.log(response);
+        setRankings(response.data.ranking);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetch();
+  }, [subject]);
   return (
     <table className="table table-zebra w-full mt-2">
       <thead>
@@ -10,18 +32,22 @@ function SubjectLeaderboardTable() {
         </tr>
       </thead>
       <tbody>
-        <tr className="text-center">
-          <td>1</td>
-          <td className="flex content-center">
-            <div className="avatar">
-              <div className="rounded-full w-8">
-                <img src={sample} alt="profile" />
-              </div>
-            </div>
-            <p className="m-auto">Ranel John Tormis</p>
-          </td>
-          <td>10</td>
-        </tr>
+        {rankings !== undefined
+          ? rankings.map((rank) => (
+              <tr key={rank.rank} className="text-center">
+                <td>{rank.rank}</td>
+                <td className="flex content-center">
+                  <div className="avatar">
+                    <div className="rounded-full w-8">
+                      <img src={aws_user_url + rank.user.profile_image} alt="profile" />
+                    </div>
+                  </div>
+                  <p className="m-auto">{rank.user.name}</p>
+                </td>
+                <td>{rank.total}</td>
+              </tr>
+            ))
+          : ""}
       </tbody>
     </table>
   );
