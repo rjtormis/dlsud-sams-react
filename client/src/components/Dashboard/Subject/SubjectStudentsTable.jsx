@@ -7,13 +7,17 @@ import { useState } from "react";
 // Utils
 import { aws_user_url } from "../../../utilities/Helper";
 import { useAuth } from "../../../context/AuthContext";
+import { ObjectIsEmpty } from "../../../utilities/Helper";
 
 function SubjectStudentsTable() {
-  const { subject, setStudentToRemove, setSubjectToRemove } = useSpecificSection();
+  const { subject, setStudentToRemove, setSubjectToRemove, search, result, setRefetch } =
+    useSpecificSection();
   const { auth } = useAuth();
+
   const [total, setTotal] = useState(0);
-  const [editAttendance, setEditAttendance] = useState(false);
   const [studentNo, setStudentNo] = useState("");
+  const [editAttendance, setEditAttendance] = useState(false);
+
   const onEdit = (id, attendance) => {
     setEditAttendance(!editAttendance);
     if (editAttendance === true) {
@@ -23,6 +27,7 @@ function SubjectStudentsTable() {
       setStudentNo("");
     }
   };
+
   const handleChange = (e) => {
     setTotal(e.currentTarget.value);
   };
@@ -31,6 +36,7 @@ function SubjectStudentsTable() {
     setStudentToRemove(studentNo);
     setSubjectToRemove(code);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -39,6 +45,13 @@ function SubjectStudentsTable() {
         { total: total },
         { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
       );
+      subject.enrolled.map((student) =>
+        student.studentNo === response.data.studentNo
+          ? (student.total_attendance = response.data.total_attendance)
+          : ""
+      );
+      onEdit(response.data.studentNo, response.data.total_attendance);
+      setRefetch(true);
     } catch (e) {
       console.log(e);
     }
@@ -57,53 +70,121 @@ function SubjectStudentsTable() {
         </thead>
 
         <tbody>
-          {subject.enrolled.map((sub) => (
-            <tr className="" key={sub.name}>
+          {search === "" ? (
+            subject.enrolled.map((sub) => (
+              <tr className="" key={sub.name}>
+                <td className="z-10">
+                  <div className="flex items-center space-x-3">
+                    <div className="avatar">
+                      <div className="mask mask-squircle w-12 h-12">
+                        <img className="" src={aws_user_url + sub.profile} alt="" />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-bold text-sm">{sub.name}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="text-center text-sm">{sub.emailAddress}</td>
+                <td className="text-center text-sm">{sub.studentNo}</td>
+                <td className="text-center text-sm w-[150px]">
+                  <input
+                    type="text"
+                    className={`${
+                      studentNo === sub.studentNo ? "" : "hidden"
+                    } input input-xs input-primary m-auto text-center w-1/2`}
+                    value={total}
+                    onChange={(e) => handleChange(e)}
+                  />
+                  <p className={studentNo === sub.studentNo ? "hidden" : ""}>
+                    {sub.total_attendance}
+                  </p>
+                </td>
+                <td className="text-center text-sm">
+                  <div className="">
+                    <div
+                      className={` ${
+                        studentNo === sub.studentNo ? "" : "hidden"
+                      } tooltip tooltip-success mr-3`}
+                      data-tip="Save"
+                    >
+                      <form action="" onSubmit={handleSubmit}>
+                        <button type="submit" id={sub.studentNo}>
+                          <AiOutlineCheck size={16} className="" color="input-primary" />
+                        </button>
+                      </form>
+                    </div>
+                    <div className="tooltip tooltip-warning mr-3" data-tip="Edit">
+                      <button
+                        id={sub.studentNo}
+                        onClick={() => onEdit(sub.studentNo, sub.total_attendance)}
+                      >
+                        <FiEdit2 size={16} className="" color="#E68405" />
+                      </button>
+                    </div>
+                    <div className="tooltip tooltip-error" data-tip="Remove">
+                      <a
+                        href="#remove_student"
+                        onClick={() => handleRemove(sub.studentNo, subject.code)}
+                      >
+                        <AiFillDelete size={16} color="#E94951" />
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : ObjectIsEmpty(result) ? (
+            <tr className="">
+              <h1 className="text-center font-[900]">Student record does not exist</h1>
+            </tr>
+          ) : (
+            <tr className="" key={result.name}>
               <td className="z-10">
                 <div className="flex items-center space-x-3">
                   <div className="avatar">
                     <div className="mask mask-squircle w-12 h-12">
-                      <img className="" src={aws_user_url + sub.profile} alt="" />
+                      <img className="" src={aws_user_url + result.profile} alt="" />
                     </div>
                   </div>
                   <div>
-                    <div className="font-bold text-sm">{sub.name}</div>
+                    <div className="font-bold text-sm">{result.name}</div>
                   </div>
                 </div>
               </td>
-              <td className="text-center text-sm">{sub.emailAddress}</td>
-              <td className="text-center text-sm">{sub.studentNo}</td>
+              <td className="text-center text-sm">{result.emailAddress}</td>
+              <td className="text-center text-sm">{result.studentNo}</td>
               <td className="text-center text-sm w-[150px]">
                 <input
                   type="text"
                   className={`${
-                    studentNo === sub.studentNo ? "" : "hidden"
+                    studentNo === result.studentNo ? "" : "hidden"
                   } input input-xs input-primary m-auto text-center w-1/2`}
                   value={total}
                   onChange={(e) => handleChange(e)}
                 />
-                <p className={studentNo === sub.studentNo ? "hidden" : ""}>
-                  {sub.total_attendance}
+                <p className={studentNo === result.studentNo ? "hidden" : ""}>
+                  {result.total_attendance}
                 </p>
               </td>
               <td className="text-center text-sm">
                 <div className="">
                   <div
                     className={` ${
-                      studentNo === sub.studentNo ? "" : "hidden"
+                      studentNo === result.studentNo ? "" : "hidden"
                     } tooltip tooltip-success mr-3`}
                     data-tip="Save"
                   >
                     <form action="" onSubmit={handleSubmit}>
-                      <button type="submit" id={sub.studentNo}>
+                      <button type="submit" id={result.studentNo}>
                         <AiOutlineCheck size={16} className="" color="input-primary" />
                       </button>
                     </form>
                   </div>
                   <div className="tooltip tooltip-warning mr-3" data-tip="Edit">
                     <button
-                      id={sub.studentNo}
-                      onClick={() => onEdit(sub.studentNo, sub.total_attendance)}
+                      id={result.studentNo}
+                      onClick={() => onEdit(result.studentNo, result.total_attendance)}
                     >
                       <FiEdit2 size={16} className="" color="#E68405" />
                     </button>
@@ -111,7 +192,7 @@ function SubjectStudentsTable() {
                   <div className="tooltip tooltip-error" data-tip="Remove">
                     <a
                       href="#remove_student"
-                      onClick={() => handleRemove(sub.studentNo, subject.code)}
+                      onClick={() => handleRemove(result.studentNo, subject.code)}
                     >
                       <AiFillDelete size={16} color="#E94951" />
                     </a>
@@ -119,7 +200,7 @@ function SubjectStudentsTable() {
                 </div>
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </>

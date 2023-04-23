@@ -3,10 +3,9 @@ import { aws_user_url } from "../../../utilities/Helper";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useEffect, useState } from "react";
 function SubjectLeaderboardTable() {
-  const { subject } = useSpecificSection();
+  const { subject, refetch, setRefetch } = useSpecificSection();
 
   const [rankings, setRankings] = useState([]);
-  console.log(rankings);
 
   useEffect(() => {
     const fetch = async () => {
@@ -14,14 +13,14 @@ function SubjectLeaderboardTable() {
         const response = await axios.get(
           `/api/v1/subjects/${subject.section}/${subject.subject_name}`
         );
-        console.log(response);
         setRankings(response.data.ranking);
       } catch (e) {
         console.log(e);
       }
     };
     fetch();
-  }, [subject]);
+    return () => setRefetch(false);
+  }, [subject, refetch, setRefetch]);
   return (
     <table className="table table-zebra w-full mt-2">
       <thead>

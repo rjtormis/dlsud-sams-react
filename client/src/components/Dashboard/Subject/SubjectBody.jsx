@@ -10,10 +10,13 @@ import { useAuth } from "../../../context/AuthContext";
 import Modal from "../../Shared/Modal";
 import SubjectStudentsTable from "./SubjectStudentsTable";
 import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
+import { useEffect, useMemo } from "react";
 
 function SubjectBody() {
-  const { subject, studentToRemove, subjectToRemove } = useSpecificSection();
+  const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setRefetch } =
+    useSpecificSection();
   const { auth } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -26,11 +29,27 @@ function SubjectBody() {
           },
         }
       );
-      console.log(response);
+      const test = subject.enrolled.filter((student) => student.studentNo !== studentToRemove);
+      subject.enrolled = test;
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    if (search === "") {
+      setResult({});
+    } else {
+      const test = subject.enrolled.filter(
+        (student) =>
+          search === student.studentNo || search === student.name || search === student.emailAddress
+      )[0];
+      if (test !== undefined) {
+        setResult(test);
+      }
+    }
+  }, [search, subject, setResult]);
+
   return (
     <div className="flex-1">
       <div className="grid grid-cols-3 gap-4">
@@ -63,6 +82,8 @@ function SubjectBody() {
                   type="text"
                   className="input input-xs input-primary"
                   placeholder="Search student"
+                  value={search}
+                  onChange={(e) => setSearch(e.currentTarget.value)}
                 />
               </div>
             </div>
@@ -99,7 +120,6 @@ function SubjectBody() {
             </button>
           </form>
         </div>
-        {/* <input type="hidden" name="studentNo" value={sub.studentNo} /> */}
       </Modal>
     </div>
   );
