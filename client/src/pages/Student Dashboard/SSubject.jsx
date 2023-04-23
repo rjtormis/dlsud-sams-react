@@ -1,17 +1,19 @@
 import { AiTwotoneTrophy } from "react-icons/ai";
 import SSubjectLeaderboardTable from "../../components/Student Dashboard/SSubjectLeaderboardTable";
 import SSubjectStudentsTable from "../../components/Student Dashboard/SSubjectStudentsTable";
+import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
 function SSubject() {
+  const { sub, loading, search, setSearch } = useStudentDashboardContext();
   return (
     <div className="flex-1 ml-[100px] mr-[60px] mt-4">
       <div className="grid grid-cols-3 gap-4 z-10">
         <div className="col-span-2">
           <div className="flex justify-between mb-2">
             <div>
-              <h1 className="text-2xl text-primary font-[900]">Subject name</h1>
-              <h3 className="text-xs">Section: Section Kamote</h3>
-              <h3 className="text-xs">COURSE CODE: 123</h3>
-              <h3 className="text-xs">Professor: Professor Kamote</h3>
+              <h1 className="text-2xl text-primary font-[900]">{sub.subject_name}</h1>
+              <h3 className="text-xs">Section: {sub.section}</h3>
+              <h3 className="text-xs">COURSE CODE: {sub.code}</h3>
+              <h3 className="text-xs">Professor: {sub.handled_by}</h3>
             </div>
             <div className="mr-2">
               <div>
@@ -19,6 +21,8 @@ function SSubject() {
                   type="text"
                   className="input input-xs input-primary"
                   placeholder="Search student"
+                  value={search}
+                  onChange={(e) => setSearch(e.currentTarget.value)}
                 />
               </div>
             </div>
@@ -36,7 +40,7 @@ function SSubject() {
               </span>
             </h1>
           </header>
-          <div className="h-[510px] overflow-y-auto">
+          <div className={`h-[510px] overflow-y-auto ${loading ? "flex" : ""}`}>
             <SSubjectLeaderboardTable />
           </div>
         </div>
