@@ -10,6 +10,8 @@ export const SpecificSectionContextProvider = ({ children }) => {
   //
   const [sectionName, setSectionName] = useState("");
   const [subjectName, setSubjectName] = useState("");
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState({});
   const [studentToRemove, setStudentToRemove] = useState("");
   const [subjectToRemove, setSubjectToRemove] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +19,7 @@ export const SpecificSectionContextProvider = ({ children }) => {
   const [isAdviser, setIsAdviser] = useState(false);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(false);
+  const [refetch, setRefetch] = useState(false);
 
   const resetState = () => {
     setSectionName("");
@@ -82,6 +85,12 @@ export const SpecificSectionContextProvider = ({ children }) => {
         setStudentToRemove,
         subjectToRemove,
         setSubjectToRemove,
+        result,
+        setResult,
+        search,
+        setSearch,
+        refetch,
+        setRefetch,
         ...state,
         dispatch,
       }}
