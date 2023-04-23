@@ -9,6 +9,7 @@ import { useAuth } from "../context/AuthContext.js";
 
 // Utilities
 import { aws_user_url } from "../utilities/Helper.js";
+import { StudentDashboardContextProvider } from "../context/StudentDashboardContext";
 function StudentDashboardLayout() {
   const navigate = useNavigate();
   const { auth, logout } = useAuth();
@@ -77,8 +78,9 @@ function StudentDashboardLayout() {
             </div>
           </div>
         </aside>
-
-        <Outlet />
+        <StudentDashboardContextProvider>
+          <Outlet />
+        </StudentDashboardContextProvider>
       </div>
     </>
   );
