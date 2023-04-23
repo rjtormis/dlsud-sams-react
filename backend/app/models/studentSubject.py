@@ -22,6 +22,15 @@ class StudentSubject(db.Model):
     )
     total_attendance = db.Column(db.Integer(), nullable=False, default=0)
 
+    @property
+    def serialized(self):
+        return {
+            "id": self.id,
+            "sub_code": self.sub_code,
+            "studentNo": self.studentNo,
+            "total_attendance": self.total_attendance,
+        }
+
     @classmethod
     def enroll_student(cls, id, code):
         qUser = Student.query.filter_by(id=id).first()
