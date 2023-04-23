@@ -1,7 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+
+// Context
+import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
 function SSubjectItem({ subject }) {
-  const navigate = useNavigate();
+  const { setSub } = useStudentDashboardContext();
 
   return (
     <div id="subject" className="card card-compact w-full  shadow-xl text-white">
@@ -17,6 +20,7 @@ function SSubjectItem({ subject }) {
           <Link
             to={`/student-dashboard/subjects/${subject.subject_name}`}
             className="btn btn-white btn-square btn-xs"
+            onClick={() => setSub(subject)}
           >
             <MdOutlineKeyboardArrowRight size={16} />
           </Link>
