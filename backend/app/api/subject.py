@@ -70,6 +70,7 @@ def specific_subject(section_name, sub):
         results = (
             StudentSubject.query.filter_by(sub_code=current_subject.code)
             .order_by(StudentSubject.total_attendance.desc())
+            .limit(10)
             .all()
         )
 
@@ -108,7 +109,7 @@ def specific_subject(section_name, sub):
     methods=["GET", "POST", "PATCH", "DELETE"],
 )
 @jwt_required()
-def remove_subject(code, id):
+def subject(code, id):
     current_user = get_jwt_identity()
 
     if request.method == "PATCH":
@@ -122,7 +123,7 @@ def remove_subject(code, id):
 
         push_to_database(qUser)
 
-        return jsonify({"msg": "OK"}), 200
+        return jsonify(qUser.serialized), 200
 
     if request.method == "DELETE":
         print(code, id)
