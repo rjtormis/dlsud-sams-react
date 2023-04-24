@@ -58,6 +58,7 @@ class Student(User):
             id=new_student.id, collegiate=new_student.collegiate_id
         )
         push_to_database(new_student_profile)
+        new_student.check_user_folder(f"user/student/{new_student.id}")
 
     def __repr__(self):
         return f"Student: {Student.emailAddress} ID:{self.student_no}"

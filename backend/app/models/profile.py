@@ -3,6 +3,7 @@ from flask import jsonify
 from datetime import datetime
 
 # Models
+from ..models.user import User
 from ..models.collegiate import Collegiate
 from ..models.details import Details
 
@@ -60,7 +61,6 @@ class ProfessorProfile(db.Model, Profile, Details):
         """
         Updates the user & profile model.
         """
-        print(profile_image)
         current_user = cls.query.filter_by(id=id).first()
         collegiate_ = Collegiate.query.filter_by(collegiate_name=collegiate).first()
 
@@ -106,8 +106,34 @@ class StudentProfile(db.Model, Profile, Details):
                 "socials": {
                     "fb": self.fb_social,
                     "instagram": self.instagram_social,
-                    "linkedIn": self.linkedIn_social,
                     "twitter": self.twitter_social,
                 },
             }
         }
+
+    @classmethod
+    def update_student_profile(
+        cls, id, name, bio, collegiate, fb, instagram, twitter, profile_image
+    ):
+        current_user = cls.query.filter_by(id=id).first()
+        collegiate_ = Collegiate.query.filter_by(collegiate_name=collegiate).first()
+
+        name_split_reverse = name.split(" ")[::-1]
+
+        f_name = name_split_reverse[2:][::-1]
+
+        current_user.student_profile.first_name = " ".join(f_name)
+        current_user.student_profile.middle_initial = name_split_reverse[1]
+        current_user.student_profile.last_name = name_split_reverse[0]
+
+        if profile_image != "":
+            current_user.student_profile.profile_image_link = profile_image
+
+        current_user.bio = bio
+        current_user.collegiate = collegiate_.id
+        current_user.fb_social = fb
+        current_user.instagram_social = instagram
+        current_user.twitter_social = twitter
+        current_user.updated = datetime.utcnow()
+
+        db.session.commit()
