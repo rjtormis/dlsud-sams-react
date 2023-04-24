@@ -1,10 +1,14 @@
+import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const StudentDashboardContext = createContext();
 
 export const StudentDashboardContextProvider = ({ children }) => {
+  const { auth } = useAuth();
   const [sub, setSub] = useState("");
   const [search, setSearch] = useState("");
+  const [collegiates, setCollegiates] = useState([]);
   const [result, setResult] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -18,9 +22,34 @@ export const StudentDashboardContextProvider = ({ children }) => {
     }
   }, [search, sub, result]);
 
+  useEffect(() => {
+    const fetchCollegiates = async () => {
+      try {
+        const response = await axios.get("/api/v1/collegiates", {
+          headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
+        });
+        setCollegiates(response.data.collegiates);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchCollegiates();
+  }, [auth]);
+
   return (
     <StudentDashboardContext.Provider
-      value={{ sub, setSub, loading, setLoading, search, setSearch, result, setResult }}
+      value={{
+        sub,
+        setSub,
+        loading,
+        setLoading,
+        search,
+        setSearch,
+        result,
+        setResult,
+        collegiates,
+        setCollegiates,
+      }}
     >
       {children}
     </StudentDashboardContext.Provider>
