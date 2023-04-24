@@ -104,7 +104,7 @@ function ProfileBody() {
           });
           formData.append("file", file);
           await upload_to_s3(url, formData);
-          await update_profile(profile, auth, true, location, rest);
+          await update_profile(profile, auth, true, location, rest, "professor");
           setAuth({ ...auth, name: state.name, profile_image: location });
           dispatch({ type: "SET_UPLOAD_SUCCESS", profile: { ...state } });
           setLoading(false);
