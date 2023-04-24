@@ -39,10 +39,10 @@ export const getPresignedURL = (auth, file_extension) => {
   );
 };
 
-export const update_profile = (profile, auth, with_file, location = "", rest) => {
+export const update_profile = (profile, auth, with_file, location = "", rest, type) => {
   if (with_file && location !== "") {
     return axios.patch(
-      `/api/v1/profiles/${profile.id}`,
+      `/api/v1/profiles/${profile.id}/${type}`,
       { ...rest, profile_image: location },
       { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
     );
