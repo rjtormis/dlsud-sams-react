@@ -47,7 +47,7 @@ def professor_profile(id):
         return jsonify({"msg": "Account edited successfully!"}), 200
 
 
-@app.route("/api/v1/profiles/<string:id>/student", methods=["GET", "POST"])
+@app.route("/api/v1/profiles/<string:id>/student", methods=["GET", "POST", "PATCH"])
 @jwt_required()
 def student_profile(id):
     current_user = get_jwt_identity()
@@ -57,3 +57,18 @@ def student_profile(id):
         current_profile = StudentProfile.query.filter_by(id=user.id).first()
 
         return current_profile.serialized, 200
+
+    if request.method == "PATCH":
+        data = request.get_json()
+        print(data)
+        StudentProfile.update_student_profile(
+            current_user,
+            data["name"],
+            data["bio"],
+            data["collegiate"],
+            data["socials"]["fb"],
+            data["socials"]["instagram"],
+            data["socials"]["twitter"],
+            data["profile_image"],
+        )
+        return jsonify({"msg": "Account edited successfully!"}), 200
