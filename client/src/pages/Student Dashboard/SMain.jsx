@@ -3,19 +3,26 @@ import { Formik } from "formik";
 import { HiUserGroup } from "react-icons/hi";
 import { ImBook } from "react-icons/im";
 import { GiTeacher } from "react-icons/gi";
-import { MdQueryStats } from "react-icons/md";
+import { MdQueryStats, MdError } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
-
+import HashLoader from "react-spinners/HashLoader";
 // Context
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 import { useState } from "react";
+// Components
+import Loader from "../../components/Shared/Loader";
+import Input from "../../components/Shared/Input";
+import Alert from "../../components/Shared/Alert";
 
 function SMain() {
   const { auth } = useAuth();
   const [totalStudent, setTotalStudent] = useState(0);
   const [totalSubjects, setTotalSubjects] = useState(0);
+  const [totalAttendance, setTotalAttendance] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const fName = auth.name.split(" ")[0];
   const date = new Date();
   const options = {
@@ -32,7 +39,9 @@ function SMain() {
         const response = await axios.get("/api/v1/studentdashboard");
         setTotalStudent(response.data.total_students);
         setTotalSubjects(response.data.total_subjects);
+        setTotalAttendance(response.data.total_lectures_attended);
         setLoading(false);
+        console.log(response);
       } catch (e) {
         console.log(e);
         setLoading(false);
@@ -42,97 +51,110 @@ function SMain() {
   }, []);
 
   const handleSubmit = async (state, action) => {
-    const response = await axios.post(
-      "/api/v1/students/enroll",
-      { code: state.courseCode },
-      { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
-    );
-    console.log(response);
+    try {
+      const response = await axios.post(
+        "/api/v1/students/enroll",
+        { code: state.courseCode },
+        { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+      );
+      setError(false);
+      setErrorMsg(false);
+    } catch (e) {
+      const { message } = e.response.data;
+      setError(true);
+      setErrorMsg(message);
+    }
   };
 
   return (
     <>
-      {loading ? (
-        <h1>Loading..</h1>
-      ) : (
-        <main className="ml-[100px] mr-[60px] mt-5 bg-[#fbfbfb]">
-          <header>
-            <h1 className="text-4xl text-secondary">Welcome back, {fName}!</h1>
-            <p className="text-[14px]">{date.toLocaleString("en-PH", options)}</p>
-          </header>
-
-          <section className="mt-4">
-            <header className="flex justify-between mb-4">
-              <h2 className="text-xl text-secondary my-auto">Insights</h2>
-              <div className="form-control justify-end">
-                <label className="label">
-                  <span className="label-text">Enroll subject</span>
-                </label>
-                <Formik initialValues={{ courseCode: "" }} onSubmit={handleSubmit}>
-                  {(props) => (
-                    <form onSubmit={props.handleSubmit}>
-                      <div className="input-group ">
-                        <input
-                          type="text"
-                          name="courseCode"
-                          placeholder="Enroll subject"
-                          onChange={props.handleChange}
-                          className="input input-sm input-secondary focus:outline-none"
-                        />
-                        <button type="submit" className="btn btn-secondary btn-sm">
-                          <AiOutlinePlus />
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </Formik>
-                ;
-              </div>
+      <main className="ml-[100px] mr-[60px] mt-5 bg-[#fbfbfb] h-full flex flex-col">
+        {loading ? (
+          <Loader
+            style_div="text-center m-auto"
+            type={<HashLoader color="#436147" className="mx-auto" />}
+          />
+        ) : (
+          <>
+            <header>
+              <h1 className="text-4xl text-secondary">Welcome back, {fName}!</h1>
+              <p className="text-[14px]">{date.toLocaleString("en-PH", options)}</p>
             </header>
-            <div className="grid grid-cols-4 gap-4">
-              <section className="sd-card p-6 hover:bg-secondary">
-                <div className=" flex justify-center p-6">
-                  <div className="bg-secondary p-4 rounded-md">
-                    <HiUserGroup size={50} className="text-white" />
-                  </div>
-                </div>
-                <h2 className="text-2xl text-center">Total Students</h2>
-                <p className="text-3xl text-center font-[900]">{totalStudent}</p>
-              </section>
+            {error ? <Alert custom="alert-error mt-2" icon={<MdError />} msg={errorMsg} /> : ""}
 
-              <section className="sd-card p-6 hover:bg-secondary">
-                <div className=" flex justify-center p-6">
-                  <div className="bg-secondary p-4 rounded-md">
-                    <ImBook size={50} className="text-white" />
-                  </div>
+            <section className="mt-4">
+              <header className="flex justify-between mb-4">
+                <h2 className="text-xl text-secondary my-auto">Insights</h2>
+                <div className="form-control justify-end">
+                  <label className="label">
+                    <span className="label-text">Enroll subject</span>
+                  </label>
+                  <Formik initialValues={{ courseCode: "" }} onSubmit={handleSubmit}>
+                    {(props) => (
+                      <form onSubmit={props.handleSubmit}>
+                        <div className="input-group ">
+                          <input
+                            type="text"
+                            name="courseCode"
+                            placeholder="Enroll subject"
+                            onChange={props.handleChange}
+                            className="input input-sm input-secondary focus:outline-none"
+                          />
+                          <button type="submit" className="btn btn-secondary btn-sm">
+                            <AiOutlinePlus />
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                  </Formik>
+                  ;
                 </div>
-                <h2 className="text-2xl text-center">{fName}'s Subjects</h2>
-                <p className="text-3xl text-center font-[900]">{totalSubjects}</p>
-              </section>
+              </header>
+              <div className="grid grid-cols-4 gap-4">
+                <section className="sd-card p-6 hover:bg-secondary">
+                  <div className=" flex justify-center p-6">
+                    <div className="bg-secondary p-4 rounded-md">
+                      <HiUserGroup size={50} className="text-white" />
+                    </div>
+                  </div>
+                  <h2 className="text-2xl text-center">Total Students</h2>
+                  <p className="text-3xl text-center font-[900]">{totalStudent}</p>
+                </section>
 
-              <section className="sd-card p-6 hover:bg-secondary">
-                <div className=" flex justify-center p-6">
-                  <div className="bg-secondary p-4 rounded-md">
-                    <GiTeacher size={50} className="text-white" />
+                <section className="sd-card p-6 hover:bg-secondary">
+                  <div className=" flex justify-center p-6">
+                    <div className="bg-secondary p-4 rounded-md">
+                      <ImBook size={50} className="text-white" />
+                    </div>
                   </div>
-                </div>
-                <h2 className="text-2xl text-center">Total Lectures attended</h2>
-                <p className="text-3xl text-center font-[900]">10</p>
-              </section>
+                  <h2 className="text-2xl text-center">{fName}'s Subjects</h2>
+                  <p className="text-3xl text-center font-[900]">{totalSubjects}</p>
+                </section>
 
-              <section className="sd-card p-6 hover:bg-secondary">
-                <div className=" flex justify-center p-6">
-                  <div className="bg-secondary p-4 rounded-md">
-                    <MdQueryStats size={50} className="text-white" />
+                <section className="sd-card p-6 hover:bg-secondary">
+                  <div className=" flex justify-center p-6">
+                    <div className="bg-secondary p-4 rounded-md">
+                      <GiTeacher size={50} className="text-white" />
+                    </div>
                   </div>
-                </div>
-                <h2 className="text-2xl text-center">Attendance of Juan</h2>
-                <p className="text-3xl text-center font-[900]">69%</p>
-              </section>
-            </div>
-          </section>
-        </main>
-      )}
+                  <h2 className="text-2xl text-center">Total Lectures attended</h2>
+                  <p className="text-3xl text-center font-[900]">{totalAttendance}</p>
+                </section>
+
+                <section className="sd-card p-6 hover:bg-secondary">
+                  <div className=" flex justify-center p-6">
+                    <div className="bg-secondary p-4 rounded-md">
+                      <MdQueryStats size={50} className="text-white" />
+                    </div>
+                  </div>
+                  <h2 className="text-2xl text-center">Attendance of Juan</h2>
+                  <p className="text-3xl text-center font-[900]">69%</p>
+                </section>
+              </div>
+            </section>
+          </>
+        )}
+      </main>
     </>
   );
 }

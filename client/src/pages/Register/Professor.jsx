@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-
+import { toast } from "react-toastify";
 // Components
 import RegisterHeader from "../../components/Register/RegisterHeader";
 import RegisterBody from "../../components/Register/RegisterBody";

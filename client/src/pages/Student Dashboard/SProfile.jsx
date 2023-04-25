@@ -22,7 +22,8 @@ import Loader from "../../components/Shared/Loader";
 import Select from "../../components/Shared/Select";
 import Input from "../../components/Shared/Input";
 import { getPresignedURL, update_profile } from "../../actions/Profile";
-
+// Schema
+import { profileStudentSchema } from "../../schemas/ProfileSchema";
 function SProfile() {
   const { auth, setAuth } = useAuth();
   const { collegiates } = useStudentDashboardContext();
@@ -125,7 +126,11 @@ function SProfile() {
 
             <div className="flex-1 flex flex-col justify-center mt-16">
               {profile !== undefined ? (
-                <Formik initialValues={tempProfile} onSubmit={handleSubmit}>
+                <Formik
+                  initialValues={tempProfile}
+                  onSubmit={handleSubmit}
+                  validationSchema={profileStudentSchema}
+                >
                   {(props) => (
                     <form action="" onSubmit={props.handleSubmit}>
                       <div className="grid grid-cols-3 gap-4">
