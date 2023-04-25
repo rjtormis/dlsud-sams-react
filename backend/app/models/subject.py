@@ -124,6 +124,7 @@ class Subject(db.Model, Details):
             qUser = Student.query.filter_by(student_no=student.studentNo).first()
             enrolled.append(
                 {
+                    "id": qUser.id,
                     "name": f"{qUser.first_name} {qUser.middle_initial}. {qUser.last_name}",
                     "profile": qUser.profile_image_link,
                     "studentNo": student.studentNo,

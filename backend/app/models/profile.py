@@ -33,6 +33,7 @@ class ProfessorProfile(db.Model, Profile, Details):
                 "name": f"{self.professor_profile.first_name} {self.professor_profile.middle_initial}. {self.professor_profile.last_name}",
                 "type": self.professor_profile.type.upper(),
                 "collegiate": self.professor_profile_collegiate.collegiate_name,
+                "profile_image": self.professor_profile.profile_image_link,
                 "bio": self.bio,
                 "consultation": self.consultation,
                 "socials": {
@@ -101,6 +102,7 @@ class StudentProfile(db.Model, Profile, Details):
                 "id": self.id,
                 "name": f"{self.student_profile.first_name} {self.student_profile.middle_initial}. {self.student_profile.last_name}",
                 "type": self.student_profile.type.upper(),
+                "profile_image": self.student_profile.profile_image_link,
                 "collegiate": self.student_profile_collegiate.collegiate_name,
                 "bio": self.bio,
                 "socials": {
