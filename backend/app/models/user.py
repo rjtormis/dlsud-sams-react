@@ -10,7 +10,7 @@ from ..utils.generate_uuid import generate_uuid
 from ..utils.generate_unique_code import unique_identifier_file
 
 # Exception
-from ..exception import NotFound
+from ..exception import NotFoundError
 
 
 class User(db.Model, Details):
@@ -60,9 +60,9 @@ class User(db.Model, Details):
             if confirm_password:
                 return query_email.serialized
             else:
-                raise NotFound("Invalid login credentials")
+                raise NotFoundError("Invalid login credentials")
         else:
-            raise NotFound("Invalid login credentials")
+            raise NotFoundError("Invalid login credentials")
 
     @classmethod
     def generate_pre_signed_url(cls, id, type, filename):

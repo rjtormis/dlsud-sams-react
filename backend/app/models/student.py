@@ -19,6 +19,7 @@ class Student(User):
 
     student_no = db.Column(db.String(length=10), primary_key=True, nullable=False)
     collegiate_id = db.Column(db.Integer(), db.ForeignKey("collegiates.id"))
+    total_lectures_attended = db.Column(db.Integer(), nullable=False, default=0)
     subjects = db.relationship("StudentSubject", backref="students_subjects")
     profile = db.relationship("StudentProfile", backref="student_profile")
     __mapper_args__ = {"polymorphic_identity": "student"}

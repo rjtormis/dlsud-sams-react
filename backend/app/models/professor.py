@@ -19,6 +19,7 @@ class Professor(User):
     collegiate_id = db.Column(
         db.Integer(), db.ForeignKey("collegiates.id"), nullable=False
     )
+    total_lectures = db.Column(db.Integer(), nullable=False, default=0)
 
     sections = db.relationship("Section", backref="professor")
     subjects = db.relationship("Subject", backref="professor_subject")

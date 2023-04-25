@@ -8,7 +8,7 @@ from ..models.subject import Subject
 from ..utils.database_utilities import push_to_database
 
 # Exception
-from ..exception import ConflictError
+from ..exception import ConflictError, NotFoundError
 
 
 class StudentSubject(db.Model):
@@ -35,12 +35,16 @@ class StudentSubject(db.Model):
     def enroll_student(cls, id, code):
         qUser = Student.query.filter_by(id=id).first()
         qSubject = Subject.query.filter_by(code=code).first()
+        if qSubject:
+            qEnrollSub = StudentSubject.query.filter_by(
+                sub_code=qSubject.code, studentNo=qUser.student_no
+            ).first()
+            if qEnrollSub:
+                raise ConflictError("You are already enrolled in this subject.")
 
-        qEnrollSub = StudentSubject.query.filter_by(
-            sub_code=qSubject.code, studentNo=qUser.student_no
-        ).first()
-        if qEnrollSub:
-            raise ConflictError("You are already enrolled in this subject.")
-
-        enrollSub = StudentSubject(sub_code=qSubject.code, studentNo=qUser.student_no)
-        push_to_database(enrollSub)
+            enrollSub = StudentSubject(
+                sub_code=qSubject.code, studentNo=qUser.student_no
+            )
+            push_to_database(enrollSub)
+        else:
+            raise NotFoundError("Subject code does not exists")
