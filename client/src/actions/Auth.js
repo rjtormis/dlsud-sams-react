@@ -21,7 +21,7 @@ export const generateNewAccessToken = (refresh_token) => {
 
 export const loginAuthorization = (state) => {
   return axios.post(
-    "/login",
+    "https://dlsud-sams-react-production.up.railway.app/login",
     { ...state },
     {
       headers: {
