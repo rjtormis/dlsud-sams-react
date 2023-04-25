@@ -1,0 +1,8 @@
+{
+  "routes": [
+    {
+      "src": "/api/v1/(.*)",
+      "dest": "dlsud-sams-react-production.up.railway.app/api/v1/$1"
+    }
+  ]
+}
