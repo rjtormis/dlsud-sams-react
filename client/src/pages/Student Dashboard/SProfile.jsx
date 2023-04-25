@@ -1,5 +1,6 @@
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
+import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import {
   SlSocialFacebook,
@@ -8,30 +9,39 @@ import {
   SlSocialTwitter,
 } from "react-icons/sl";
 
-import { MdUpload } from "react-icons/md";
+import { MdUpload, MdArrowBack } from "react-icons/md";
 import { ImOffice } from "react-icons/im";
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 // Context
 import { useAuth } from "../../context/AuthContext";
 import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
+
 // Utils
 import { aws_user_url, upload_to_s3 } from "../../utilities/Helper";
+
 // Components
 import Loader from "../../components/Shared/Loader";
 import Select from "../../components/Shared/Select";
 import Input from "../../components/Shared/Input";
+
+// Actions
 import { getPresignedURL, update_profile } from "../../actions/Profile";
+
 // Schema
 import { profileStudentSchema } from "../../schemas/ProfileSchema";
+
 function SProfile() {
+  const params = useParams();
   const { auth, setAuth } = useAuth();
-  const { collegiates } = useStudentDashboardContext();
+  const { collegiates, prevLoc, profID, setProfID } = useStudentDashboardContext();
   const [imagePreview, setImagePreview] = useState("");
   const [profile, setProfile] = useState();
   const [loading, setLoading] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [refetch, setRefetch] = useState(false);
+  console.log(profile);
   const [tempProfile, setTempProfile] = useState({
     name: "",
     bio: "",
@@ -46,9 +56,9 @@ function SProfile() {
   const fileInputRef = useRef();
   useEffect(() => {
     setLoading(true);
-    const fetch = async () => {
+    const fetchStudent = async (id) => {
       try {
-        const response = await axios.get(`/api/v1/profiles/${auth.id}/student`);
+        const response = await axios.get(`/api/v1/profiles/${id}/student`);
         setProfile(response.data.user);
         setTempProfile({ ...response.data.user });
         setLoading(false);
@@ -57,8 +67,29 @@ function SProfile() {
         setLoading(false);
       }
     };
-    fetch();
-  }, [auth, refetch]);
+
+    const fetchProf = async (id) => {
+      try {
+        const response = await axios.get(`/api/v1/profiles/${id}/professor`);
+        setProfile(response.data.user);
+        setTempProfile({ ...response.data.user });
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+      }
+    };
+
+    if (params.id) {
+      if (profID !== "") {
+        fetchProf(profID);
+      } else {
+        fetchStudent(params.id);
+      }
+    } else {
+      fetchStudent(auth.id);
+    }
+  }, [auth, refetch, params, profID]);
 
   const handleEdit = () => {
     setImagePreview("");
@@ -121,7 +152,16 @@ function SProfile() {
         ) : (
           <>
             <header className="">
-              <h1 className="text-4xl text-secondary"> MY PROFILE</h1>
+              <h1 className="text-4xl text-secondary">
+                {params.id || profID !== "" ? (
+                  <Link to={prevLoc} className="btn btn-primary mr-4" onClick={() => setProfID("")}>
+                    <MdArrowBack size={20} />
+                  </Link>
+                ) : (
+                  ""
+                )}
+                {params.id && profile !== undefined ? `Viewing ${profile.name}` : "MY PROFILE"}
+              </h1>
             </header>
 
             <div className="flex-1 flex flex-col justify-center mt-16">
@@ -163,6 +203,8 @@ function SProfile() {
                               src={
                                 imagePreview !== ""
                                   ? imagePreview
+                                  : params.id
+                                  ? aws_user_url + profile.profile_image
                                   : aws_user_url + auth.profile_image
                               }
                               alt="profile"
@@ -183,7 +225,7 @@ function SProfile() {
                               <h1 className="text-4xl">{profile.name}</h1>
                             )}
                             <span className="badge badge-primary inline-block my-auto ml-4">
-                              STUDENT
+                              {profile.type}
                             </span>
                           </div>
                           <div className="mt-2">
@@ -276,7 +318,7 @@ function SProfile() {
                                 </div>
                               )}
                             </div>
-                            <div className="mt-4 flex justify-end">
+                            <div className={`mt-4  justify-end ${params.id ? "hidden" : "flex"}`}>
                               <button
                                 className={`btn btn-${onEdit ? "error mr-4" : "primary"} `}
                                 onClick={handleEdit}

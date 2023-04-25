@@ -1,9 +1,14 @@
 import { AiTwotoneTrophy } from "react-icons/ai";
+import { Link } from "react-router-dom";
+// Context
+import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
+
+// Components
 import SSubjectLeaderboardTable from "../../components/Student Dashboard/SSubjectLeaderboardTable";
 import SSubjectStudentsTable from "../../components/Student Dashboard/SSubjectStudentsTable";
-import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
+
 function SSubject() {
-  const { sub, loading, search, setSearch } = useStudentDashboardContext();
+  const { sub, loading, search, setSearch, setProfID } = useStudentDashboardContext();
   return (
     <div className="flex-1 ml-[100px] mr-[60px] mt-4">
       <div className="grid grid-cols-3 gap-4 z-10">
@@ -13,7 +18,16 @@ function SSubject() {
               <h1 className="text-2xl text-primary font-[900]">{sub.subject_name}</h1>
               <h3 className="text-xs">Section: {sub.section}</h3>
               <h3 className="text-xs">COURSE CODE: {sub.code}</h3>
-              <h3 className="text-xs">Professor: {sub.handled_by}</h3>
+              <h3 className="text-xs">
+                Professor:{" "}
+                <Link
+                  className="hover:text-primary hover:underline"
+                  to={`/student-dashboard/profile/${sub.handler_id}`}
+                  onClick={() => setProfID(sub.handler_id)}
+                >
+                  {sub.handled_by}
+                </Link>
+              </h3>
             </div>
             <div className="mr-2">
               <div>
