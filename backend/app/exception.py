@@ -6,7 +6,7 @@ class UnAuthorizedError(Exception):
         super().__init__(self.message)
 
 
-class NotFound(Exception):
+class NotFoundError(Exception):
     status_code = 404
 
     def __init__(self, message):
