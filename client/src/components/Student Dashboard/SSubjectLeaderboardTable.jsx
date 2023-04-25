@@ -48,8 +48,8 @@ function SSubjectLeaderboardTable() {
           <tbody>
             {ranking !== undefined
               ? ranking.map((student) => (
-                  <tr className="text-center">
-                    <td>1</td>
+                  <tr key={student.user.name} className="text-center">
+                    <td>{student.rank}</td>
                     <td className="flex content-center">
                       <div className="avatar">
                         <div className="rounded-full w-8">

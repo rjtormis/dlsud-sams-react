@@ -2,9 +2,16 @@ import { FiEdit2 } from "react-icons/fi";
 import { AiFillDelete } from "react-icons/ai";
 import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
 import { aws_user_url } from "../../utilities/Helper";
+import { useLocation, useNavigate } from "react-router-dom";
 function SSubjectStudentsTable() {
-  const { sub, result, search } = useStudentDashboardContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { sub, result, search, setPrevLoc } = useStudentDashboardContext();
   const { enrolled } = sub;
+  const handleClick = (id) => {
+    setPrevLoc(location.pathname);
+    navigate(`/student-dashboard/profile/${id}`);
+  };
   return (
     <table className="table w-full z-10">
       <thead className="relative z-10">
@@ -20,14 +27,17 @@ function SSubjectStudentsTable() {
         {search === "" ? (
           enrolled.map((student) => (
             <tr className="" key={student.studentNo}>
-              <td className="z-10">
-                <div className="flex items-center space-x-3">
+              <td
+                className="z-10 hover:cursor-pointer hover:bg-gray-100 hover:text-secondary"
+                onClick={() => handleClick(student.id)}
+              >
+                <div className="flex items-center space-x-3 ">
                   <div className="avatar">
                     <div className="mask mask-squircle w-12 h-12">
                       <img className="" src={aws_user_url + student.profile} alt="" />
                     </div>
                   </div>
-                  <div>
+                  <div className="">
                     <div className="font-bold text-sm">{student.name}</div>
                   </div>
                 </div>
