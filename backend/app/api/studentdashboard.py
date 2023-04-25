@@ -15,5 +15,10 @@ def student_dashboard():
     total_subject = len(
         StudentSubject.query.filter_by(studentNo=qUser.student_no).all()
     )
-    print(total_subject)
-    return jsonify({"total_students": total_students, "total_subjects": total_subject})
+    return jsonify(
+        {
+            "total_students": total_students,
+            "total_subjects": total_subject,
+            "total_lectures_attended": qUser.total_lectures_attended,
+        }
+    )

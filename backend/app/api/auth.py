@@ -13,7 +13,7 @@ from app import app, db, jwt, bcrypt
 from ..models.user import User
 
 # Exception
-from ..exception import NotFound
+from ..exception import NotFoundError
 
 # Error Handler
 from ..errors import handle_not_found_error
@@ -40,7 +40,7 @@ def auth():
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
         return response, 200
-    except NotFound as e:
+    except NotFoundError as e:
         return handle_not_found_error(e)
 
 

@@ -8,10 +8,10 @@ from ..models.studentSubject import StudentSubject
 
 # Exception
 
-from ..exception import ConflictError
+from ..exception import ConflictError, NotFoundError
 
 # Error
-from ..errors import handle_conflict_error
+from ..errors import handle_conflict_error, handle_not_found_error
 
 
 @app.route("/api/v1/students/enroll", methods=["POST"])
@@ -26,6 +26,8 @@ def enroll():
         return jsonify({"message": "Enrolled successfully"})
     except ConflictError as e:
         return handle_conflict_error(e)
+    except NotFoundError as e:
+        return handle_not_found_error(e)
 
 
 @app.route("/api/v1/students/<string:id>", methods=["GET", "POST"])
