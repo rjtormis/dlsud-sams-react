@@ -7,7 +7,9 @@ const StudentDashboardContext = createContext();
 export const StudentDashboardContextProvider = ({ children }) => {
   const { auth } = useAuth();
   const [sub, setSub] = useState("");
+  const [prevLoc, setPrevLoc] = useState("");
   const [search, setSearch] = useState("");
+  const [profID, setProfID] = useState("");
   const [collegiates, setCollegiates] = useState([]);
   const [result, setResult] = useState({});
   const [loading, setLoading] = useState(false);
@@ -49,6 +51,10 @@ export const StudentDashboardContextProvider = ({ children }) => {
         setResult,
         collegiates,
         setCollegiates,
+        prevLoc,
+        setPrevLoc,
+        profID,
+        setProfID,
       }}
     >
       {children}
