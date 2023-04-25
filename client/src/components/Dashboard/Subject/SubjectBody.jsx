@@ -71,11 +71,6 @@ function SubjectBody() {
                     <AiOutlineDownload size={20} />
                   </button>
                 </div>
-                <div className="tooltip tooltip-primary" data-tip="Refresh">
-                  <button>
-                    <BiRefresh size={20} />
-                  </button>
-                </div>
               </div>
               <div>
                 <input

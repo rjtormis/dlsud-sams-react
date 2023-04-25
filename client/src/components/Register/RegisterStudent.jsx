@@ -64,7 +64,7 @@ function RegisterStudent({ success }) {
         onSubmit={handleSubmit}
       >
         {(props) => (
-          <form action="" className="mt-10 " onSubmit={props.handleSubmit}>
+          <form action="" className="mt-1" onSubmit={props.handleSubmit}>
             {/* Name */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <CustomInput
