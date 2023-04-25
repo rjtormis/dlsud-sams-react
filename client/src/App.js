@@ -51,6 +51,7 @@ const router = createBrowserRouter(
         <Route path="subjects" element={<SClassroom />} />
         <Route path="subjects/:name" element={<SSubject />} />
         <Route path="profile" element={<SProfile />} />
+        <Route path="profile/:id" element={<SProfile />} />
       </Route>
     </>
   )
