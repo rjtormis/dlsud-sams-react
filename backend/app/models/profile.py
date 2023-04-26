@@ -11,11 +11,11 @@ from ..models.details import Details
 class Profile:
     bio = db.Column(db.String(length=500), default="No biography indicated")
     collegiate = db.Column(db.Integer(), db.ForeignKey("collegiates.id"))
-    fb_social = db.Column(db.String(length=50), default="None")
+    fb_social = db.Column(db.String(length=50), default="www.facebook.com")
 
-    instagram_social = db.Column(db.String(length=50), default="None")
-    linkedIn_social = db.Column(db.String(length=50), default="None")
-    twitter_social = db.Column(db.String(length=50), default="None")
+    instagram_social = db.Column(db.String(length=50), default="www.instagram.com")
+    linkedIn_social = db.Column(db.String(length=50), default="www.linkedin.com")
+    twitter_social = db.Column(db.String(length=50), default="www.twitter.com")
 
 
 class ProfessorProfile(db.Model, Profile, Details):
