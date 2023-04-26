@@ -49,7 +49,10 @@ function SSubjectStudentsTable() {
           ))
         ) : result !== undefined ? (
           <tr className="" key={result.studentNo}>
-            <td className="z-10">
+            <td
+              className="z-10 hover:cursor-pointer hover:bg-gray-100 hover:text-secondary"
+              onClick={() => handleClick(result.id)}
+            >
               <div className="flex items-center space-x-3">
                 <div className="avatar">
                   <div className="mask mask-squircle w-12 h-12">

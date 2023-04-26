@@ -13,7 +13,7 @@ import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
 import { useEffect, useMemo } from "react";
 
 function SubjectBody() {
-  const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setRefetch } =
+  const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setFetchData } =
     useSpecificSection();
   const { auth } = useAuth();
 
@@ -69,6 +69,11 @@ function SubjectBody() {
                 <div className="tooltip tooltip-primary mr-2" data-tip="Download attendance">
                   <button>
                     <AiOutlineDownload size={20} />
+                  </button>
+                </div>
+                <div className="tooltip tooltip-primary mr-2" data-tip="Refresh">
+                  <button onClick={() => setFetchData(true)}>
+                    <BiRefresh size={20} />
                   </button>
                 </div>
               </div>

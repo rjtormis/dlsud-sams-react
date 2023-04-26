@@ -82,9 +82,10 @@ function ProfileBody() {
     try {
       setLoading(true);
       if (file === "") {
-        await update_profile(profile, auth, "", false, rest);
+        await update_profile(profile, auth, false, "", rest, "professor");
         setAuth({ ...auth, name: state.name });
         dispatch({ type: "SET_UPLOAD_SUCCESS", profile: { ...state } });
+        console.log("taena");
         setLoading(false);
         setUpdated(false);
         setOnEdit(false);
@@ -314,16 +315,34 @@ function ProfileBody() {
                           </div>
                         ) : (
                           <div id="socials" className="flex">
-                            <a href={profile.socials.fb} className="">
+                            <a
+                              href={profile.socials.fb}
+                              className=""
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               <SlSocialFacebook size={20} />
                             </a>
-                            <a href={profile.socials.instagram} className="">
+                            <a
+                              href={profile.socials.instagram}
+                              className=""
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               <SlSocialInstagram size={20} />
                             </a>
-                            <a href={profile.socials.linkedIn}>
+                            <a
+                              href={profile.socials.linkedIn}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               <SlSocialLinkedin size={20} />
                             </a>
-                            <a href={profile.socials.twitter}>
+                            <a
+                              href={profile.socials.twitter}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               <SlSocialTwitter size={20} />
                             </a>
                           </div>
