@@ -52,7 +52,12 @@ export const ProfileContextProvider = ({ children }) => {
         setLoading(false);
       }
     };
-    params.id ? set_profile(profID, "student") : set_profile(auth.id, "professor");
+    if (params.id) {
+      set_profile(profID, "student");
+      setOnEdit(false);
+    } else {
+      set_profile(auth.id, "professor");
+    }
   }, [auth, params, profID]);
 
   return (
