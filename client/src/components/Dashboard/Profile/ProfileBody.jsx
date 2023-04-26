@@ -46,10 +46,10 @@ function ProfileBody() {
     dispatch,
     setFileError,
     setFileErrorMsg,
+    profID,
   } = useProfile();
 
-  const { auth, setUpdated, setAuth } = useAuth();
-
+  const { auth, setUpdated, setAuth, refetch } = useAuth();
   const handleImageChange = (e, props) => {
     setFileError(false);
     setFileErrorMsg("");
@@ -178,9 +178,14 @@ function ProfileBody() {
                       </>
                     ) : null}
                     <div className="rounded-xl ">
-                      {/* outline-error outline-3 outline */}
                       <img
-                        src={imagePreview !== "" ? imagePreview : aws_user_url + auth.profile_image}
+                        src={
+                          imagePreview !== ""
+                            ? imagePreview
+                            : profID
+                            ? aws_user_url + profile.profile_image
+                            : aws_user_url + auth.profile_image
+                        }
                         alt="profile"
                       />
                     </div>
@@ -242,24 +247,28 @@ function ProfileBody() {
                               )}
                             </div>
                           </div>
-                          <div className="stat">
-                            <div className="stat-figure">
-                              <BsClockFill size={20} />
+                          {profile.type === "STUDENT" ? (
+                            ""
+                          ) : (
+                            <div className="stat">
+                              <div className="stat-figure">
+                                <BsClockFill size={20} />
+                              </div>
+                              <div className="stat-tile font-bold">Consultation Hours</div>
+                              <div className="stat-desc">
+                                {onEdit ? (
+                                  <Input
+                                    styles="input-sm w-full"
+                                    placeholder="Input consultation hours"
+                                    name="consultation"
+                                    value={props.values.consultation}
+                                  />
+                                ) : (
+                                  profile.consultation
+                                )}
+                              </div>
                             </div>
-                            <div className="stat-tile font-bold">Consultation Hours</div>
-                            <div className="stat-desc">
-                              {onEdit ? (
-                                <Input
-                                  styles="input-sm w-full"
-                                  placeholder="Input consultation hours"
-                                  name="consultation"
-                                  value={props.values.consultation}
-                                />
-                              ) : (
-                                profile.consultation
-                              )}
-                            </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                       <div className="mt-4">
@@ -320,22 +329,26 @@ function ProfileBody() {
                           </div>
                         )}
                       </div>
-                      <div className="mt-4 flex justify-end">
-                        <button
-                          className={`btn btn-${onEdit ? "error mr-4" : "primary"} `}
-                          onClick={handleEdit}
-                          type="button"
-                        >
-                          {onEdit ? "CANCEL" : "EDIT"}
-                        </button>
-                        {onEdit ? (
-                          <>
-                            <button className="btn btn-primary" type="submit">
-                              SAVE
-                            </button>
-                          </>
-                        ) : null}
-                      </div>
+                      {profile.id === auth.id ? (
+                        <div className="mt-4 flex justify-end">
+                          <button
+                            className={`btn btn-${onEdit ? "error mr-4" : "primary"} `}
+                            onClick={handleEdit}
+                            type="button"
+                          >
+                            {onEdit ? "CANCEL" : "EDIT"}
+                          </button>
+                          {onEdit ? (
+                            <>
+                              <button className="btn btn-primary" type="submit">
+                                SAVE
+                              </button>
+                            </>
+                          ) : null}
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                 </div>

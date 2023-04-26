@@ -9,6 +9,8 @@ import { getCookie } from "../utilities/getCookie";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
+  const [prevLoc, setPrevLoc] = useState("");
+  const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [auth, setAuth] = useState(() => {
@@ -37,7 +39,19 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ auth, setAuth, logout, loading, setLoading, updated, setUpdated }}
+      value={{
+        auth,
+        setAuth,
+        logout,
+        loading,
+        setLoading,
+        updated,
+        setUpdated,
+        refetch,
+        setRefetch,
+        prevLoc,
+        setPrevLoc,
+      }}
     >
       {children}
     </AuthContext.Provider>

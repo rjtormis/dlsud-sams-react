@@ -17,7 +17,7 @@ import { aws_user_url } from "../utilities/Helper";
 function DashboardLayout() {
   const navigate = useNavigate();
 
-  const { auth, logout, loading, setLoading, updated } = useAuth();
+  const { auth, logout, loading, setLoading, updated, setRefetch } = useAuth();
   useEffect(() => {
     if (auth !== null) {
       setLoading(false);
@@ -85,7 +85,11 @@ function DashboardLayout() {
                   </Link>
                 </li>
                 <li className="mt-4 tooltip tooltip-right tooltip-primary" data-tip="Profile">
-                  <Link to="/dashboard/profile" className="flex btn btn-ghost btn-square">
+                  <Link
+                    to="/dashboard/profile"
+                    className="flex btn btn-ghost btn-square"
+                    onClick={() => setRefetch(true)}
+                  >
                     <div>
                       <RiUserSettingsFill color="#224429" size={25} className="block m-auto" />
                     </div>

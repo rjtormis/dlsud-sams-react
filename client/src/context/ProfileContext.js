@@ -9,12 +9,18 @@ import { fetchProfilewithCollegiates } from "../actions/Profile";
 
 // Reducer
 import ProfileReducer from "../reducers/ProfileReducer";
+import { useParams } from "react-router-dom";
 const ProfileContext = createContext();
 
 export const ProfileContextProvider = ({ children }) => {
+  const params = useParams();
+  const { auth, refetch, setRefetch } = useAuth();
+
+  const [defaultID, setDefaultID] = useState(auth.id);
   const [loading, setLoading] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [fileError, setFileError] = useState(false);
+  const [profID, setProfID] = useState("");
   const [fileErrorMsg, setFileErrorMsg] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const initialValues = {
@@ -26,31 +32,28 @@ export const ProfileContextProvider = ({ children }) => {
 
   const fileInputRef = useRef(null);
 
-  const { auth } = useAuth();
-
   useEffect(() => {
-    if (auth !== null) {
-      const set_profile = async () => {
-        try {
-          setLoading(true);
-          const [profile_result, collegiate_result] = await fetchProfilewithCollegiates(
-            auth,
-            "professor"
-          );
-          dispatch({
-            type: "SET_PROFILE_&_COLLEGIATE",
-            profile: profile_result.data.user,
-            collegiates: collegiate_result.data.collegiates,
-          });
-          setLoading(false);
-        } catch (e) {
-          console.log(e);
-          setLoading(false);
-        }
-      };
-      set_profile();
-    }
-  }, [auth]);
+    const set_profile = async (id, type) => {
+      try {
+        setLoading(true);
+        const [profile_result, collegiate_result] = await fetchProfilewithCollegiates(
+          auth,
+          id,
+          type
+        );
+        dispatch({
+          type: "SET_PROFILE_&_COLLEGIATE",
+          profile: profile_result.data.user,
+          collegiates: collegiate_result.data.collegiates,
+        });
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+      }
+    };
+    params.id ? set_profile(profID, "student") : set_profile(auth.id, "professor");
+  }, [auth, params, profID]);
 
   return (
     <ProfileContext.Provider
@@ -68,6 +71,8 @@ export const ProfileContextProvider = ({ children }) => {
         setFileError,
         fileErrorMsg,
         setFileErrorMsg,
+        profID,
+        setProfID,
       }}
     >
       {children}

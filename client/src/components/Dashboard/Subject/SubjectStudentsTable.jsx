@@ -8,11 +8,17 @@ import { useState } from "react";
 import { aws_user_url } from "../../../utilities/Helper";
 import { useAuth } from "../../../context/AuthContext";
 import { ObjectIsEmpty } from "../../../utilities/Helper";
+import { useProfile } from "../../../context/ProfileContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SubjectStudentsTable() {
+  const location = useLocation();
   const { subject, setStudentToRemove, setSubjectToRemove, search, result, setRefetch } =
     useSpecificSection();
-  const { auth } = useAuth();
+  const { auth, setPrevLoc } = useAuth();
+  const { setProfID } = useProfile();
+
+  const navigate = useNavigate();
 
   const [total, setTotal] = useState(0);
   const [studentNo, setStudentNo] = useState("");
@@ -56,6 +62,12 @@ function SubjectStudentsTable() {
       console.log(e);
     }
   };
+
+  const handleClick = (id) => {
+    setPrevLoc(location.pathname);
+    setProfID(id);
+    navigate(`/dashboard/profile/${id}`);
+  };
   return (
     <>
       <table className="table w-full">
@@ -73,7 +85,10 @@ function SubjectStudentsTable() {
           {search === "" ? (
             subject.enrolled.map((sub) => (
               <tr className="" key={sub.name}>
-                <td className="z-10">
+                <td
+                  className="z-10 hover:cursor-pointer hover:bg-gray-100 hover:text-secondary"
+                  onClick={() => handleClick(sub.id)}
+                >
                   <div className="flex items-center space-x-3">
                     <div className="avatar">
                       <div className="mask mask-squircle w-12 h-12">

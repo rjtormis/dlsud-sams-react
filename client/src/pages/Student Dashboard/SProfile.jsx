@@ -109,7 +109,7 @@ function SProfile() {
   const handleSubmit = async (state, action) => {
     const { file, ...rest } = state;
     try {
-      if (file === "") {
+      if (file === undefined || file === "") {
         const response = await axios.patch(
           `/api/v1/profiles/${auth.id}/student`,
           { ...rest },
@@ -270,6 +270,17 @@ function SProfile() {
                                     <div className="stat-desc">{profile.collegiate}</div>
                                   )}
                                 </div>
+                                {profile.type === "PROFESSOR" ? (
+                                  <div className="stat">
+                                    <div className="stat-figure">
+                                      <ImOffice size={20} />
+                                    </div>
+                                    <div className="stat-tile font-bold">Consultation Hours</div>
+                                    <div className="stat-desc">{profile.consultation}</div>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
                               </div>
                             </div>
                             <div className="mt-4">

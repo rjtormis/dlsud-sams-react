@@ -44,6 +44,7 @@ const router = createBrowserRouter(
         <Route path="sections/:name" element={<Section />} />
         <Route path="sections/:name/:subject_name" element={<Subject />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="profile/:id" element={<Profile />} />
       </Route>
 
       <Route path="/student-dashboard" element={<StudentDashboardLayout />}>
