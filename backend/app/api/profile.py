@@ -30,7 +30,7 @@ def professor_profile(id):
 
     if request.method == "PATCH":
         data = request.get_json()
-        print(data["profile_image"])
+        print(data)
         ProfessorProfile.update_professor_profile(
             current_user,
             data["name"],
