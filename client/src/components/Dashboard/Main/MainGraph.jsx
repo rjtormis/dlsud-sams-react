@@ -1,10 +1,11 @@
-import LineChart from "../../charts/LineChart";
+import { BarChart } from "../../charts/BarChart";
+import Select from "../../Shared/Select";
 function MainGraph() {
   return (
     <>
-      <div className="grid grid-cols-4 flex-1 mt-4">
-        <div className="col-span-2 stat shadow bg-white rounded-lg">
-          <LineChart />
+      <div className="flex-1 mt-4">
+        <div className="flex stat shadow bg-white rounded-lg h-[400px] w-1/2">
+          <BarChart />
         </div>
       </div>
     </>

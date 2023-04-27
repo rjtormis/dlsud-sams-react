@@ -17,6 +17,36 @@ function SubjectBody() {
     useSpecificSection();
   const { auth } = useAuth();
 
+  const attendanceData = [
+    { name: "John Doe", id: "12345", attendance: 12 },
+    { name: "Jane Smith", id: "67890", attendance: 15 },
+    { name: "Bob Johnson", id: "24680", attendance: 10 },
+  ];
+  const date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+  let current = `${day}-${month}-${year}`;
+  const generateCSV = (section, subName, data) => {
+    const header = ["Section", "Subject", "Date"];
+    const rows = [
+      [section, subName, current],
+      ["Name", "Student ID", "Total Attendance"],
+      ...data.map(({ name, studentNo, total_attendance }) => [name, studentNo, total_attendance]),
+    ];
+    return [header, ...rows].map((row) => row.join(",")).join("\n");
+  };
+  const downloadCSV = () => {
+    const csvData = generateCSV(subject.section, subject.subject_name, subject.enrolled);
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `attendance_${subject.subject_name}_${current}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -67,7 +97,7 @@ function SubjectBody() {
                   </button>
                 </div>
                 <div className="tooltip tooltip-primary mr-2" data-tip="Download attendance">
-                  <button>
+                  <button onClick={downloadCSV}>
                     <AiOutlineDownload size={20} />
                   </button>
                 </div>
