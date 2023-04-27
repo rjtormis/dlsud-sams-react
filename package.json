@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "concurrently": "^7.6.0"
+  },
+  "devDependencies": {
+    "faker": "^6.6.6"
   }
 }
