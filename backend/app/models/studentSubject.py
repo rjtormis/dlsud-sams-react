@@ -21,6 +21,7 @@ class StudentSubject(db.Model):
         db.String(length=40), db.ForeignKey("students.student_no"), nullable=False
     )
     total_attendance = db.Column(db.Integer(), nullable=False, default=0)
+    # total_absent = db.Column(db.Integer(), nullable=False)
 
     @property
     def serialized(self):
