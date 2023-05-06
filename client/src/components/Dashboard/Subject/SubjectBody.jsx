@@ -11,6 +11,7 @@ import Modal from "../../Shared/Modal";
 import SubjectStudentsTable from "./SubjectStudentsTable";
 import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
 import { useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 function SubjectBody() {
   const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setFetchData } =
@@ -92,9 +93,11 @@ function SubjectBody() {
             <div className="mr-2">
               <div className="flex m-auto justify-end">
                 <div className="tooltip tooltip-primary mr-2" data-tip="Start attendance">
-                  <button>
+                  <Link
+                    to={`/dashboard/sections/${subject.section}/${subject.subject_name}/attendance`}
+                  >
                     <AiFillCheckCircle size={20} />
-                  </button>
+                  </Link>
                 </div>
                 <div className="tooltip tooltip-primary mr-2" data-tip="Download attendance">
                   <button onClick={downloadCSV}>

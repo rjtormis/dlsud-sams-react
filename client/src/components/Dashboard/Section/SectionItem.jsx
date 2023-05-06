@@ -40,7 +40,7 @@ function SectionItem({ subject, isProfessor }) {
         <div className="card-actions justify-end">
           <Link
             onClick={onVisit}
-            to={`/dashboard/sections/${subject.subject_name}/test`}
+            to={`/dashboard/sections/${subject.section}/${subject.subject_name}`}
             className="btn btn-white btn-square btn-xs"
           >
             <MdOutlineKeyboardArrowRight size={16} />

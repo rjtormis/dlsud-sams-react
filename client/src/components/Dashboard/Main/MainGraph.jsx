@@ -1,5 +1,4 @@
 import { BarChart } from "../../charts/BarChart";
-import Select from "../../Shared/Select";
 function MainGraph() {
   return (
     <>
