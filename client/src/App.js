@@ -15,6 +15,7 @@ import Student from "./pages/Register/Student";
 import Professor from "./pages/Register/Professor";
 import Subject from "./pages/Dashboard/Subject";
 import Profile from "./pages/Dashboard/Profile";
+import Attendance from "./pages/Dashboard/Attendance";
 import SMain from "./pages/Student Dashboard/SMain";
 import SClassroom from "./pages/Student Dashboard/SClassroom";
 import SSubject from "./pages/Student Dashboard/SSubject";
@@ -43,6 +44,7 @@ const router = createBrowserRouter(
         <Route path="sections" element={<Sections />} />
         <Route path="sections/:name" element={<Section />} />
         <Route path="sections/:name/:subject_name" element={<Subject />} />
+        <Route path="sections/:name/:subject_name/attendance" element={<Attendance />} />
         <Route path="profile" element={<Profile />} />
         <Route path="profile/:id" element={<Profile />} />
       </Route>
