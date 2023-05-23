@@ -42,6 +42,7 @@ from .api import (
     collegiate,
     studentdashboard,
     student,
+    videofeed,
 )
 
 # Essential Model Imports
