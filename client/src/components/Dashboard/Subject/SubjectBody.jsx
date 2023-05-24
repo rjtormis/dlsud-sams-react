@@ -10,7 +10,7 @@ import { useAuth } from "../../../context/AuthContext";
 import Modal from "../../Shared/Modal";
 import SubjectStudentsTable from "./SubjectStudentsTable";
 import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function SubjectBody() {
