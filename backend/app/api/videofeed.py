@@ -17,7 +17,6 @@ def get_className(classNo):
 @app.route("/api/v1/video_feed", methods=["GET", "POST"])
 def video_feed():
     if request.method == "GET":
-        detected_faces = []
         current_dir = os.getcwd()
         file_directory = os.path.join(current_dir, "app\h5")
         h5_location = os.path.join(file_directory, "keras_model.h5")
@@ -34,73 +33,64 @@ def video_feed():
                     break
                 else:
                     faces = facedetect.detectMultiScale(frame, 1.3, 5)
-                    for x, y, w, h in faces:
-                        crop_img = frame[y : y + h, x : x + h]
-                        img = cv2.resize(crop_img, (224, 224))
-                        img = img.reshape(1, 224, 224, 3)
-                        prediction = model.predict(img)
-                        classIndex = np.argmax(model.predict(img), axis=-1)
-                        probabilityValue = np.amax(prediction)
+                    if len(faces) > 0:
+                        for x, y, w, h in faces:
+                            detected_faces = []
+                            crop_img = frame[y : y + h, x : x + h]
+                            img = cv2.resize(crop_img, (224, 224))
+                            img = img.reshape(1, 224, 224, 3)
+                            prediction = model.predict(img)
+                            classIndex = np.argmax(model.predict(img), axis=-1)
+                            probabilityValue = np.amax(prediction)
+                            if classIndex is not None:
+                                cv2.rectangle(
+                                    frame, (x, y), (x + w, y + h), (0, 255, 0), 2
+                                )
+                                cv2.rectangle(
+                                    frame, (x, y - 40), (x + w, y), (0, 255, 0), -2
+                                )
+                                cv2.putText(
+                                    frame,
+                                    str(get_className(classIndex)),
+                                    (x, y - 10),
+                                    font,
+                                    0.75,
+                                    (255, 255, 255),
+                                    1,
+                                    cv2.LINE_AA,
+                                )
+                                name = get_className(classIndex)
+                                if name not in detected_faces:
+                                    detected_faces.append(name)
 
-                        if classIndex == 0:
-                            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                            cv2.rectangle(
-                                frame, (x, y - 40), (x + w, y), (0, 255, 0), -2
-                            )
-                            cv2.putText(
-                                frame,
-                                str(get_className(classIndex)),
-                                (x, y - 10),
-                                font,
-                                0.75,
-                                (255, 255, 255),
-                                1,
-                                cv2.LINE_AA,
-                            )
-                            name = get_className(classIndex)
-                            if name not in detected_faces:
-                                detected_faces.append(name)
-                        elif classIndex == 1:
-                            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                            cv2.rectangle(
-                                frame, (x, y - 40), (x + w, y), (0, 255, 0), -2
-                            )
-                            cv2.putText(
-                                frame,
-                                str(get_className(classIndex)),
-                                (x, y - 10),
-                                font,
-                                0.75,
-                                (255, 255, 255),
-                                1,
-                                cv2.LINE_AA,
-                            )
-                            name = get_className(classIndex)
-                            if name not in detected_faces:
-                                detected_faces.append(name)
+                                cv2.putText(
+                                    frame,
+                                    str(round(probabilityValue * 100, 2)) + "%",
+                                    (180, 75),
+                                    font,
+                                    0.75,
+                                    (255, 0, 0),
+                                    2,
+                                    cv2.LINE_AA,
+                                )
 
-                        cv2.putText(
-                            frame,
-                            str(round(probabilityValue * 100, 2)) + "%",
-                            (180, 75),
-                            font,
-                            0.75,
-                            (255, 0, 0),
-                            2,
-                            cv2.LINE_AA,
-                        )
-
-                    # Perform any necessary processing on the frame (e.g., face recognition)
-
-                    if len(detected_faces) > 0:
-                        data = {"faces": detected_faces}
+                                # Perform any necessary processing on the frame (e.g., face recognition)
+                                if len(detected_faces) > 0:
+                                    data = {"faces": detected_faces}
+                                    file_path = os.path.join(
+                                        current_dir, "app", "data", "sample.json"
+                                    )
+                                    serialized = json.dumps(data, indent=4)
+                                    with open(file_path, "w") as outfile:
+                                        outfile.write(serialized)
+                    else:
+                        data = {"faces": ""}
                         file_path = os.path.join(
                             current_dir, "app", "data", "sample.json"
                         )
                         serialized = json.dumps(data, indent=4)
                         with open(file_path, "w") as outfile:
                             outfile.write(serialized)
-
                     # Convert the frame to JPEG format
                     ret, buffer = cv2.imencode(".jpg", frame)
                     frame = buffer.tobytes()
@@ -121,3 +111,8 @@ def detected_faces():
     with open(file_path, "r") as file:
         data = json.load(file)
     return jsonify({"faces": data["faces"]})
+
+
+@app.route("/api/v1/record", methods=["GET", "POST"])
+def record_attendance():
+    pass
