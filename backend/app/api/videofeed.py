@@ -1,4 +1,4 @@
-from app import app
+from app import app, db
 from flask import Response, request, jsonify
 from tensorflow import keras
 from keras.models import load_model
@@ -7,6 +7,11 @@ import json
 import cv2
 import numpy as np
 import os
+
+# Models
+from ..models.student import Student
+from ..models.studentSubject import StudentSubject
+from ..models.professor import Professor
 
 
 def get_className(classNo):
@@ -17,6 +22,11 @@ def get_className(classNo):
 @app.route("/api/v1/video_feed", methods=["GET", "POST"])
 def video_feed():
     if request.method == "GET":
+        disabled_camera = request.args.get("disable_camera")
+        camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Access the camera or video source
+        if disabled_camera and disabled_camera.lower() == "true":
+            camera.release()
+            return jsonify({"msg": "Camera deactivated"})
         current_dir = os.getcwd()
         file_directory = os.path.join(current_dir, "app\h5")
         h5_location = os.path.join(file_directory, "keras_model.h5")
@@ -24,11 +34,11 @@ def video_feed():
         facedetect = cv2.CascadeClassifier(classifier)
         font = cv2.FONT_HERSHEY_COMPLEX
         model = load_model(h5_location, compile=False)
-        camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Access the camera or video source
 
         def generate_frames():
             while True:
                 success, frame = camera.read()
+
                 if not success:
                     break
                 else:
@@ -115,4 +125,22 @@ def detected_faces():
 
 @app.route("/api/v1/record", methods=["GET", "POST"])
 def record_attendance():
-    pass
+    if request.method == "POST":
+        data = request.get_json()
+        professor = Professor.query.filter_by(id=data["id"]).first()
+        professor.total_lectures = professor.total_lectures + 1
+        for faces in data["detected"]:
+            split_name = faces.split()
+            first_name = " ".join(split_name[:-1])
+            last_name = split_name[-1]
+
+            student = Student.query.filter_by(
+                first_name=first_name, last_name=last_name
+            ).first()
+            subject = StudentSubject.query.filter_by(
+                sub_code=data["sub_code"], studentNo=student.student_no
+            ).first()
+            subject.total_attendance = subject.total_attendance + 1
+        db.session.commit()
+
+        return jsonify({"message": "Attendance recorded!"})

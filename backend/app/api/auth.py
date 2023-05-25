@@ -19,11 +19,6 @@ from ..exception import NotFoundError
 from ..errors import handle_not_found_error
 
 
-@app.route("/test", methods=["GET"])
-def test():
-    return jsonify({"msg": "test"})
-
-
 @app.route("/login", methods=["POST"])
 def auth():
     """
