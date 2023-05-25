@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useEffect, useState, useContext } from "react";
 
 // Actions
@@ -16,6 +17,7 @@ export const AuthContextProvider = ({ children }) => {
   const [auth, setAuth] = useState(() => {
     return JSON.parse(localStorage.getItem("user"));
   });
+
   const refresh = getCookie("csrf_refresh_token");
 
   useEffect(() => {
