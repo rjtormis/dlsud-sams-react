@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 function SubjectBody() {
   const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setFetchData } =
     useSpecificSection();
-  const { auth } = useAuth();
+  const { auth, setCamera } = useAuth();
 
   const attendanceData = [
     { name: "John Doe", id: "12345", attendance: 12 },

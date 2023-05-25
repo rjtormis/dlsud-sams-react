@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
-
 function SubjectHeader() {
   const { subject } = useSpecificSection();
   return (
