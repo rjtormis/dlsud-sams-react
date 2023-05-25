@@ -18,11 +18,13 @@ function DashboardLayout() {
   const navigate = useNavigate();
 
   const { auth, logout, loading, setLoading, updated, setRefetch } = useAuth();
+
   useEffect(() => {
     if (auth !== null) {
       setLoading(false);
     }
   }, [auth, setLoading]);
+
   const handleLogout = async () => {
     try {
       const response = await axios.post("/logout", {});
@@ -31,6 +33,10 @@ function DashboardLayout() {
         navigate("/");
       }
     } catch (e) {}
+  };
+
+  const handleProfile = () => {
+    setRefetch(true);
   };
   return (
     <div id="dashboard-container" className="h-screen flex flex-col">
@@ -88,7 +94,7 @@ function DashboardLayout() {
                   <Link
                     to="/dashboard/profile"
                     className="flex btn btn-ghost btn-square"
-                    onClick={() => setRefetch(true)}
+                    onClick={handleProfile}
                   >
                     <div>
                       <RiUserSettingsFill color="#224429" size={25} className="block m-auto" />
