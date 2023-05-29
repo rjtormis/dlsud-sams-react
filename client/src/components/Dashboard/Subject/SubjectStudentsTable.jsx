@@ -1,6 +1,6 @@
 import axios from "axios";
 import { FiEdit2 } from "react-icons/fi";
-import { AiFillDelete, AiOutlineCheck } from "react-icons/ai";
+import { AiFillDelete, AiOutlineCheck, AiOutlineQuestionCircle } from "react-icons/ai";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -79,12 +79,27 @@ function SubjectStudentsTable() {
         <table className="table w-full">
           <thead className="relative z-20">
             <tr className="sticky top-0">
-              <th className="text-center bg-secondary text-white">Name</th>
-              <th className="text-center bg-secondary text-white">Email</th>
-              <th className="text-center bg-secondary text-white">Student ID</th>
-              <th className="text-center bg-secondary text-white">Total Att.</th>
-              <th className="text-center bg-secondary text-white">Total Absent</th>
-              <th className="text-center bg-secondary text-white">Actions</th>
+              <th className="text-center bg-secondary text-white cursor-default">Name</th>
+              <th className="text-center bg-secondary text-white cursor-default">Email</th>
+              <th className="text-center bg-secondary text-white cursor-default">Student ID</th>
+              <th className="text-center bg-secondary text-white">
+                <p
+                  className="tooltip tooltip-bottom tooltip-accent tex cursor-pointer"
+                  data-tip="Attendance recorded today"
+                >
+                  MARKED
+                </p>
+              </th>
+              <th className="text-center bg-secondary text-white">
+                <p
+                  className="tooltip tooltip-bottom tooltip-accent tex cursor-pointer"
+                  data-tip="Total attendance"
+                >
+                  Total Att.
+                </p>
+              </th>
+              <th className="text-center bg-secondary text-white cursor-default">Total Absent</th>
+              <th className="text-center bg-secondary text-white cursor-default">Actions</th>
             </tr>
           </thead>
 
@@ -109,6 +124,7 @@ function SubjectStudentsTable() {
                   </td>
                   <td className="text-center text-sm w-[150px]">{sub.emailAddress}</td>
                   <td className="text-center text-sm">{sub.studentNo}</td>
+                  <td className="text-center text-sm">NO</td>
                   <td className="text-center text-sm">
                     <input
                       type="text"

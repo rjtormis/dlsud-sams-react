@@ -2,21 +2,24 @@ import axios from "axios";
 import { AiFillCheckCircle, AiOutlineDownload, AiTwotoneTrophy } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // Context
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useAuth } from "../../../context/AuthContext";
+
 // Components
 import Modal from "../../Shared/Modal";
 import SubjectStudentsTable from "./SubjectStudentsTable";
 import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+
+import { getCurrentDate } from "../../../utilities/Helper";
 
 function SubjectBody() {
   const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setFetchData } =
     useSpecificSection();
-  const { auth, setCamera } = useAuth();
+  const { auth } = useAuth();
 
   const attendanceData = [
     { name: "John Doe", id: "12345", attendance: 12 },
@@ -121,7 +124,7 @@ function SubjectBody() {
               </div>
             </div>
           </div>
-          <div className=" overflow-y-auto h-[520px]">
+          <div className=" overflow-y-auto h-[520px] ">
             <SubjectStudentsTable />
           </div>
         </div>
@@ -133,6 +136,7 @@ function SubjectBody() {
                 <AiTwotoneTrophy className="" />
               </span>
             </h1>
+            <h1 className="text-xs flex">DATE : {getCurrentDate("table")} </h1>
           </header>
           <div className="h-[510px] overflow-y-auto">
             <SubjectLeaderboardTable />

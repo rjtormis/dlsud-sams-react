@@ -25,9 +25,9 @@ function SubjectLeaderboardTable() {
     <table className="table table-zebra w-full mt-2">
       <thead>
         <tr className="text-center sticky top-0">
-          <th className="bg-secondary text-white">Rank</th>
-          <th className="bg-secondary text-white">Name</th>
-          <th className="bg-secondary text-white">T.A</th>
+          <th className="bg-secondary text-white cursor-default">Rank</th>
+          <th className="bg-secondary text-white cursor-default">Name</th>
+          <th className="bg-secondary text-white cursor-default">T.A</th>
         </tr>
       </thead>
       <tbody>
