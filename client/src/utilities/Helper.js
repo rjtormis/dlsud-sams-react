@@ -18,3 +18,26 @@ export const upload_to_s3 = (url, data) => {
 export const ObjectIsEmpty = (obj) => {
   return Object.keys(obj).length === 0;
 };
+
+export const getCurrentDate = (type) => {
+  if (type === "attendance") {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const currentTime = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Shanghai",
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return `${currentDate} ${currentTime}`;
+  }
+  if (type === "table") {
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    return currentDate;
+  }
+};
