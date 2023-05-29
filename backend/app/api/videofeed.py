@@ -12,6 +12,7 @@ import os
 from ..models.student import Student
 from ..models.studentSubject import StudentSubject
 from ..models.professor import Professor
+from ..models.attendance import Attendance
 
 
 def get_className(classNo):
@@ -137,10 +138,25 @@ def record_attendance():
             student = Student.query.filter_by(
                 first_name=first_name, last_name=last_name
             ).first()
-            subject = StudentSubject.query.filter_by(
+            enrolledSubject = StudentSubject.query.filter_by(
                 sub_code=data["sub_code"], studentNo=student.student_no
             ).first()
-            subject.total_attendance = subject.total_attendance + 1
+
+            attendance = Attendance.query.filter_by(
+                studentNo=student.student_no,
+                sub_code=data["sub_code"],
+                date=data["date"],
+            ).first()
+
+            if not attendance:
+                attendance = Attendance(
+                    studentNo=student.student_no,
+                    sub_code=data["sub_code"],
+                    date=data["date"],
+                )
+                db.session.add(attendance)
+                enrolledSubject.total_attendance = enrolledSubject.total_attendance + 1
+
         db.session.commit()
 
         return jsonify({"message": "Attendance recorded!"})
