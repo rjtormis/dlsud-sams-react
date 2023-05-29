@@ -12,6 +12,8 @@ import { useAuth } from "../../context/AuthContext";
 import Alert from "../../components/Shared/Alert";
 import Loader from "../../components/Shared/Loader";
 
+//Utils
+import { getCurrentDate } from "../../utilities/Helper";
 function Attendance() {
   const navigate = useNavigate();
   const [videoLoad, setVideoLoad] = useState(false);
@@ -52,6 +54,7 @@ function Attendance() {
         detected: detected,
         id: auth.id,
         sub_code: subject.code,
+        date: getCurrentDate("attendance"),
       });
       setSuccess(true);
       setSubmit(false);
