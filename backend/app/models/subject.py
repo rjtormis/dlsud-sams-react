@@ -38,6 +38,7 @@ class Subject(db.Model, Details):
     )
 
     enrolledStudents = db.Relationship("StudentSubject", backref="studentsSubjects")
+    subAttendance = db.Relationship("Attendance", backref="subject_attendance")
 
     @classmethod
     def create_subject(cls, current_user, sectionName, subjectName, start, end, day):

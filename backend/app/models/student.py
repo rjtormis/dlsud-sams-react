@@ -22,6 +22,7 @@ class Student(User):
     total_lectures_attended = db.Column(db.Integer(), nullable=False, default=0)
     subjects = db.relationship("StudentSubject", backref="students_subjects")
     profile = db.relationship("StudentProfile", backref="student_profile")
+    attendance = db.relationship("Attendance", backref="student_attendance")
     __mapper_args__ = {"polymorphic_identity": "student"}
 
     @classmethod
