@@ -126,7 +126,6 @@ def subject(code, id):
         return jsonify(qUser.serialized), 200
 
     if request.method == "DELETE":
-        print(code, id)
         qUser = StudentSubject.query.filter_by(
             sub_code=f"{code}", studentNo=f"{id}"
         ).first()

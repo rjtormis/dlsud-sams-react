@@ -11,7 +11,7 @@ import os
 # Models
 from ..models.student import Student
 from ..models.studentSubject import StudentSubject
-from ..models.professor import Professor
+from ..models.professor import Professor, Lecture
 from ..models.attendance import Attendance
 
 
@@ -128,8 +128,21 @@ def detected_faces():
 def record_attendance():
     if request.method == "POST":
         data = request.get_json()
+        print(data)
         professor = Professor.query.filter_by(id=data["id"]).first()
-        professor.total_lectures = professor.total_lectures + 1
+        lecture = Lecture.query.filter_by(
+            professor_id=data["id"], sub_code=data["sub_code"], date=data["date"]
+        ).first()
+        if not lecture:
+            professor.total_lectures = professor.total_lectures + 1
+            update_lecture = Lecture(
+                professor_id=data["id"],
+                sub_code=data["sub_code"],
+                date=data["date"],
+                time=data["time"],
+            )
+            db.session.add(update_lecture)
+            db.session.commit()
         for faces in data["detected"]:
             split_name = faces.split()
             first_name = " ".join(split_name[:-1])
@@ -153,6 +166,7 @@ def record_attendance():
                     studentNo=student.student_no,
                     sub_code=data["sub_code"],
                     date=data["date"],
+                    time=data["time"],
                 )
                 db.session.add(attendance)
                 enrolledSubject.total_attendance = enrolledSubject.total_attendance + 1
