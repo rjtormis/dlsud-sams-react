@@ -17,8 +17,16 @@ import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
 import { getCurrentDate } from "../../../utilities/Helper";
 
 function SubjectBody() {
-  const { subject, studentToRemove, subjectToRemove, search, setSearch, setResult, setFetchData } =
-    useSpecificSection();
+  const {
+    subject,
+    studentToRemove,
+    subjectToRemove,
+    search,
+    setSearch,
+    setResult,
+    setFetchData,
+    setSubjectName,
+  } = useSpecificSection();
   const { auth } = useAuth();
 
   const attendanceData = [

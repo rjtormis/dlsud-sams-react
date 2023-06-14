@@ -7,6 +7,7 @@ function SectionItem({ subject, isProfessor }) {
   const { setIsModalOpen, dispatch, setSubjectName } = useSpecificSection();
   const onVisit = () => {
     dispatch({ type: "SET_SUBJECT", payload: { ...subject } });
+    setSubjectName("");
   };
   const onEdit = () => {
     let { schedule, ...data } = subject;
@@ -23,6 +24,7 @@ function SectionItem({ subject, isProfessor }) {
       },
     });
     setIsModalOpen(true);
+    setSubjectName("");
   };
   const onDelete = () => {
     setSubjectName(subject.subject_name);

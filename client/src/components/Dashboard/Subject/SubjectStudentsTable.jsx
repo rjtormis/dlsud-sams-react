@@ -20,7 +20,6 @@ function SubjectStudentsTable() {
     useSpecificSection();
   const { auth, setPrevLoc } = useAuth();
   const { setProfID } = useProfile();
-
   const [total, setTotal] = useState(0);
   const [studentNo, setStudentNo] = useState("");
   const [editAttendance, setEditAttendance] = useState(false);
@@ -124,7 +123,7 @@ function SubjectStudentsTable() {
                   </td>
                   <td className="text-center text-sm w-[150px]">{sub.emailAddress}</td>
                   <td className="text-center text-sm">{sub.studentNo}</td>
-                  <td className="text-center text-sm">NO</td>
+                  <td className="text-center text-sm">{sub.marked}</td>
                   <td className="text-center text-sm">
                     <input
                       type="text"
@@ -147,9 +146,7 @@ function SubjectStudentsTable() {
                       value={total}
                       onChange={(e) => handleChange(e)}
                     />
-                    <p className={studentNo === sub.studentNo ? "hidden" : ""}>
-                      {sub.total_attendance}
-                    </p>
+                    <p className={studentNo === sub.studentNo ? "hidden" : ""}>0 </p>
                   </td>
                   <td className="text-center text-sm">
                     <div className="">
