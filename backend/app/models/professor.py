@@ -24,6 +24,7 @@ class Professor(User):
     sections = db.relationship("Section", backref="professor")
     subjects = db.relationship("Subject", backref="professor_subject")
     profile = db.relationship("ProfessorProfile", backref="professor_profile")
+    lectures = db.relationship("Lecture", backref="lectures")
     __mapper_args__ = {"polymorphic_identity": "professor"}
 
     @classmethod
@@ -59,3 +60,16 @@ class Professor(User):
 
     def __repr__(self):
         return f"Professor: {self.emailAddress}"
+
+
+class Lecture(db.Model):
+    __tablename__ = "lectures"
+    id = db.Column(db.Integer(), primary_key=True)
+    professor_id = db.Column(
+        db.String(length=40), db.ForeignKey("professors.id"), nullable=False
+    )
+    sub_code = db.Column(
+        db.String(length=30), db.ForeignKey("subjects.code"), nullable=False
+    )
+    date = db.Column(db.String(length=20), nullable=False)
+    time = db.Column(db.String(length=20), nullable=False)

@@ -1,6 +1,7 @@
 from app import db
 
 # Models
+from ..models.user import User
 from ..models.student import Student
 from ..models.subject import Subject
 

@@ -1,11 +1,12 @@
 from app import db
-from datetime import datetime, time
+from datetime import datetime, date, timedelta
 
 # Models
 from .user import User
 from .student import Student
 from .section import Section
 from .details import Details
+from .attendance import Attendance
 
 # Utils
 from ..utils.database_utilities import push_to_database
@@ -39,6 +40,7 @@ class Subject(db.Model, Details):
 
     enrolledStudents = db.Relationship("StudentSubject", backref="studentsSubjects")
     subAttendance = db.Relationship("Attendance", backref="subject_attendance")
+    subLecture = db.Relationship("Lecture", backref="professor_lecture")
 
     @classmethod
     def create_subject(cls, current_user, sectionName, subjectName, start, end, day):
@@ -119,10 +121,37 @@ class Subject(db.Model, Details):
 
     @property
     def serialized(self):
+        from ..models.studentSubject import StudentSubject
+
         enrolled = []
+
+        current_date = date.today()
+        current_date_string = current_date.strftime("%Y-%m-%d")
 
         for student in self.enrolledStudents:
             qUser = Student.query.filter_by(student_no=student.studentNo).first()
+
+            attendance = Attendance.query.filter_by(
+                studentNo=student.studentNo,
+                sub_code=self.code,
+                date=current_date_string,
+            ).first()
+
+            user_creation_date = User.query.filter_by(id=qUser.id).first()
+
+            if not str(user_creation_date.created).split(" ")[0] == current_date:
+                previous_date = current_date - timedelta(days=1)
+                check_previous_attendance = Attendance.query.filter_by(
+                    studentNo=qUser.student_no, sub_code=self.code, date=previous_date
+                ).first()
+                if not check_previous_attendance:
+                    student = StudentSubject.query.filter_by(
+                        sub_code=self.code, studentNo=student.studentNo
+                    ).first()
+                    student.total_absent = student.total_absent + 1
+
+                    db.session.add(student)
+                    db.session.commit()
             enrolled.append(
                 {
                     "id": qUser.id,
@@ -131,6 +160,7 @@ class Subject(db.Model, Details):
                     "studentNo": student.studentNo,
                     "emailAddress": qUser.emailAddress,
                     "total_attendance": student.total_attendance,
+                    "marked": "YES" if attendance else "NO",
                 }
             )
         return {
