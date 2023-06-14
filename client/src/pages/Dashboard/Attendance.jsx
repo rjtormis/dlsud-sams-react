@@ -21,7 +21,6 @@ function Attendance() {
   const [success, setSuccess] = useState(false);
   const [camera, setCamera] = useState(true);
   const [detected, setDetected] = useState([]);
-
   const { auth } = useAuth();
 
   const { subject } = useSpecificSection();
@@ -32,7 +31,7 @@ function Attendance() {
       getAttendance = setInterval(async () => {
         const response = await axios.get("/api/v1/detected_faces");
         setDetected(response.data.faces);
-      }, 3000);
+      }, 5000);
     }
     return () => {
       clearInterval(getAttendance);
@@ -50,11 +49,13 @@ function Attendance() {
   const handleSubmit = async () => {
     try {
       setSubmit(true);
+
       const response = await axios.post("/api/v1/record", {
         detected: detected,
         id: auth.id,
         sub_code: subject.code,
-        date: getCurrentDate("attendance"),
+        date: getCurrentDate("attendance").split(" ")[0],
+        time: getCurrentDate("attendance").split(" ")[1],
       });
       setSuccess(true);
       setSubmit(false);
