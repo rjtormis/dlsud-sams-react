@@ -45,6 +45,12 @@ export const SpecificSectionContextProvider = ({ children }) => {
         setLoading(true);
         const [section, adviser] = await fetchSpecificSectionDetails(sectionName);
         dispatch({ type: "SET_SECTION", payload: section.data.section });
+        if (subjectName !== "") {
+          const sub = section.data.section.subjects.find(
+            (subject) => subject.subject_name === subjectName
+          );
+          console.log(sub);
+        }
         setIsAdviser(adviser.data.isAdviser);
         setLoading(false);
       } catch (e) {
@@ -61,7 +67,7 @@ export const SpecificSectionContextProvider = ({ children }) => {
       fetchSectionData();
       setFetchData(false);
     }
-  }, [sectionName, fetchData]);
+  }, [sectionName, fetchData, subjectName]);
 
   return (
     <SpecificSectionContext.Provider
