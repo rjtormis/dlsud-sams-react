@@ -33,6 +33,7 @@ s3_bucket_name = "aws-sams-storage"
 
 # Esential API Imports
 from .api import (
+    attendance,
     section,
     user,
     auth,
@@ -42,13 +43,12 @@ from .api import (
     collegiate,
     studentdashboard,
     student,
-    videofeed,
 )
 
 # Essential Model Imports
 from .models.user import User
 from .models.student import Student
-from .models.professor import Professor
+from .models.professor import Professor, Lecture
 from .models.collegiate import Collegiate
 from .models.section import Section
 from .models.subject import Subject
