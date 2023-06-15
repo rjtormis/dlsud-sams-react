@@ -1,7 +1,6 @@
 from app import app, db, cv2, np, json, os
 from flask import Response, request, jsonify
 
-# from tensorflow import keras
 from keras.models import load_model
 
 
