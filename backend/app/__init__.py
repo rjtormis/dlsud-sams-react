@@ -43,7 +43,6 @@ from .api import (
     profile,
     collegiate,
     studentdashboard,
-    attendance,
 )
 
 # Essential Model Imports
