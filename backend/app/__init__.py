@@ -43,7 +43,9 @@ from .api import (
     profile,
     collegiate,
     studentdashboard,
+    face_recog,
 )
+
 
 # Essential Model Imports
 from .models.user import User
