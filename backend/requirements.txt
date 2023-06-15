@@ -34,7 +34,7 @@ MarkupSafe==2.1.2
 ml-dtypes==0.1.0
 numpy==1.23.5
 oauthlib==3.2.2
-opencv-python==4.7.0.72
+opencv-python-headless==4.7.0.72
 opt-einsum==3.3.0
 packaging==23.1
 protobuf==4.23.1
@@ -51,7 +51,6 @@ s3transfer==0.6.0
 scipy==1.10.1
 six==1.16.0
 SQLAlchemy==2.0.4
-
 termcolor==2.3.0
 typing_extensions==4.5.0
 urllib3==1.26.14
