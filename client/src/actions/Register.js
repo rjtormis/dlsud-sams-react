@@ -16,7 +16,7 @@ import axios from "axios";
 export const studentAccountCreation = (state) => {
   console.log(state);
   return axios.post(
-    "/api/v1/users",
+    "https://dlsud-sams-react-production.up.railway.app/api/v1/users",
     { ...state, type: "student" },
     {
       headers: {
