@@ -1,4 +1,8 @@
-from app import app, db, cv2, np, json, os
+import json
+import cv2
+import numpy as np
+import os
+from app import app, db
 from flask import Response, request, jsonify
 
 from keras.models import load_model

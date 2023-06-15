@@ -1,8 +1,5 @@
 import boto3
-import json
-import cv2
-import numpy as np
-import os
+
 
 from flask import Flask
 from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_KEY
