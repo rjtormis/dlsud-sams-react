@@ -1,13 +1,9 @@
-from app import app, db
+from app import app, db, cv2, np, json, os
 from flask import Response, request, jsonify
 
 # from tensorflow import keras
 from keras.models import load_model
-import requests
-import json
-import cv2
-import numpy as np
-import os
+
 
 # Models
 from ..models.student import Student

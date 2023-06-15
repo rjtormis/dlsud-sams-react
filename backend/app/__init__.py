@@ -1,4 +1,9 @@
 import boto3
+import json
+import cv2
+import numpy as np
+import os
+
 from flask import Flask
 from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_KEY
 from flask_sqlalchemy import SQLAlchemy
@@ -33,7 +38,6 @@ s3_bucket_name = "aws-sams-storage"
 
 # Esential API Imports
 from .api import (
-    attendance,
     section,
     user,
     auth,
@@ -42,7 +46,7 @@ from .api import (
     profile,
     collegiate,
     studentdashboard,
-    student,
+    attendance,
 )
 
 # Essential Model Imports
