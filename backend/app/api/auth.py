@@ -6,7 +6,7 @@ from flask_jwt_extended import set_access_cookies
 from flask_jwt_extended import set_refresh_cookies
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-
+from flask_cors import cross_origin
 from app import app, db, jwt, bcrypt
 
 # Models
@@ -39,6 +39,9 @@ def auth():
         response = jsonify({"user": serialized_user})
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
+        print(access_token)
+        print(refresh_token)
+
         return response, 200
     except NotFoundError as e:
         return handle_not_found_error(e)

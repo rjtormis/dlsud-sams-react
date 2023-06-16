@@ -1,6 +1,7 @@
 import axios from "axios";
-import { api } from "../utilities/api";
+
 import { useState, useEffect } from "react";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function useFetch(url, expected, auth) {
   const [data, setData] = useState(null);
@@ -11,9 +12,9 @@ function useFetch(url, expected, auth) {
     setLoading(true);
     setData(null);
     setError(null);
-    const cancel_token = api.CancelToken.source();
+    const cancel_token = axios.CancelToken.source();
     setTimeout(() => {
-      const source = api
+      const source = axios
         .get(url, {
           cancelToken: cancel_token.token,
           headers: {

@@ -1,4 +1,3 @@
-import { api } from "../utilities/api";
 /**
  * This file is all about AllSection actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
@@ -19,8 +18,11 @@ import { api } from "../utilities/api";
  *  @param {link} - The Link of the image from AWS s3
  */
 
+import axios from "axios";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+
 export const generatePresignedURLSection = (auth, section, file_extension) => {
-  return api.post(
+  return axios.post(
     "/api/v1/section/get-pre-signed-url-section",
     { id: section.id, fileName: `s_${section.id}.${file_extension}` },
     { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
@@ -28,7 +30,7 @@ export const generatePresignedURLSection = (auth, section, file_extension) => {
 };
 
 export const NewSectionCreation = (auth, data) => {
-  return api.post(
+  return axios.post(
     "/api/v1/sections",
     { ...data },
     {
@@ -41,7 +43,7 @@ export const NewSectionCreation = (auth, data) => {
 };
 
 export const NewSectionImageUpload = (auth, section, link) => {
-  return api.post(
+  return axios.post(
     `/api/v1/sections/${section.id}/upload`,
     { section_image: link },
     { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }

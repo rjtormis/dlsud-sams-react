@@ -1,4 +1,3 @@
-import { api } from "../utilities/api";
 import axios from "axios";
 /**
  * This file is all about authorization actions. Actions that requires using axios
@@ -12,16 +11,17 @@ import axios from "axios";
  *                - check Formik documentation for more information.
  *
  */
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 export const generateNewAccessToken = (refresh_token) => {
-  return axios.post("https://dlsud-sams-react-production.up.railway.app/refresh_token", null, {
+  return axios.post("/refresh_token", null, {
     headers: { "X-CSRF-TOKEN": refresh_token },
   });
 };
 
 export const loginAuthorization = (state) => {
   return axios.post(
-    "https://dlsud-sams-react-production.up.railway.app/login",
+    "/login",
     { ...state },
     {
       headers: {

@@ -1,4 +1,4 @@
-import { api } from "../utilities/api";
+import axios from "axios";
 /**
  * This file is all about Profile actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
@@ -17,20 +17,21 @@ import { api } from "../utilities/api";
  *  @param {location} - Location of the image from AWS s3. The Location is then saved to the database
  *  @param {rest} - The rest of the data which is also an object that contains name,collegiates and the likes
  */
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 export const fetchProfilewithCollegiates = (auth, id, type) => {
   return Promise.all([
-    api.get(`/api/v1/profiles/${id}/${type}`, {
+    axios.get(`/api/v1/profiles/${id}/${type}`, {
       headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
     }),
-    api.get(`/api/v1/collegiates`, {
+    axios.get(`/api/v1/collegiates`, {
       headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
     }),
   ]);
 };
 
 export const getPresignedURL = (auth, file_extension) => {
-  return api.post(
+  return axios.post(
     "/api/v1/user/get-pre-signed-url-profile",
     { id: auth.id, type: auth.type, fileName: `p_${auth.id}.${file_extension}` },
     {
@@ -42,14 +43,14 @@ export const getPresignedURL = (auth, file_extension) => {
 export const update_profile = (profile, auth, with_file, location, rest, type) => {
   console.log(rest);
   if (with_file && location !== "") {
-    return api.patch(
+    return axios.patch(
       `/api/v1/profiles/${profile.id}/${type}`,
       { ...rest, profile_image: location },
       { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
     );
   }
 
-  return api.patch(
+  return axios.patch(
     `/api/v1/profiles/${profile.id}/${type}`,
     { ...rest, profile_image: "" },
     { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }

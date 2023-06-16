@@ -1,5 +1,3 @@
-import { api } from "../utilities/api";
-
 /**
  * This file is all about SpecificSection actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
@@ -31,17 +29,18 @@ import { api } from "../utilities/api";
  * @param {auth} - takes the auth object that contains the user details.
  */
 
-// Section
+import axios from "axios";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 export const fetchSpecificSectionDetails = (sectionName) => {
   return Promise.all([
-    api.get(`/api/v1/sections/${sectionName}`),
-    api.get(`/api/v1/sections/${sectionName}/adviser`),
+    axios.get(`/api/v1/sections/${sectionName}`),
+    axios.get(`/api/v1/sections/${sectionName}/adviser`),
   ]);
 };
 
 export const EditSection = (section, state, auth) => {
-  return api.put(
+  return axios.put(
     `/api/v1/sections/${section.section_full}`,
     { ...state },
     { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
@@ -49,7 +48,7 @@ export const EditSection = (section, state, auth) => {
 };
 
 export const DeleteSection = (section, auth) => {
-  return api.delete(`/api/v1/sections/${section.section_full}`, {
+  return axios.delete(`/api/v1/sections/${section.section_full}`, {
     headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
   });
 };
@@ -57,8 +56,8 @@ export const DeleteSection = (section, auth) => {
 // Subject
 
 export const NewSubjectCreation = (section, state, auth) => {
-  return api.post(
-    "/api/v1/subjects",
+  return axios.post(
+    "https://dlsud-sams-react-production.up.railway.app/api/v1/subjects",
     { sectionName: section.section_full, ...state },
     {
       headers: {
@@ -69,7 +68,7 @@ export const NewSubjectCreation = (section, state, auth) => {
 };
 
 export const EditSubject = (section, state, auth, subject) => {
-  return api.patch(
+  return axios.patch(
     `/api/v1/subjects/${section.section_full}/${subject.subject_name}`,
     { ...state },
     { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
@@ -77,7 +76,7 @@ export const EditSubject = (section, state, auth, subject) => {
 };
 
 export const DeleteSubject = (section, subjectName, auth) => {
-  return api.delete(`/api/v1/subjects/${section.section_full}/${subjectName}`, {
+  return axios.delete(`/api/v1/subjects/${section.section_full}/${subjectName}`, {
     headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
   });
 };

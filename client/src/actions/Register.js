@@ -1,4 +1,3 @@
-import { api } from "../utilities/api";
 /**
  * This file is all about Regsiter actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
@@ -12,10 +11,12 @@ import { api } from "../utilities/api";
  *                - check Formik documentation for more information.
  */
 
+import axios from "axios";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+
 export const studentAccountCreation = (state) => {
-  console.log(state);
-  return api.post(
-    "https://dlsud-sams-react-production.up.railway.app/api/v1/users",
+  return axios.post(
+    "/api/v1/users",
     { ...state, type: "student" },
     {
       headers: {
@@ -26,7 +27,7 @@ export const studentAccountCreation = (state) => {
 };
 
 export const professorAccountCreation = (state) => {
-  return api.post(
+  return axios.post(
     "/api/v1/users",
     { ...state, type: "professor" },
     {

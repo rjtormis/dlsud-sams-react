@@ -1,10 +1,11 @@
-import { api } from "../utilities/api";
 import { createContext, useReducer, useEffect, useContext, useState } from "react";
 
 // Reducer
 import AllSectionReducer from "../reducers/AllSectionReducer";
 // Hooks
 import useFetch from "../hooks/useFetch";
+import axios from "axios";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 const AllSectionContext = createContext();
 
@@ -33,7 +34,7 @@ export const AllSectionContextProvider = ({ children }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await api.get("/api/v1/sections");
+        const data = await axios.get("/api/v1/sections");
         dispatch({ type: "GET_ALL_SECTIONS", payload: data.data.sections });
         setLoading(false);
         setReFetch(false);
