@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../utilities/api";
 /**
  * This file is all about AllSection actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
@@ -20,7 +20,7 @@ import axios from "axios";
  */
 
 export const generatePresignedURLSection = (auth, section, file_extension) => {
-  return axios.post(
+  return api.post(
     "/api/v1/section/get-pre-signed-url-section",
     { id: section.id, fileName: `s_${section.id}.${file_extension}` },
     { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
@@ -28,7 +28,7 @@ export const generatePresignedURLSection = (auth, section, file_extension) => {
 };
 
 export const NewSectionCreation = (auth, data) => {
-  return axios.post(
+  return api.post(
     "/api/v1/sections",
     { ...data },
     {
@@ -41,7 +41,7 @@ export const NewSectionCreation = (auth, data) => {
 };
 
 export const NewSectionImageUpload = (auth, section, link) => {
-  return axios.post(
+  return api.post(
     `/api/v1/sections/${section.id}/upload`,
     { section_image: link },
     { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }

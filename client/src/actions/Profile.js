@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../utilities/api";
 /**
  * This file is all about Profile actions. Actions that requires using axios
  * for fetching,posting,deleting,editing specific items from the backend.
@@ -20,17 +20,17 @@ import axios from "axios";
 
 export const fetchProfilewithCollegiates = (auth, id, type) => {
   return Promise.all([
-    axios.get(`/api/v1/profiles/${id}/${type}`, {
+    api.get(`/api/v1/profiles/${id}/${type}`, {
       headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
     }),
-    axios.get(`/api/v1/collegiates`, {
+    api.get(`/api/v1/collegiates`, {
       headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
     }),
   ]);
 };
 
 export const getPresignedURL = (auth, file_extension) => {
-  return axios.post(
+  return api.post(
     "/api/v1/user/get-pre-signed-url-profile",
     { id: auth.id, type: auth.type, fileName: `p_${auth.id}.${file_extension}` },
     {
@@ -42,14 +42,14 @@ export const getPresignedURL = (auth, file_extension) => {
 export const update_profile = (profile, auth, with_file, location, rest, type) => {
   console.log(rest);
   if (with_file && location !== "") {
-    return axios.patch(
+    return api.patch(
       `/api/v1/profiles/${profile.id}/${type}`,
       { ...rest, profile_image: location },
       { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
     );
   }
 
-  return axios.patch(
+  return api.patch(
     `/api/v1/profiles/${profile.id}/${type}`,
     { ...rest, profile_image: "" },
     { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
