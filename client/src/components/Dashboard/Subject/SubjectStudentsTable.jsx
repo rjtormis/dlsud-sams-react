@@ -6,7 +6,7 @@ import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
 // Utils
-import { aws_user_url } from "../../../utilities/Helper";
+import { aws_user_url, getCurrentDate } from "../../../utilities/Helper";
 import { useAuth } from "../../../context/AuthContext";
 import { ObjectIsEmpty } from "../../../utilities/Helper";
 import { useProfile } from "../../../context/ProfileContext";
@@ -23,7 +23,8 @@ function SubjectStudentsTable() {
   const [total, setTotal] = useState(0);
   const [studentNo, setStudentNo] = useState("");
   const [editAttendance, setEditAttendance] = useState(false);
-
+  console.log(subject);
+  console.log(getCurrentDate("attendance"));
   const onEdit = (id, attendance) => {
     setEditAttendance(!editAttendance);
     if (editAttendance === true) {

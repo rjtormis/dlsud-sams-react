@@ -2,7 +2,7 @@ import json
 import cv2
 import numpy as np
 import os
-import tensorflow as tf
+import tensorflow
 from app import app, db
 from flask import Response, request, jsonify
 from keras.models import load_model
