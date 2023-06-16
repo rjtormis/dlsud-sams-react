@@ -14,6 +14,7 @@ function MainTotal() {
     "total",
     auth
   );
+  console.log(auth);
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
   const [classrooms, setClassrooms] = useState(0);

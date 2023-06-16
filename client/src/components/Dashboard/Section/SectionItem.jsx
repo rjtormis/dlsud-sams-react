@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";

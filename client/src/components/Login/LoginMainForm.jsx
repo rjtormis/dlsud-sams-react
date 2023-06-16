@@ -34,6 +34,7 @@ function LoginMainForm() {
       } = await loginAuthorization(state);
       const access = getCookie("csrf_access_token");
       const refresh = getCookie("csrf_refresh_token");
+      console.log(access);
       setAuth({
         id: id,
         type: type,
