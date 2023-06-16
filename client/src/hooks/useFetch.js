@@ -16,7 +16,6 @@ function useFetch(url, expected, auth) {
         .get(url, {
           cancelToken: cancel_token.token,
           headers: {
-            "Content-Type": "application/json",
             "X-CSRF-TOKEN": auth.csrf_access_token,
           },
         })
