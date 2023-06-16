@@ -9,11 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 function MainTotal() {
   const { auth } = useAuth();
-  const { data, loading } = useFetch(
-    "https://dlsud-sams-react-production.up.railway.app/api/v1/dashboard",
-    "total",
-    auth
-  );
+  const { data, loading } = useFetch("/api/v1/dashboard", "total", auth);
   console.log(auth);
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);

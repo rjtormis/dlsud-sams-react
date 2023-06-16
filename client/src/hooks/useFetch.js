@@ -1,4 +1,5 @@
 import axios from "axios";
+import { api } from "../utilities/api";
 import { useState, useEffect } from "react";
 
 function useFetch(url, expected, auth) {
@@ -10,9 +11,9 @@ function useFetch(url, expected, auth) {
     setLoading(true);
     setData(null);
     setError(null);
-    const cancel_token = axios.CancelToken.source();
+    const cancel_token = api.CancelToken.source();
     setTimeout(() => {
-      const source = axios
+      const source = api
         .get(url, {
           cancelToken: cancel_token.token,
           headers: {
@@ -32,7 +33,7 @@ function useFetch(url, expected, auth) {
         source.cancel();
       };
     }, 1000);
-  }, [url, expected]);
+  }, [url, expected, auth]);
   return { data, loading, error };
 }
 
