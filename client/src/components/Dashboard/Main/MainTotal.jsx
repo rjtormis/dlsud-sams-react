@@ -5,11 +5,14 @@ import BeatLoader from "react-spinners/BeatLoader";
 
 // Hooks
 import useFetch from "../../../hooks/useFetch";
+import { useAuth } from "../../../context/AuthContext";
 
 function MainTotal() {
+  const { auth } = useAuth();
   const { data, loading } = useFetch(
     "https://dlsud-sams-react-production.up.railway.app/api/v1/dashboard",
-    "total"
+    "total",
+    auth
   );
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);

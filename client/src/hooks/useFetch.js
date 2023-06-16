@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function useFetch(url, expected) {
+function useFetch(url, expected, auth) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,6 +15,10 @@ function useFetch(url, expected) {
       const source = axios
         .get(url, {
           cancelToken: cancel_token.token,
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": auth.csrf_access_token,
+          },
         })
         .then((response) => {
           setLoading(false);
