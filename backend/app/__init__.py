@@ -5,7 +5,7 @@ from flask import Flask
 from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_KEY
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token
