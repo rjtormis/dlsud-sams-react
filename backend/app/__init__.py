@@ -19,7 +19,7 @@ app.config.from_object(ApplicationConfig)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
-CORS(app=app)
+CORS(app, resources={r"/*": {"origins": "dlsud-sams-react-eoc6.vercel.app"}})
 s3 = boto3.client(
     "s3",
     aws_access_key_id=AWS_ACCESS_KEY,
