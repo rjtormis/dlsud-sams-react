@@ -1,5 +1,5 @@
 from flask import jsonify
-from app import app, db, jwt_required, get_jwt_identity
+from app import app, db, jwt_required, get_jwt_identity, cross_origin
 
 # Models
 from ..models.student import Student
@@ -7,6 +7,7 @@ from ..models.section import Section
 
 
 @app.route("/api/v1/dashboard", methods=["GET"])
+@cross_origin()
 @jwt_required()
 def dashboard():
     """

@@ -1,4 +1,4 @@
-from app import app, db, jwt_required, get_jwt_identity
+from app import app, db, jwt_required, get_jwt_identity, cross_origin
 from flask import jsonify, request
 
 # Model
@@ -15,6 +15,7 @@ from ..errors import handle_conflict_error, handle_not_found_error
 
 
 @app.route("/api/v1/students/enroll", methods=["POST"])
+@cross_origin()
 @jwt_required()
 def enroll():
     current_user = get_jwt_identity()
@@ -31,6 +32,7 @@ def enroll():
 
 
 @app.route("/api/v1/students/<string:id>", methods=["GET", "POST"])
+@cross_origin()
 @jwt_required()
 def student_subject(id):
     current_user = get_jwt_identity()

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import os
 import tensorflow
-from app import app, db
+from app import app, db, cross_origin
 from flask import Response, request, jsonify
 from keras.models import load_model
 
@@ -21,6 +21,7 @@ def get_className(classNo):
 
 
 @app.route("/api/v1/video_feed", methods=["GET", "POST"])
+@cross_origin()
 def video_feed():
     if request.method == "GET":
         disabled_camera = request.args.get("disable_camera")
@@ -115,6 +116,7 @@ def video_feed():
 
 
 @app.route("/api/v1/detected_faces", methods=["GET", "POST"])
+@cross_origin()
 def detected_faces():
     current_dir = os.getcwd()
     file_path = os.path.join(current_dir, "app", "data", "sample.json")
@@ -125,6 +127,7 @@ def detected_faces():
 
 
 @app.route("/api/v1/record", methods=["GET", "POST"])
+@cross_origin()
 def record_attendance():
     if request.method == "POST":
         data = request.get_json()

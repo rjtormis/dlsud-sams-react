@@ -1,6 +1,15 @@
 from flask import jsonify, request
 from datetime import datetime
-from app import app, db, jwt_required, get_jwt_identity, s3, s3_bucket_name, s3_resource
+from app import (
+    app,
+    db,
+    jwt_required,
+    get_jwt_identity,
+    s3,
+    s3_bucket_name,
+    s3_resource,
+    cross_origin,
+)
 
 # Model
 from ..models.professor import Professor
@@ -20,6 +29,7 @@ from ..errors import handle_conflict_error
 
 
 @app.route("/api/v1/sections", methods=["GET", "POST"])
+@cross_origin()
 @jwt_required()
 def allSections():
     """
@@ -51,6 +61,7 @@ def allSections():
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
+@cross_origin()
 @jwt_required()
 def isSectionAdviser(name):
     """
@@ -69,6 +80,7 @@ def isSectionAdviser(name):
 
 
 @app.route("/api/v1/sections/<string:name>", methods=["GET", "POST", "DELETE", "PUT"])
+@cross_origin()
 @jwt_required()
 def specificSection(name):
     """
@@ -118,6 +130,7 @@ def specificSection(name):
 
 
 @app.route("/api/v1/section/get-pre-signed-url-section", methods=["POST"])
+@cross_origin()
 @jwt_required()
 def generate_presigned_section():
     """
@@ -136,6 +149,7 @@ def generate_presigned_section():
 
 
 @app.route("/api/v1/sections/<int:id>/upload", methods=["POST"])
+@cross_origin()
 @jwt_required()
 def specificSectionUpload(id):
     """

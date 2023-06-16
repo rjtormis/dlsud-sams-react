@@ -1,4 +1,4 @@
-from app import app, db, jwt_required, get_jwt_identity
+from app import app, db, jwt_required, get_jwt_identity, cross_origin
 from flask import request, jsonify
 
 # Models
@@ -6,6 +6,7 @@ from ..models.collegiate import Collegiate
 
 
 @app.route("/api/v1/collegiates", methods=["GET"])
+@cross_origin()
 @jwt_required()
 def collegiates():
     """

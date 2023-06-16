@@ -6,8 +6,7 @@ from flask_jwt_extended import set_access_cookies
 from flask_jwt_extended import set_refresh_cookies
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from flask_cors import cross_origin
-from app import app, db, jwt, bcrypt
+from app import app, db, jwt, bcrypt, cross_origin
 
 # Models
 from ..models.user import User
@@ -20,6 +19,7 @@ from ..errors import handle_not_found_error
 
 
 @app.route("/login", methods=["POST"])
+@cross_origin
 def auth():
     """
     REST API that handles the authentication
@@ -48,6 +48,7 @@ def auth():
 
 
 @app.route("/refresh_token", methods=["POST"])
+@cross_origin
 @jwt_required(refresh=True)
 def refresh():
     """
