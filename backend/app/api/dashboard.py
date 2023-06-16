@@ -7,7 +7,6 @@ from ..models.section import Section
 
 
 @app.route("/api/v1/dashboard", methods=["GET"])
-@cross_origin()
 @jwt_required()
 def dashboard():
     """

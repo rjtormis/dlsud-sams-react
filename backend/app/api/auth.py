@@ -19,7 +19,6 @@ from ..errors import handle_not_found_error
 
 
 @app.route("/login", methods=["POST"])
-@cross_origin()
 def auth():
     """
     REST API that handles the authentication

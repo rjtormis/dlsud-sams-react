@@ -29,7 +29,6 @@ from ..errors import handle_conflict_error
 
 
 @app.route("/api/v1/sections", methods=["GET", "POST"])
-@cross_origin()
 @jwt_required()
 def allSections():
     """
@@ -61,7 +60,6 @@ def allSections():
 
 
 @app.route("/api/v1/sections/<string:name>/adviser", methods=["GET"])
-@cross_origin()
 @jwt_required()
 def isSectionAdviser(name):
     """
@@ -80,7 +78,6 @@ def isSectionAdviser(name):
 
 
 @app.route("/api/v1/sections/<string:name>", methods=["GET", "POST", "DELETE", "PUT"])
-@cross_origin()
 @jwt_required()
 def specificSection(name):
     """
@@ -130,7 +127,6 @@ def specificSection(name):
 
 
 @app.route("/api/v1/section/get-pre-signed-url-section", methods=["POST"])
-@cross_origin()
 @jwt_required()
 def generate_presigned_section():
     """
@@ -149,7 +145,6 @@ def generate_presigned_section():
 
 
 @app.route("/api/v1/sections/<int:id>/upload", methods=["POST"])
-@cross_origin()
 @jwt_required()
 def specificSectionUpload(id):
     """

@@ -32,7 +32,6 @@ def enroll():
 
 
 @app.route("/api/v1/students/<string:id>", methods=["GET", "POST"])
-@cross_origin()
 @jwt_required()
 def student_subject(id):
     current_user = get_jwt_identity()

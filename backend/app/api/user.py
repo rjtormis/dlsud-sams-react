@@ -20,7 +20,6 @@ from ..errors import handle_conflict_error
 
 
 @app.route("/api/v1/users", methods=["GET", "POST"])
-@cross_origin()
 def users():
     """
     REST API that handles the GET USER and CREATE USER(POST)
@@ -66,7 +65,6 @@ def users():
 
 
 @app.route("/api/v1/user/get-pre-signed-url-profile", methods=["POST"])
-@cross_origin()
 @jwt_required()
 def generate_presigned_profile():
     """

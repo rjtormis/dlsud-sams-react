@@ -6,7 +6,6 @@ from ..models.collegiate import Collegiate
 
 
 @app.route("/api/v1/collegiates", methods=["GET"])
-@cross_origin()
 @jwt_required()
 def collegiates():
     """

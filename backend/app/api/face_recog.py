@@ -116,7 +116,6 @@ def video_feed():
 
 
 @app.route("/api/v1/detected_faces", methods=["GET", "POST"])
-@cross_origin()
 def detected_faces():
     current_dir = os.getcwd()
     file_path = os.path.join(current_dir, "app", "data", "sample.json")

@@ -21,7 +21,6 @@ from ..errors import handle_conflict_error
 
 
 @app.route("/api/v1/subjects", methods=["POST", "DELETE"])
-@cross_origin()
 @jwt_required()
 def subjects():
     """
@@ -51,7 +50,6 @@ def subjects():
     "/api/v1/subjects/<string:section_name>/<string:sub>",
     methods=["GET", "PATCH", "DELETE"],
 )
-@cross_origin()
 @jwt_required()
 def specific_subject(section_name, sub):
     """
@@ -110,7 +108,6 @@ def specific_subject(section_name, sub):
     "/api/v1/subjects/<string:code>/<string:id>/enrolled",
     methods=["GET", "POST", "PATCH", "DELETE"],
 )
-@cross_origin()
 @jwt_required()
 def subject(code, id):
     current_user = get_jwt_identity()

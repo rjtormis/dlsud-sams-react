@@ -10,7 +10,6 @@ from ..models.profile import ProfessorProfile, StudentProfile
 
 
 @app.route("/api/v1/profiles/<string:id>/professor", methods=["GET", "PATCH"])
-@cross_origin()
 @jwt_required()
 def professor_profile(id):
     """
@@ -49,7 +48,6 @@ def professor_profile(id):
 
 
 @app.route("/api/v1/profiles/<string:id>/student", methods=["GET", "POST", "PATCH"])
-@cross_origin()
 @jwt_required()
 def student_profile(id):
     current_user = get_jwt_identity()

@@ -7,7 +7,6 @@ from ..models.studentSubject import StudentSubject
 
 
 @app.route("/api/v1/studentdashboard", methods=["GET"])
-@cross_origin()
 @jwt_required()
 def student_dashboard():
     """
