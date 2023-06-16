@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../utilities/api";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 
@@ -27,7 +27,7 @@ export const StudentDashboardContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchCollegiates = async () => {
       try {
-        const response = await axios.get("/api/v1/collegiates", {
+        const response = await api.get("/api/v1/collegiates", {
           headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
         });
         setCollegiates(response.data.collegiates);

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../utilities/api";
 import { createContext, useReducer, useEffect, useContext, useState } from "react";
 
 // Reducer
@@ -33,7 +33,7 @@ export const AllSectionContextProvider = ({ children }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await axios.get("/api/v1/sections");
+        const data = await api.get("/api/v1/sections");
         dispatch({ type: "GET_ALL_SECTIONS", payload: data.data.sections });
         setLoading(false);
         setReFetch(false);
