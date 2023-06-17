@@ -3,11 +3,14 @@ import SpecificSectionReducer from "../reducers/SpecificSectionReducer";
 
 // Actions
 import { fetchSpecificSectionDetails } from "../actions/SpecificSection";
+import { useAuth } from "./AuthContext";
 
 const SpecificSectionContext = createContext();
 
 export const SpecificSectionContextProvider = ({ children }) => {
   //
+  const { auth } = useAuth();
+
   const [sectionName, setSectionName] = useState("");
   const [subjectName, setSubjectName] = useState("");
   const [search, setSearch] = useState("");
@@ -43,7 +46,7 @@ export const SpecificSectionContextProvider = ({ children }) => {
     const fetchSectionData = async () => {
       try {
         setLoading(true);
-        const [section, adviser] = await fetchSpecificSectionDetails(sectionName);
+        const [section, adviser] = await fetchSpecificSectionDetails(auth, sectionName);
         dispatch({ type: "SET_SECTION", payload: section.data.section });
         if (subjectName !== "") {
           const sub = section.data.section.subjects.find(

@@ -29,7 +29,10 @@ export const StudentDashboardContextProvider = ({ children }) => {
     const fetchCollegiates = async () => {
       try {
         const response = await axios.get("/api/v1/collegiates", {
-          headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.access_token}`,
+          },
         });
         setCollegiates(response.data.collegiates);
       } catch (e) {

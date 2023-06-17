@@ -5,11 +5,13 @@ import AllSectionReducer from "../reducers/AllSectionReducer";
 // Hooks
 import useFetch from "../hooks/useFetch";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 const AllSectionContext = createContext();
 
 export const AllSectionContextProvider = ({ children }) => {
+  const { auth } = useAuth();
   const [section, setSection] = useState({});
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -21,7 +23,7 @@ export const AllSectionContextProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(AllSectionReducer, initialValues);
 
-  const { data } = useFetch("/api/v1/sections", "sections");
+  const { data } = useFetch("/api/v1/sections", "sections", auth);
   useEffect(() => {
     setLoading(true);
     if (data !== null) {
@@ -34,7 +36,9 @@ export const AllSectionContextProvider = ({ children }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await axios.get("/api/v1/sections");
+        const data = await axios.get("/api/v1/sections", {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
         dispatch({ type: "GET_ALL_SECTIONS", payload: data.data.sections });
         setLoading(false);
         setReFetch(false);

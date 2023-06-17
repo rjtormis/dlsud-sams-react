@@ -18,20 +18,20 @@ export const AuthContextProvider = ({ children }) => {
     return JSON.parse(localStorage.getItem("user"));
   });
 
-  const refresh = getCookie("csrf_refresh_token");
+  // const refresh = getCookie("csrf_refresh_token");
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(auth));
   }, [auth]);
 
   useEffect(() => {
-    if (auth && refresh) {
+    if (auth && auth.refresh_token) {
       const requestAccessToken = setInterval(async () => {
-        await generateNewAccessToken(refresh);
+        await generateNewAccessToken(auth.refresh_token);
       }, 1000 * 60 * 2);
       return () => clearInterval(requestAccessToken);
     }
-  }, [auth, refresh]);
+  }, [auth]);
 
   const logout = () => {
     setAuth(null);
