@@ -57,13 +57,13 @@ class Section(db.Model, Details):
         return query_section.section_adviser == user
 
     @classmethod
-    def update_section(cls, name, course, year, section, folder_path):
+    def update_section(cls, name, course, year, section_level):
         """
         Updates the section.
         """
         section = cls.query.filter_by(section_full=name).first()
 
-        full = f"{course} {year}{section}"
+        full = f"{course} {year}{section_level}"
 
         qSection = cls.query.filter_by(section_full=full).first()
 
@@ -73,13 +73,15 @@ class Section(db.Model, Details):
 
             else:
                 raise ConflictError("Section already exists")
-        section.section_full = full
+
         section.section_course = course
         section.section_year = year
         section.section_level = section
+        section.section_full = full
         section.updated = datetime.utcnow()
 
         db.session.commit()
+        return section.serialized
 
     @classmethod
     def delete_section(cls, section):
