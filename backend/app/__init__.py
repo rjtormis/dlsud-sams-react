@@ -67,6 +67,6 @@ from .models.attendance import Attendance
 from .scripts.addCollegiate import collegiateScript
 
 # Disable this when developing
-# with app.app_context():
-#     db.create_all()
-#     collegiateScript()
+with app.app_context():
+    db.create_all()
+    collegiateScript()
