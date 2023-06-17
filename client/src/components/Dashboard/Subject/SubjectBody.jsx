@@ -15,6 +15,7 @@ import SubjectStudentsTable from "./SubjectStudentsTable";
 import SubjectLeaderboardTable from "./SubjectLeaderboardTable";
 
 import { getCurrentDate } from "../../../utilities/Helper";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function SubjectBody() {
   const {
@@ -67,7 +68,7 @@ function SubjectBody() {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": auth.csrf_access_token,
+            Authorization: `Bearer ${auth.access_token}`,
           },
         }
       );

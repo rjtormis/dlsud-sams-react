@@ -2,7 +2,12 @@ import axios from "axios";
 import { aws_user_url } from "../../../utilities/Helper";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+
 function SubjectLeaderboardTable() {
+  const { auth } = useAuth();
   const { subject, refetch, setRefetch } = useSpecificSection();
 
   const [rankings, setRankings] = useState([]);
@@ -11,7 +16,8 @@ function SubjectLeaderboardTable() {
     const fetch = async () => {
       try {
         const response = await axios.get(
-          `/api/v1/subjects/${subject.section}/${subject.subject_name}`
+          `/api/v1/subjects/${subject.section}/${subject.subject_name}`,
+          { headers: { Authorization: `Bearer ${auth.access_token}` } }
         );
         setRankings(response.data.ranking);
       } catch (e) {
@@ -20,7 +26,7 @@ function SubjectLeaderboardTable() {
     };
     fetch();
     return () => setRefetch(false);
-  }, [subject, refetch, setRefetch]);
+  }, [subject, refetch, setRefetch, auth]);
   return (
     <table className="table table-zebra w-full mt-2">
       <thead>

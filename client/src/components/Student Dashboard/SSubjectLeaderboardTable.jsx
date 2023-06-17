@@ -11,6 +11,7 @@ import Loader from "../Shared/Loader";
 
 // Utils
 import { aws_user_url } from "../../utilities/Helper";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function SSubjectLeaderboardTable() {
   const { sub, loading, setLoading } = useStudentDashboardContext();
@@ -21,7 +22,10 @@ function SSubjectLeaderboardTable() {
       setLoading(true);
       try {
         const response = await axios.get(`/api/v1/subjects/${sub.section}/${sub.subject_name}`, {
-          headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.access_token}`,
+          },
         });
         setRanking(response.data.ranking);
         setLoading(false);

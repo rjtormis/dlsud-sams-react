@@ -11,6 +11,8 @@ import { useAuth } from "../../../context/AuthContext";
 import { ObjectIsEmpty } from "../../../utilities/Helper";
 import { useProfile } from "../../../context/ProfileContext";
 import { useLocation, useNavigate } from "react-router-dom";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function SubjectStudentsTable() {
   const location = useLocation();
@@ -23,8 +25,6 @@ function SubjectStudentsTable() {
   const [total, setTotal] = useState(0);
   const [studentNo, setStudentNo] = useState("");
   const [editAttendance, setEditAttendance] = useState(false);
-  console.log(subject);
-  console.log(getCurrentDate("attendance"));
   const onEdit = (id, attendance) => {
     setEditAttendance(!editAttendance);
     if (editAttendance === true) {
@@ -50,7 +50,12 @@ function SubjectStudentsTable() {
       const response = await axios.patch(
         `/api/v1/subjects/${subject.code}/${studentNo}/enrolled`,
         { total: total },
-        { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.access_token}`,
+          },
+        }
       );
       subject.enrolled.map((student) =>
         student.studentNo === response.data.studentNo

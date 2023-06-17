@@ -93,6 +93,7 @@ function SectionModals() {
       const editSection = await EditSection(section, data, auth);
       if (editSection.status === 200) {
         setModalLoading(false);
+        setIsModalOpen(false);
         navigate(`/dashboard/sections/${editSection.data.section.section_full}`, { replace: true });
       }
     } catch (e) {

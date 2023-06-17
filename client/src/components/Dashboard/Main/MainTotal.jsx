@@ -7,33 +7,22 @@ import useFetch from "../../../hooks/useFetch";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
 
 function MainTotal() {
   const { auth } = useAuth();
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const response = await axios.get("/api/v1/dashboard");
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    fetch();
-  }, [auth]);
-  // const { data, loading } = useFetch("/api/v1/dashboard", "total", auth);
-  // console.log(auth);
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
   const [classrooms, setClassrooms] = useState(0);
+  const { data, loading } = useFetch("/api/v1/dashboard", "total", auth);
 
-  // useEffect(() => {
-  //   if (data !== null) {
-  //     setStudents(data.students);
-  //     setLectures(data.lectures);
-  //     setClassrooms(data.classrooms);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data !== null) {
+      setStudents(data.students);
+      setLectures(data.lectures);
+      setClassrooms(data.classrooms);
+    }
+  }, [data]);
   return (
     <>
       <div className="grid grid-cols-3 gap-4 mt-4">

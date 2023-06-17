@@ -6,10 +6,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 function SSubjectStudentsTable() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { sub, result, search, setPrevLoc } = useStudentDashboardContext();
+  const { sub, result, search, setPrevLoc, setProfID } = useStudentDashboardContext();
   const { enrolled } = sub;
   const handleClick = (id) => {
     setPrevLoc(location.pathname);
+    setProfID("");
     navigate(`/student-dashboard/profile/${id}`);
   };
   return (

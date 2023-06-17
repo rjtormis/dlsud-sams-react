@@ -30,17 +30,16 @@ function LoginMainForm() {
       const {
         data: {
           user: { id, type, name, profile_image },
+          access_token,
+          refresh_token,
         },
       } = await loginAuthorization(state);
-      const access = getCookie("csrf_access_token");
-      const refresh = getCookie("csrf_refresh_token");
-      console.log(access);
       setAuth({
         id: id,
         type: type,
         name: name,
-        csrf_access_token: access,
-        csrf_refresh_token: refresh,
+        access_token: access_token,
+        refresh_token: refresh_token,
         profile_image: profile_image,
       });
       setLoading(false);
@@ -48,6 +47,12 @@ function LoginMainForm() {
       if (type === "student") navigate("/student-dashboard");
     } catch (e) {
       const { message, status } = e.response.data;
+      if (e.message === "Network Error") {
+        setLoading(false);
+        action.setFieldError("email", "An error occured. Please try again.");
+        action.setFieldError("password", "‎");
+      }
+
       if (status === 404) {
         setLoading(false);
         action.setFieldError("email", message);
