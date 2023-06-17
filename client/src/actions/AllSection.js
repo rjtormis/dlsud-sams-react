@@ -20,12 +20,15 @@
 
 import axios from "axios";
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
 
 export const generatePresignedURLSection = (auth, section, file_extension) => {
   return axios.post(
     "/api/v1/section/get-pre-signed-url-section",
     { id: section.id, fileName: `s_${section.id}.${file_extension}` },
-    { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+    {
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${auth.access_token}` },
+    }
   );
 };
 
@@ -36,7 +39,7 @@ export const NewSectionCreation = (auth, data) => {
     {
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-TOKEN": auth.csrf_access_token,
+        Authorization: `Bearer ${auth.access_token}`,
       },
     }
   );
@@ -46,6 +49,8 @@ export const NewSectionImageUpload = (auth, section, link) => {
   return axios.post(
     `/api/v1/sections/${section.id}/upload`,
     { section_image: link },
-    { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+    {
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${auth.access_token}` },
+    }
   );
 };

@@ -12,10 +12,11 @@ import axios from "axios";
  *
  */
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
 
-export const generateNewAccessToken = (refresh_token) => {
+export const generateNewAccessToken = (auth) => {
   return axios.post("/refresh_token", null, {
-    headers: { "X-CSRF-TOKEN": refresh_token },
+    headers: { Authorization: `Bearer ${auth.access_token}` },
   });
 };
 

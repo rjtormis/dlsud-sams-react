@@ -13,6 +13,7 @@
 
 import axios from "axios";
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
 
 export const studentAccountCreation = (state) => {
   return axios.post(

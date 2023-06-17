@@ -18,14 +18,15 @@ import axios from "axios";
  *  @param {rest} - The rest of the data which is also an object that contains name,collegiates and the likes
  */
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
 
 export const fetchProfilewithCollegiates = (auth, id, type) => {
   return Promise.all([
     axios.get(`/api/v1/profiles/${id}/${type}`, {
-      headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
+      headers: { Authorization: `Bearer ${auth.access_token}` },
     }),
     axios.get(`/api/v1/collegiates`, {
-      headers: { "X-CSRF-TOKEN": auth.csrf_access_token },
+      headers: { Authorization: `Bearer ${auth.access_token}` },
     }),
   ]);
 };
@@ -35,7 +36,7 @@ export const getPresignedURL = (auth, file_extension) => {
     "/api/v1/user/get-pre-signed-url-profile",
     { id: auth.id, type: auth.type, fileName: `p_${auth.id}.${file_extension}` },
     {
-      headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${auth.access_token}` },
     }
   );
 };
@@ -46,13 +47,13 @@ export const update_profile = (profile, auth, with_file, location, rest, type) =
     return axios.patch(
       `/api/v1/profiles/${profile.id}/${type}`,
       { ...rest, profile_image: location },
-      { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+      { headers: { Authorization: `Bearer ${auth.access_token}` } }
     );
   }
 
   return axios.patch(
     `/api/v1/profiles/${profile.id}/${type}`,
     { ...rest, profile_image: "" },
-    { headers: { "X-CSRF-TOKEN": auth.csrf_access_token } }
+    { headers: { Authorization: `Bearer ${auth.access_token}` } }
   );
 };
