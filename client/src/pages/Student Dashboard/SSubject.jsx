@@ -1,5 +1,5 @@
 import { AiTwotoneTrophy } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // Context
 import { useStudentDashboardContext } from "../../context/StudentDashboardContext";
 
@@ -8,7 +8,8 @@ import SSubjectLeaderboardTable from "../../components/Student Dashboard/SSubjec
 import SSubjectStudentsTable from "../../components/Student Dashboard/SSubjectStudentsTable";
 
 function SSubject() {
-  const { sub, loading, search, setSearch, setProfID } = useStudentDashboardContext();
+  const location = useLocation();
+  const { sub, loading, search, setSearch, setProfID, setPrevLoc } = useStudentDashboardContext();
   return (
     <div className="flex-1 ml-[100px] mr-[60px] mt-4">
       <div className="grid grid-cols-3 gap-4 z-10">
@@ -23,7 +24,10 @@ function SSubject() {
                 <Link
                   className="hover:text-primary hover:underline"
                   to={`/student-dashboard/profile/${sub.handler_id}`}
-                  onClick={() => setProfID(sub.handler_id)}
+                  onClick={() => {
+                    setProfID(sub.handler_id);
+                    setPrevLoc(location.pathname);
+                  }}
                 >
                   {sub.handled_by}
                 </Link>

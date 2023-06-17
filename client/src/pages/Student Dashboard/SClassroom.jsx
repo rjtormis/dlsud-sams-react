@@ -5,6 +5,8 @@ import HashLoader from "react-spinners/HashLoader";
 // Components
 import Loader from "../../components/Shared/Loader";
 import SSubjectItem from "../../components/Student Dashboard/SSubjectItem";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function SClassroom() {
   const { auth } = useAuth();
@@ -13,7 +15,12 @@ function SClassroom() {
   const fetch = async (auth) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/v1/students/${auth.id}`);
+      const response = await axios.get(`/api/v1/students/${auth.id}`, {
+        headers: {
+          Authorization: `Bearer ${auth.access_token}`,
+        },
+      });
+
       setSubjects(response.data);
       setLoading(false);
     } catch (e) {

@@ -14,6 +14,8 @@ import Loader from "../../components/Shared/Loader";
 
 //Utils
 import { getCurrentDate } from "../../utilities/Helper";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+
 function Attendance() {
   const navigate = useNavigate();
   const [videoLoad, setVideoLoad] = useState(false);
@@ -29,14 +31,16 @@ function Attendance() {
     let getAttendance;
     if (videoLoad && camera) {
       getAttendance = setInterval(async () => {
-        const response = await axios.get("/api/v1/detected_faces");
+        const response = await axios.get("/api/v1/detected_faces", {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
         setDetected(response.data.faces);
       }, 5000);
     }
     return () => {
       clearInterval(getAttendance);
     };
-  }, [videoLoad, camera]);
+  }, [videoLoad, camera, auth]);
 
   useEffect(() => {
     if (success) {
@@ -50,13 +54,17 @@ function Attendance() {
     try {
       setSubmit(true);
 
-      const response = await axios.post("/api/v1/record", {
-        detected: detected,
-        id: auth.id,
-        sub_code: subject.code,
-        date: getCurrentDate("attendance").split(" ")[0],
-        time: getCurrentDate("attendance").split(" ")[1],
-      });
+      const response = await axios.post(
+        "/api/v1/record",
+        {
+          detected: detected,
+          id: auth.id,
+          sub_code: subject.code,
+          date: getCurrentDate("attendance").split(" ")[0],
+          time: getCurrentDate("attendance").split(" ")[1],
+        },
+        { headers: { Authorization: `Bearer ${auth.access_token}` } }
+      );
       setSuccess(true);
       setSubmit(false);
     } catch (e) {
@@ -68,6 +76,7 @@ function Attendance() {
     setCamera(false);
     await axios.get("/api/v1/video_feed", {
       params: { disable_camera: "true" },
+      headers: { Authorization: `Bearer ${auth.access_token}` },
     });
     navigate(`/dashboard/sections/${subject.section}/${subject.subject_name}`);
   };

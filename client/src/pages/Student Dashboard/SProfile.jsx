@@ -31,17 +31,19 @@ import { getPresignedURL, update_profile } from "../../actions/Profile";
 
 // Schema
 import { profileStudentSchema } from "../../schemas/ProfileSchema";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function SProfile() {
   const params = useParams();
   const { auth, setAuth } = useAuth();
-  const { collegiates, prevLoc, profID, setProfID } = useStudentDashboardContext();
+  const { collegiates, prevLoc, profID, setProfID, setStudentID, studentID } =
+    useStudentDashboardContext();
   const [imagePreview, setImagePreview] = useState("");
   const [profile, setProfile] = useState();
   const [loading, setLoading] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [refetch, setRefetch] = useState(false);
-  console.log(profile);
   const [tempProfile, setTempProfile] = useState({
     name: "",
     bio: "",
@@ -57,8 +59,11 @@ function SProfile() {
   useEffect(() => {
     setLoading(true);
     const fetchStudent = async (id) => {
+      console.log(id);
       try {
-        const response = await axios.get(`/api/v1/profiles/${id}/student`);
+        const response = await axios.get(`/api/v1/profiles/${id}/student`, {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
         setProfile(response.data.user);
         setTempProfile({ ...response.data.user });
         setLoading(false);
@@ -70,7 +75,9 @@ function SProfile() {
 
     const fetchProf = async (id) => {
       try {
-        const response = await axios.get(`/api/v1/profiles/${id}/professor`);
+        const response = await axios.get(`/api/v1/profiles/${id}/professor`, {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
         setProfile(response.data.user);
         setTempProfile({ ...response.data.user });
         setLoading(false);
@@ -89,7 +96,7 @@ function SProfile() {
     } else {
       fetchStudent(auth.id);
     }
-  }, [auth, refetch, params, profID]);
+  }, [auth, refetch, params, profID, setProfID, prevLoc]);
 
   const handleEdit = () => {
     setImagePreview("");
@@ -114,7 +121,10 @@ function SProfile() {
           `/api/v1/profiles/${auth.id}/student`,
           { ...rest },
           {
-            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.access_token}`,
+            },
           }
         );
         setAuth({ ...auth, name: state.name });
@@ -153,7 +163,7 @@ function SProfile() {
           <>
             <header className="">
               <h1 className="text-4xl text-secondary">
-                {params.id || profID !== "" ? (
+                {params.id ? (
                   <Link to={prevLoc} className="btn btn-primary mr-4" onClick={() => setProfID("")}>
                     <MdArrowBack size={20} />
                   </Link>

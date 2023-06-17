@@ -14,6 +14,8 @@ import { useState } from "react";
 import Loader from "../../components/Shared/Loader";
 import Input from "../../components/Shared/Input";
 import Alert from "../../components/Shared/Alert";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
+axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function SMain() {
   const { auth } = useAuth();
@@ -36,26 +38,33 @@ function SMain() {
     setLoading(true);
     const fetch = async () => {
       try {
-        const response = await axios.get("/api/v1/studentdashboard");
+        const response = await axios.get("/api/v1/studentdashboard", {
+          headers: {
+            Authorization: `Bearer ${auth.access_token}`,
+          },
+        });
         setTotalStudent(response.data.total_students);
         setTotalSubjects(response.data.total_subjects);
         setTotalAttendance(response.data.total_lectures_attended);
         setLoading(false);
-        console.log(response);
       } catch (e) {
         console.log(e);
-        setLoading(false);
       }
     };
     fetch();
-  }, []);
+  }, [auth]);
 
   const handleSubmit = async (state, action) => {
     try {
       const response = await axios.post(
         "/api/v1/students/enroll",
         { code: state.courseCode },
-        { headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": auth.csrf_access_token } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.access_token}`,
+          },
+        }
       );
       setError(false);
       setErrorMsg(false);
@@ -148,7 +157,7 @@ function SMain() {
                     </div>
                   </div>
                   <h2 className="text-2xl text-center">Attendance of Juan</h2>
-                  <p className="text-3xl text-center font-[900]">69%</p>
+                  <p className="text-3xl text-center font-[900]">0</p>
                 </section>
               </div>
             </section>
