@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { useState, useEffect } from "react";
+// axios.defaults.baseURL = "http://127.0.0.1:5000";
 axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
 
 function useFetch(url, expected, auth) {
@@ -18,7 +19,7 @@ function useFetch(url, expected, auth) {
         .get(url, {
           cancelToken: cancel_token.token,
           headers: {
-            "X-CSRF-TOKEN": auth.csrf_access_token,
+            Authorization: `Bearer ${auth.access_token}`,
           },
         })
         .then((response) => {
