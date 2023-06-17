@@ -19,9 +19,10 @@ app.config.from_object(ApplicationConfig)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
-CORS(
-    app, resources={r"*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}}
-)
+CORS(app=app)
+# CORS(
+#     app, resources={r"*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}}
+# )
 s3 = boto3.client(
     "s3",
     aws_access_key_id=AWS_ACCESS_KEY,
@@ -46,6 +47,7 @@ from .api import (
     collegiate,
     studentdashboard,
     face_recog,
+    student,
 )
 
 
