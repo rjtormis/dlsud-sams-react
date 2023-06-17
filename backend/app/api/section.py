@@ -116,7 +116,12 @@ def specificSection(name):
         data = request.get_json()
 
         try:
-            Section.update_section(name, data["course"], data["year"], data["section"])
+            edit_section = Section.update_section(
+                name, data["course"], data["year"], data["section"]
+            )
+            return jsonify(
+                {"msg": "Section successfully edited.", "section": edit_section}
+            )
         except ConflictError as e:
             return handle_conflict_error(e)
 

@@ -35,13 +35,14 @@ def auth():
         serialized_user = User.authenticate(email, password)
         access_token = create_access_token(identity=serialized_user["id"], fresh=True)
         refresh_token = create_refresh_token(identity=serialized_user["id"])
-        response = jsonify({"user": serialized_user})
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-        print(access_token)
-        print(refresh_token)
 
-        return response, 200
+        return jsonify(
+            {
+                "user": serialized_user,
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            }
+        )
     except NotFoundError as e:
         return handle_not_found_error(e)
 
