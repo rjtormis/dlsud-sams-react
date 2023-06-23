@@ -2,6 +2,7 @@
 import torch
 import sys
 import json
+import cv2
 import arrow
 
 sys.path.insert(0, "yolov5_face")
