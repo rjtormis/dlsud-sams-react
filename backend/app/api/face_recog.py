@@ -15,7 +15,7 @@ from ..models.attendance import Attendance
 from ..models.subjectAttendanceRecord import SubjectAttendanceRecord
 
 
-from ..fr import get_face, recognition_thread, main, model, model_emb
+from ..utils.fr import get_face, recognition_thread, main, model, model_emb
 from threading import Thread
 
 
