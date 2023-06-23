@@ -42,11 +42,9 @@ from yolov5_face.utils.general import (
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
-model = attempt_load("model_arch/weights/yolov5m-face.pt", map_location=device)
+model = attempt_load("model_arch/yolov5m-face.pt", map_location=device)
 model_emb = iresnet100()
-model_emb.load_state_dict(
-    torch.load("model_arch/backbones/backbone.pth", map_location=device)
-)
+model_emb.load_state_dict(torch.load("model_arch/backbone.pth", map_location=device))
 model_emb.to(device)
 model_emb.eval()
 

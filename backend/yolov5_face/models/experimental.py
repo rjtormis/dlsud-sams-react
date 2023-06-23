@@ -3,6 +3,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
+import urllib.request
 
 from models.common import Conv, DWConv
 from utils.google_utils import attempt_download
@@ -133,8 +134,22 @@ def attempt_load(weights, map_location=None):
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
         attempt_download(w)
+        local_path_yolo = "/model_arch/yolov5m-face.pt"
+        local_path_backbone = "/model_arch/backbon.pth"
+        urllib.request.urlretrieve(
+            "https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com/yolov5m-face.pt",
+            local_path_yolo,
+        )
+        urllib.request.urlretrieve(
+            "https://aws-sams-storage.s3.ap-southeast-1.amazonaws.com/backbone.pth",
+            local_path_backbone,
+        )
+
         model.append(
-            torch.load(w, map_location=map_location)["model"].float().fuse().eval()
+            torch.load(local_path_yolo, map_location=map_location)["model"]
+            .float()
+            .fuse()
+            .eval()
         )  # load FP32 model
 
     # Compatibility updates
