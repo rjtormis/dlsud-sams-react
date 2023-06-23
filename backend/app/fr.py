@@ -9,7 +9,7 @@ sys.path.insert(0, "yolov5_face")
 import time
 import numpy as np
 import os
-import cv2
+
 
 from concurrent.futures import thread
 from sqlalchemy import null
