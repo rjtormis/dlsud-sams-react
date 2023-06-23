@@ -178,7 +178,7 @@ function Attendance() {
             className="rounded-xl"
             src={
               camera
-                ? `${process.env.REACT_APP_API}/api/v1/video_feed?sub_code=${subject.code}`
+                ? `https://dlsud-sams-react-production.up.railway.app/api/v1/video_feed?sub_code=${subject.code}`
                 : ""
             }
             alt="Video Feed"
