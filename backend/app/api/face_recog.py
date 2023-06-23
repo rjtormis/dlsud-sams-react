@@ -5,7 +5,7 @@ import os
 import tensorflow
 import time
 
-from app import app, db, cross_origin, model, model_emb
+from app import app, db, cross_origin
 from flask import Response, request, jsonify
 from keras.models import load_model
 
@@ -19,7 +19,8 @@ from ..models.professor import Professor, Lecture
 from ..models.attendance import Attendance
 from ..models.subjectAttendanceRecord import SubjectAttendanceRecord
 
-from fr import get_face, recognition_thread, main
+
+from ..fr import get_face, recognition_thread, main, model, model_emb
 from threading import Thread
 
 

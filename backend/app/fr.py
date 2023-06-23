@@ -19,6 +19,8 @@ from threading import Thread
 from skimage.transform import SimilarityTransform
 from datetime import datetime
 
+# from ..model_arch.backbones.iresnet import iresnet100
+
 from model_arch.backbones.iresnet import iresnet100
 from yolov5_face.models.experimental import attempt_load
 from yolov5_face.utils.datasets import letterbox
@@ -27,6 +29,14 @@ from yolov5_face.utils.general import (
     non_max_suppression_face,
     scale_coords,
 )
+
+# from ..yolov5_face.models.experimental import attempt_load
+# from ..yolov5_face.utils.datasets import letterbox
+# from ..yolov5_face.utils.general import (
+#     check_img_size,
+#     non_max_suppression_face,
+#     scale_coords,
+# )
 
 # Check device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
