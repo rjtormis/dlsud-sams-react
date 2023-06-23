@@ -1,3 +1,5 @@
+import { Helmet } from "react-helmet";
+
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
@@ -5,9 +7,11 @@ import HashLoader from "react-spinners/HashLoader";
 // Components
 import Loader from "../../components/Shared/Loader";
 import SSubjectItem from "../../components/Student Dashboard/SSubjectItem";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
-
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 function SClassroom() {
   const { auth } = useAuth();
   const [subjects, setSubjects] = useState();
@@ -34,6 +38,9 @@ function SClassroom() {
   }, [auth]);
   return (
     <main className="ml-[100px] mr-[60px] mt-5 bg-[#fbfbfb] h-full flex flex-col">
+      <Helmet>
+        <title>DLSUD SAMS | MY SUBJECTS</title>
+      </Helmet>
       <header className="flex">
         <h1 className="text-3xl text-secondary">My Subjects</h1>
       </header>

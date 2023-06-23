@@ -6,16 +6,18 @@ import BeatLoader from "react-spinners/BeatLoader";
 import useFetch from "../../../hooks/useFetch";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function MainTotal() {
-  const { auth } = useAuth();
+  const { auth, setGraph } = useAuth();
   const [students, setStudents] = useState(0);
   const [lectures, setLectures] = useState(0);
   const [classrooms, setClassrooms] = useState(0);
   const { data, loading } = useFetch("/api/v1/dashboard", "total", auth);
-
   useEffect(() => {
     if (data !== null) {
       setStudents(data.students);

@@ -30,8 +30,11 @@
  */
 
 import axios from "axios";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 export const fetchSpecificSectionDetails = (auth, sectionName) => {
   return Promise.all([

@@ -3,8 +3,11 @@ import { aws_user_url } from "../../../utilities/Helper";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function SubjectLeaderboardTable() {
   const { auth } = useAuth();
@@ -30,8 +33,8 @@ function SubjectLeaderboardTable() {
   return (
     <table className="table table-zebra w-full mt-2">
       <thead>
-        <tr className="text-center sticky top-0">
-          <th className="bg-secondary text-white cursor-default">Rank</th>
+        <tr className="text-center sticky top-0 z-10">
+          {/* <th className="bg-secondary text-white cursor-default">Rank</th> */}
           <th className="bg-secondary text-white cursor-default">Name</th>
           <th className="bg-secondary text-white cursor-default">T.A</th>
         </tr>
@@ -40,11 +43,15 @@ function SubjectLeaderboardTable() {
         {rankings !== undefined
           ? rankings.map((rank) => (
               <tr key={rank.rank} className="text-center">
-                <td>{rank.rank}</td>
+                {/* <td>{rank.rank}</td> */}
                 <td className="flex content-center">
                   <div className="avatar">
                     <div className="rounded-full w-8">
-                      <img src={aws_user_url + rank.user.profile_image} alt="profile" />
+                      <img
+                        src={aws_user_url + rank.user.profile_image}
+                        alt="profile"
+                        className=""
+                      />
                     </div>
                   </div>
                   <p className="m-auto">{rank.user.name}</p>

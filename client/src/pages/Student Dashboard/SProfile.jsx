@@ -1,3 +1,5 @@
+import { Helmet } from "react-helmet";
+
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { Link } from "react-router-dom";
@@ -31,8 +33,11 @@ import { getPresignedURL, update_profile } from "../../actions/Profile";
 
 // Schema
 import { profileStudentSchema } from "../../schemas/ProfileSchema";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function SProfile() {
   const params = useParams();
@@ -153,6 +158,9 @@ function SProfile() {
   };
   return (
     <>
+      <Helmet>
+        <title>DLSUD SAMS | PROFILE</title>
+      </Helmet>
       <main className="ml-[100px] mr-[60px] my-auto">
         {loading ? (
           <Loader

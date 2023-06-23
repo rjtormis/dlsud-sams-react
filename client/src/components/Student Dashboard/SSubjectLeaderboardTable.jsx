@@ -11,7 +11,11 @@ import Loader from "../Shared/Loader";
 
 // Utils
 import { aws_user_url } from "../../utilities/Helper";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function SSubjectLeaderboardTable() {
   const { sub, loading, setLoading } = useStudentDashboardContext();
@@ -43,7 +47,7 @@ function SSubjectLeaderboardTable() {
       ) : (
         <table className="table table-zebra w-full mt-2">
           <thead>
-            <tr className="text-center sticky top-0">
+            <tr className="text-center sticky top-0 z-20">
               <th className="bg-secondary text-white">Rank</th>
               <th className="bg-secondary text-white">Name</th>
               <th className="bg-secondary text-white">T.A</th>
@@ -56,7 +60,7 @@ function SSubjectLeaderboardTable() {
                     <td>{student.rank}</td>
                     <td className="flex content-center">
                       <div className="avatar">
-                        <div className="rounded-full w-8">
+                        <div className="rounded-full w-8 z-10">
                           <img src={aws_user_url + student.user.profile_image} alt="profile" />
                         </div>
                       </div>

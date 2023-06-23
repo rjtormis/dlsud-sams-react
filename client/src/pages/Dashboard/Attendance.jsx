@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { BiErrorCircle } from "react-icons/bi";
 import HashLoader from "react-spinners/HashLoader";
 
 // Context
@@ -14,16 +15,22 @@ import Loader from "../../components/Shared/Loader";
 
 //Utils
 import { getCurrentDate } from "../../utilities/Helper";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function Attendance() {
   const navigate = useNavigate();
   const [videoLoad, setVideoLoad] = useState(false);
   const [submit, setSubmit] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
   const [camera, setCamera] = useState(true);
   const [detected, setDetected] = useState([]);
-  const { auth } = useAuth();
+  const [time, setTime] = useState([]);
+  const { auth, trigger, setTrigger } = useAuth();
 
   const { subject } = useSpecificSection();
 
@@ -32,23 +39,30 @@ function Attendance() {
     if (videoLoad && camera) {
       getAttendance = setInterval(async () => {
         const response = await axios.get("/api/v1/detected_faces", {
+          params: { sub_code: subject.code },
           headers: { Authorization: `Bearer ${auth.access_token}` },
         });
         setDetected(response.data.faces);
+        setTime(response.data.time);
       }, 5000);
     }
     return () => {
       clearInterval(getAttendance);
     };
-  }, [videoLoad, camera, auth]);
+  }, [videoLoad, camera, auth, subject]);
 
   useEffect(() => {
     if (success) {
       setTimeout(() => {
         setSuccess(false);
-      }, 10000);
+      }, 15000);
     }
-  }, [success]);
+    if (error) {
+      setTimeout(() => {
+        setError(false);
+      }, 15000);
+    }
+  }, [success, error]);
 
   const handleSubmit = async () => {
     try {
@@ -65,7 +79,15 @@ function Attendance() {
         },
         { headers: { Authorization: `Bearer ${auth.access_token}` } }
       );
-      setSuccess(true);
+      if (response.data.message) {
+        setSuccess(true);
+        setError(false);
+      }
+      if (response.data.error) {
+        setSuccess(false);
+        setError(true);
+      }
+
       setSubmit(false);
     } catch (e) {
       console.log(e);
@@ -80,24 +102,41 @@ function Attendance() {
     });
     navigate(`/dashboard/sections/${subject.section}/${subject.subject_name}`);
   };
+
+  const handleCancelAPI = async () => {
+    setTrigger(true);
+    if (trigger) {
+      setTrigger(false);
+      await axios.get("/api/v1/video_feed", {
+        params: { disable_camera: "true" },
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      });
+    }
+  };
+
   return (
     <div className="">
       <div className="text-sm breadcrumbs mb-4">
         <ul>
           <li>
-            <Link to="/dashboard/sections" className=" text-green-800">
+            <Link to="/dashboard/sections" className=" text-green-800" onClick={handleCancelAPI}>
               Sections
             </Link>
           </li>
           <li>
-            <Link to={`/dashboard/sections/${subject.section}`} className=" text-green-800">
+            <Link
+              to={`/dashboard/sections/${subject.section}`}
+              className=" text-green-800"
+              onClick={handleCancelAPI}
+            >
               {subject.section}
             </Link>
           </li>
           <li>
             <Link
-              to={`/dashboard/sections${subject.section}/${subject.subject_name}`}
+              to={`/dashboard/sections/${subject.section}/${subject.subject_name}`}
               className=" text-green-800"
+              onClick={handleCancelAPI}
             >
               {subject.subject_name}
             </Link>
@@ -116,6 +155,15 @@ function Attendance() {
       ) : (
         ""
       )}
+      {error ? (
+        <Alert
+          icon={<BiErrorCircle />}
+          msg="There are students who are not enrolled in the current subject."
+          custom="alert-error mb-4"
+        />
+      ) : (
+        ""
+      )}
       {!videoLoad ? (
         <Loader
           type={<HashLoader className="mx-auto" color="#436147" />}
@@ -128,7 +176,11 @@ function Attendance() {
         <div className="my-auto">
           <img
             className="rounded-xl"
-            src={`${camera ? "/api/v1/video_feed" : ""}`}
+            src={
+              camera
+                ? `${process.env.REACT_APP_API}/api/v1/video_feed?sub_code=${subject.code}`
+                : ""
+            }
             alt="Video Feed"
             onLoad={() => setVideoLoad(true)}
           />
@@ -144,15 +196,26 @@ function Attendance() {
               Record attendance for {subject.section}-{subject.subject_name}
             </p>
             <h2 className="text-md font-bold mb-[10px]">Detected Students</h2>
-            {detected.length > 0 ? (
-              <ul>
-                {detected.map((face) => (
-                  <li key={face}>{face}</li>
-                ))}
-              </ul>
-            ) : (
-              ""
-            )}
+            <div className="flex">
+              {detected.length > 0 ? (
+                <ul>
+                  {detected.map((face) => (
+                    <li key={face}>{face}</li>
+                  ))}
+                </ul>
+              ) : (
+                ""
+              )}
+              {time.length > 0 ? (
+                <ul className="ml-4">
+                  {time.map((time) => (
+                    <li key={time}>{time}</li>
+                  ))}
+                </ul>
+              ) : (
+                ""
+              )}
+            </div>
             <div className="absolute bottom-0 right-0">
               <button
                 className={`btn btn-primary mr-4 ${detected.length > 0 ? "" : "btn-disabled"} ${

@@ -1,15 +1,9 @@
-import axios from "axios";
 import { createContext, useEffect, useState, useContext } from "react";
-
-// Actions
-import { generateNewAccessToken } from "../actions/Auth";
-
-// Utilities
-import { getCookie } from "../utilities/getCookie";
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
+  const [trigger, setTrigger] = useState(false);
   const [prevLoc, setPrevLoc] = useState("");
   const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,20 +12,11 @@ export const AuthContextProvider = ({ children }) => {
     return JSON.parse(localStorage.getItem("user"));
   });
 
-  // const refresh = getCookie("csrf_refresh_token");
-
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(auth));
   }, [auth]);
 
-  useEffect(() => {
-    if (auth && auth.refresh_token) {
-      const requestAccessToken = setInterval(async () => {
-        await generateNewAccessToken(auth.refresh_token);
-      }, 1000 * 60 * 2);
-      return () => clearInterval(requestAccessToken);
-    }
-  }, [auth]);
+  useEffect(() => {}, [trigger]);
 
   const logout = () => {
     setAuth(null);
@@ -53,6 +38,8 @@ export const AuthContextProvider = ({ children }) => {
         setRefetch,
         prevLoc,
         setPrevLoc,
+        trigger,
+        setTrigger,
       }}
     >
       {children}

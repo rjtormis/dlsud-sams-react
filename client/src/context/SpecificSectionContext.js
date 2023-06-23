@@ -12,8 +12,11 @@ export const SpecificSectionContextProvider = ({ children }) => {
   const { auth } = useAuth();
 
   const [sectionName, setSectionName] = useState("");
+  const [subcode, setSubCode] = useState("");
+  const [code, setCode] = useState("");
   const [subjectName, setSubjectName] = useState("");
   const [search, setSearch] = useState("");
+  const [studentNo, setStudentNo] = useState("");
   const [studentToRemove, setStudentToRemove] = useState("");
   const [subjectToRemove, setSubjectToRemove] = useState("");
   const [result, setResult] = useState({});
@@ -47,13 +50,9 @@ export const SpecificSectionContextProvider = ({ children }) => {
       try {
         setLoading(true);
         const [section, adviser] = await fetchSpecificSectionDetails(auth, sectionName);
+
         dispatch({ type: "SET_SECTION", payload: section.data.section });
-        if (subjectName !== "") {
-          const sub = section.data.section.subjects.find(
-            (subject) => subject.subject_name === subjectName
-          );
-          console.log(sub);
-        }
+
         setIsAdviser(adviser.data.isAdviser);
         setLoading(false);
       } catch (e) {
@@ -63,15 +62,14 @@ export const SpecificSectionContextProvider = ({ children }) => {
     };
 
     if (sectionName !== "") {
-      fetchSectionData();
+      fetchSectionData("");
     }
 
     if (fetchData) {
       fetchSectionData();
       setFetchData(false);
     }
-  }, [sectionName, fetchData, subjectName]);
-
+  }, [sectionName, subjectName, auth, subcode, fetchData]);
   return (
     <SpecificSectionContext.Provider
       value={{
@@ -100,6 +98,12 @@ export const SpecificSectionContextProvider = ({ children }) => {
         setSearch,
         refetch,
         setRefetch,
+        subcode,
+        setSubCode,
+        studentNo,
+        setStudentNo,
+        setCode,
+        code,
         ...state,
         dispatch,
       }}

@@ -1,10 +1,11 @@
 import axios from "axios";
+import { Helmet } from "react-helmet";
 import { Formik } from "formik";
 import { HiUserGroup } from "react-icons/hi";
 import { ImBook } from "react-icons/im";
 import { GiTeacher } from "react-icons/gi";
 import { MdQueryStats, MdError } from "react-icons/md";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineCheckCircle } from "react-icons/ai";
 import HashLoader from "react-spinners/HashLoader";
 // Context
 import { useAuth } from "../../context/AuthContext";
@@ -12,19 +13,24 @@ import { useEffect } from "react";
 import { useState } from "react";
 // Components
 import Loader from "../../components/Shared/Loader";
-import Input from "../../components/Shared/Input";
 import Alert from "../../components/Shared/Alert";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function SMain() {
   const { auth } = useAuth();
   const [totalStudent, setTotalStudent] = useState(0);
   const [totalSubjects, setTotalSubjects] = useState(0);
   const [totalAttendance, setTotalAttendance] = useState(0);
+  const [totalPercentage, setTotalPercentage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const fName = auth.name.split(" ")[0];
   const date = new Date();
   const options = {
@@ -33,6 +39,21 @@ function SMain() {
     month: "long",
     day: "numeric",
   };
+
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        setSuccess(false);
+        setSuccessMsg("");
+      }, 5000);
+    }
+    if (error) {
+      setTimeout(() => {
+        setError(false);
+        setErrorMsg("");
+      }, 5000);
+    }
+  }, [success, error]);
 
   useEffect(() => {
     setLoading(true);
@@ -46,6 +67,7 @@ function SMain() {
         setTotalStudent(response.data.total_students);
         setTotalSubjects(response.data.total_subjects);
         setTotalAttendance(response.data.total_lectures_attended);
+        setTotalPercentage(response.data.total_percentage);
         setLoading(false);
       } catch (e) {
         console.log(e);
@@ -66,10 +88,14 @@ function SMain() {
           },
         }
       );
+      setSuccess(true);
+      setSuccessMsg(response.data.message);
       setError(false);
       setErrorMsg(false);
     } catch (e) {
       const { message } = e.response.data;
+      setSuccess(false);
+      setSuccessMsg("");
       setError(true);
       setErrorMsg(message);
     }
@@ -77,6 +103,9 @@ function SMain() {
 
   return (
     <>
+      <Helmet>
+        <title>DLSUD SAMS | STUDENTS DASHBOARD</title>
+      </Helmet>
       <main className="ml-[100px] mr-[60px] mt-5 bg-[#fbfbfb] h-full flex flex-col">
         {loading ? (
           <Loader
@@ -90,6 +119,11 @@ function SMain() {
               <p className="text-[14px]">{date.toLocaleString("en-PH", options)}</p>
             </header>
             {error ? <Alert custom="alert-error mt-2" icon={<MdError />} msg={errorMsg} /> : ""}
+            {success ? (
+              <Alert custom="alert-success mt-2" icon={<AiOutlineCheckCircle />} msg={successMsg} />
+            ) : (
+              ""
+            )}
 
             <section className="mt-4">
               <header className="flex justify-between mb-4">
@@ -116,7 +150,6 @@ function SMain() {
                       </form>
                     )}
                   </Formik>
-                  ;
                 </div>
               </header>
               <div className="grid grid-cols-4 gap-4">
@@ -156,8 +189,8 @@ function SMain() {
                       <MdQueryStats size={50} className="text-white" />
                     </div>
                   </div>
-                  <h2 className="text-2xl text-center">Attendance of Juan</h2>
-                  <p className="text-3xl text-center font-[900]">0</p>
+                  <h2 className="text-2xl text-center">Attendance of {fName}</h2>
+                  <p className="text-3xl text-center font-[900]">{totalPercentage}%</p>
                 </section>
               </div>
             </section>

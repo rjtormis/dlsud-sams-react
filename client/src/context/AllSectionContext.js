@@ -6,7 +6,12 @@ import AllSectionReducer from "../reducers/AllSectionReducer";
 import useFetch from "../hooks/useFetch";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 const AllSectionContext = createContext();
 

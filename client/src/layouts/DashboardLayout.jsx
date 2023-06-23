@@ -1,7 +1,7 @@
 import { MdDashboard } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
 import { RiUserSettingsFill, RiLogoutBoxRFill } from "react-icons/ri";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
@@ -16,8 +16,16 @@ import { aws_user_url } from "../utilities/Helper";
 
 function DashboardLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const split_location = location.pathname.split("/").includes("attendance");
 
-  const { auth, logout, loading, setLoading, updated, setRefetch } = useAuth();
+  const { auth, logout, loading, setLoading, updated, setRefetch, trigger, setTrigger } = useAuth();
+
+  if (split_location) {
+    setTrigger(true);
+  } else {
+    setTrigger(false);
+  }
 
   useEffect(() => {
     if (auth !== null) {
@@ -25,8 +33,31 @@ function DashboardLayout() {
     }
   }, [auth, setLoading]);
 
+  const handleDashboard = async () => {
+    if (trigger) {
+      await axios.get("/api/v1/video_feed", {
+        params: { disable_camera: "true" },
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      });
+    }
+  };
+  const handleSection = async () => {
+    if (trigger) {
+      await axios.get("/api/v1/video_feed", {
+        params: { disable_camera: "true" },
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      });
+    }
+  };
+
   const handleLogout = async () => {
     try {
+      if (trigger) {
+        await axios.get("/api/v1/video_feed", {
+          params: { disable_camera: "true" },
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
+      }
       const response = await axios.post("/logout", {});
       if (response.status === 200) {
         logout();
@@ -35,7 +66,13 @@ function DashboardLayout() {
     } catch (e) {}
   };
 
-  const handleProfile = () => {
+  const handleProfile = async () => {
+    if (trigger) {
+      await axios.get("/api/v1/video_feed", {
+        params: { disable_camera: "true" },
+        headers: { Authorization: `Bearer ${auth.access_token}` },
+      });
+    }
     setRefetch(true);
   };
   return (
@@ -63,7 +100,9 @@ function DashboardLayout() {
                   className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
                 >
                   <li>
-                    <Link to="/dashboard/profile">Profile</Link>
+                    <Link to="/dashboard/profile" onClick={handleProfile}>
+                      Profile
+                    </Link>
                   </li>
                   <li>
                     <Link onClick={handleLogout}>Logout</Link>
@@ -77,20 +116,28 @@ function DashboardLayout() {
             <div className="p-1 relative shadow" style={{ backgroundColor: "#FAFAFA" }}>
               <ul className="flex flex-col">
                 <li className="tooltip tooltip-right tooltip-primary" data-tip="Dashboard">
-                  <Link to="/dashboard" className="flex btn btn-ghost btn-square">
+                  <Link
+                    to="/dashboard"
+                    className="flex btn btn-ghost btn-square"
+                    onClick={handleDashboard}
+                  >
                     <div>
                       <MdDashboard color="#224429" size={25} className="block m-auto" />
                     </div>
                   </Link>
                 </li>
                 <li className="mt-4 tooltip tooltip-right tooltip-primary" data-tip="Classroom">
-                  <Link to="/dashboard/sections" className="flex btn btn-ghost btn-square">
+                  <Link
+                    to="/dashboard/sections"
+                    className="flex btn btn-ghost btn-square"
+                    onClick={handleSection}
+                  >
                     <div>
                       <HiUserGroup color="#224429" size={25} className="block m-auto" />
                     </div>
                   </Link>
                 </li>
-                <li className="mt-4 tooltip tooltip-right tooltip-primary" data-tip="Profile">
+                <li className="mt-4 tooltip tooltip-right tooltip-primary z-20" data-tip="Profile">
                   <Link
                     to="/dashboard/profile"
                     className="flex btn btn-ghost btn-square"

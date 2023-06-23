@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 
 import { MdDelete, MdEdit, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
+import { useEffect } from "react";
 function SectionItem({ subject, isProfessor }) {
   const { setIsModalOpen, dispatch, setSubjectName } = useSpecificSection();
+
   const onVisit = () => {
     dispatch({ type: "SET_SUBJECT", payload: { ...subject } });
     setSubjectName("");

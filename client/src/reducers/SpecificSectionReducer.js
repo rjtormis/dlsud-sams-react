@@ -8,6 +8,8 @@ const SpecificSectionReducer = (state, action) => {
       return { ...state, subject: action.payload };
     case "SET_EDIT_SUBJECT":
       return { ...state, editSubject: action.payload };
+    case "UPDATE_ENROLLED":
+      return { ...state, subject: { ...state, enrolled: action.payload } };
     case "CLEAR_SECTION":
       return { ...state, section: {} };
     case "CLEAR_EDIT_SUBJECT":

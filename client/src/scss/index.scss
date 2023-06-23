@@ -72,6 +72,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
+  background-color: #fff;
   width: 12px;
 }
 
@@ -80,7 +81,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #436147;
+  background-color: #ccc;
   border-radius: 8px;
   border: 3px solid #f8f1f1;
 }

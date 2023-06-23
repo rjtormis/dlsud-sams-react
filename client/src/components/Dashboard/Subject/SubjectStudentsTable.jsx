@@ -2,39 +2,74 @@ import axios from "axios";
 import { FiEdit2 } from "react-icons/fi";
 import { AiFillDelete, AiOutlineCheck, AiOutlineQuestionCircle } from "react-icons/ai";
 import { useSpecificSection } from "../../../context/SpecificSectionContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
 // Utils
-import { aws_user_url, getCurrentDate } from "../../../utilities/Helper";
+import { aws_user_url } from "../../../utilities/Helper";
 import { useAuth } from "../../../context/AuthContext";
 import { ObjectIsEmpty } from "../../../utilities/Helper";
 import { useProfile } from "../../../context/ProfileContext";
 import { useLocation, useNavigate } from "react-router-dom";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 function SubjectStudentsTable() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { subject, loading, setStudentToRemove, setSubjectToRemove, search, result, setRefetch } =
-    useSpecificSection();
   const { auth, setPrevLoc } = useAuth();
   const { setProfID } = useProfile();
   const [total, setTotal] = useState(0);
-  const [studentNo, setStudentNo] = useState("");
-  const [editAttendance, setEditAttendance] = useState(false);
-  const onEdit = (id, attendance) => {
-    setEditAttendance(!editAttendance);
-    if (editAttendance === true) {
-      setStudentNo(id);
-      setTotal(attendance);
-    } else {
-      setStudentNo("");
-    }
-  };
+  const [editAttendance, setEditAttendance] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  const {
+    section,
+    subject,
+    setStudentToRemove,
+    setSubjectToRemove,
+    search,
+    result,
+    setRefetch,
+    setIsModalOpen,
+    subcode,
+    sectionName,
+    fetchData,
+    setFetchData,
+    studentNo,
+    setStudentNo,
+  } = useSpecificSection();
+
+  const [dup, setDup] = useState(subject);
+
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`/api/v1/sections/${sectionName}`, {
+          headers: { Authorization: `Bearer ${auth.access_token}` },
+        });
+        const data = response.data.section.subjects.filter(({ code }) => code === subcode)[0];
+        setDup(data);
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        console.log(e);
+      }
+    };
+    if (fetchData) {
+      fetch();
+      setFetchData(false);
+    }
+  }, [fetchData, dup, auth, sectionName, setFetchData, subcode]);
+
+  const onEdit = (id) => {
+    setIsModalOpen(true);
+    setStudentNo(id);
+  };
   const handleChange = (e) => {
     setTotal(e.currentTarget.value);
   };
@@ -42,6 +77,7 @@ function SubjectStudentsTable() {
   const handleRemove = (studentNo, code) => {
     setStudentToRemove(studentNo);
     setSubjectToRemove(code);
+    setIsModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
@@ -82,8 +118,8 @@ function SubjectStudentsTable() {
         </div>
       ) : (
         <table className="table w-full">
-          <thead className="relative z-20">
-            <tr className="sticky top-0">
+          <thead className="relative">
+            <tr className="sticky top-0 z-10">
               <th className="text-center bg-secondary text-white cursor-default">Name</th>
               <th className="text-center bg-secondary text-white cursor-default">Email</th>
               <th className="text-center bg-secondary text-white cursor-default">Student ID</th>
@@ -110,7 +146,7 @@ function SubjectStudentsTable() {
 
           <tbody>
             {search === "" ? (
-              subject.enrolled.map((sub) => (
+              dup.enrolled.map((sub) => (
                 <tr className="" key={sub.name}>
                   <td
                     className="z-10 hover:cursor-pointer hover:bg-gray-100 hover:text-secondary w-[150px]"
@@ -131,57 +167,25 @@ function SubjectStudentsTable() {
                   <td className="text-center text-sm">{sub.studentNo}</td>
                   <td className="text-center text-sm">{sub.marked}</td>
                   <td className="text-center text-sm">
-                    <input
-                      type="text"
-                      className={`${
-                        studentNo === sub.studentNo ? "" : "hidden"
-                      } input input-xs input-primary m-auto text-center w-[60px]`}
-                      value={total}
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <p className={studentNo === sub.studentNo ? "hidden" : ""}>
-                      {sub.total_attendance}
-                    </p>
+                    <p className="">{sub.total_attendance}</p>
                   </td>
                   <td className="text-center text-sm">
-                    <input
-                      type="text"
-                      className={`${
-                        studentNo === sub.studentNo ? "" : "hidden"
-                      } input input-xs input-primary m-auto text-center w-[60px]`}
-                      value={total}
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <p className={studentNo === sub.studentNo ? "hidden" : ""}>0 </p>
+                    <p className="">{sub.total_absent} </p>
                   </td>
                   <td className="text-center text-sm">
                     <div className="">
                       <div className="tooltip tooltip-warning mr-2" data-tip="Edit">
-                        <button
-                          id={sub.studentNo}
-                          onClick={() => onEdit(sub.studentNo, sub.total_attendance)}
-                        >
+                        <a href="#edit_student" onClick={() => onEdit(sub.studentNo)}>
                           <FiEdit2 size={16} className="" color="#E68405" />
-                        </button>
+                        </a>
                       </div>
-                      <div
-                        className={`tooltip tooltip-${editAttendance ? "error" : "success"}`}
-                        data-tip={`${editAttendance ? "Remove" : "Save"}`}
-                      >
-                        {!editAttendance && sub.studentNo === studentNo ? (
-                          <form action="" onSubmit={handleSubmit}>
-                            <button type="submit" id={sub.studentNo}>
-                              <AiOutlineCheck size={16} className="" color="input-primary" />
-                            </button>
-                          </form>
-                        ) : (
-                          <a
-                            href="#remove_student"
-                            onClick={() => handleRemove(sub.studentNo, subject.code)}
-                          >
-                            <AiFillDelete size={16} color="#E94951" />
-                          </a>
-                        )}
+                      <div className={`tooltip tooltip-error`} data-tip="Remove">
+                        <a
+                          href="#remove_student"
+                          onClick={() => handleRemove(sub.studentNo, subject.code)}
+                        >
+                          <AiFillDelete size={16} color="#E94951" />
+                        </a>
                       </div>
                     </div>
                   </td>

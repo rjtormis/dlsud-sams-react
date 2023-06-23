@@ -21,6 +21,7 @@ function SSubjectStudentsTable() {
           <th className="z-10 text-center bg-secondary text-white">Email</th>
           <th className="z-10 text-center bg-secondary text-white">Student ID</th>
           <th className="z-10 text-center bg-secondary text-white">Total Attendance</th>
+          <th className="z-10 text-center bg-secondary text-white">Total Absent</th>
         </tr>
       </thead>
 
@@ -46,6 +47,7 @@ function SSubjectStudentsTable() {
               <td className="text-center text-sm">{student.emailAddress}</td>
               <td className="text-center text-sm">{student.studentNo}</td>
               <td className="text-center text-sm">{student.total_attendance}</td>
+              <td className="text-center text-sm">{student.total_absent}</td>
             </tr>
           ))
         ) : result !== undefined ? (
@@ -68,6 +70,7 @@ function SSubjectStudentsTable() {
             <td className="text-center text-sm">{result.emailAddress}</td>
             <td className="text-center text-sm">{result.studentNo}</td>
             <td className="text-center text-sm">{result.total_attendance}</td>
+            <td className="text-center text-sm">{result.total_absent}</td>
           </tr>
         ) : (
           ""

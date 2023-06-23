@@ -17,8 +17,11 @@ import axios from "axios";
  *  @param {location} - Location of the image from AWS s3. The Location is then saved to the database
  *  @param {rest} - The rest of the data which is also an object that contains name,collegiates and the likes
  */
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 
 export const fetchProfilewithCollegiates = (auth, id, type) => {
   return Promise.all([

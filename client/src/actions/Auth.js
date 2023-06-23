@@ -11,9 +11,11 @@ import axios from "axios";
  *                - check Formik documentation for more information.
  *
  */
-axios.defaults.baseURL = "https://dlsud-sams-react-production.up.railway.app";
-// axios.defaults.baseURL = "http://127.0.0.1:5000";
-
+if (process.env.REACT_APP_ENV === "DEV") {
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+} else if (process.env.REACT_APP_ENV === "PROD") {
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+}
 export const generateNewAccessToken = (auth) => {
   return axios.post("/refresh_token", null, {
     headers: { Authorization: `Bearer ${auth.access_token}` },

@@ -1,3 +1,5 @@
+import { Helmet } from "react-helmet";
+
 import { AiTwotoneTrophy } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 // Context
@@ -12,6 +14,9 @@ function SSubject() {
   const { sub, loading, search, setSearch, setProfID, setPrevLoc } = useStudentDashboardContext();
   return (
     <div className="flex-1 ml-[100px] mr-[60px] mt-4">
+      <Helmet>
+        <title>DLSUD SAMS | {sub.subject_name}</title>
+      </Helmet>
       <div className="grid grid-cols-3 gap-4 z-10">
         <div className="col-span-2">
           <div className="flex justify-between mb-2">
