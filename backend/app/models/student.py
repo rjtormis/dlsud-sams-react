@@ -23,6 +23,7 @@ class Student(User):
     subjects = db.relationship("StudentSubject", backref="students_subjects")
     profile = db.relationship("StudentProfile", backref="student_profile")
     attendance = db.relationship("Attendance", backref="student_attendance")
+    absent = db.relationship("Absent", backref="student_absent")
     __mapper_args__ = {"polymorphic_identity": "student"}
 
     @classmethod

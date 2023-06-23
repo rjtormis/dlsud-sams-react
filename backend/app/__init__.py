@@ -1,17 +1,24 @@
 import boto3
+import torch
+import os
 
-
+os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
+from pytz import timezone
+from datetime import datetime
 from flask import Flask
 from app.config import ApplicationConfig, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_KEY
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
+from flask_migrate import Migrate
+from flask_apscheduler import APScheduler
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from fr import model, model_emb
 
 
 app = Flask(__name__)
@@ -20,9 +27,17 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 CORS(app=app)
-# CORS(
-#     app, resources={r"*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}}
+# cors = CORS(
+#     app=app,
+#     resources={r"*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}},
 # )
+migrate = Migrate(app, db)
+sched = APScheduler()
+sched.init_app(app)
+sched.start()
+
+
+next_date = datetime.now()
 s3 = boto3.client(
     "s3",
     aws_access_key_id=AWS_ACCESS_KEY,
@@ -48,6 +63,8 @@ from .api import (
     studentdashboard,
     face_recog,
     student,
+    scheduler,
+    eAttendance,
 )
 
 
@@ -61,12 +78,15 @@ from .models.subject import Subject
 from .models.profile import ProfessorProfile, StudentProfile
 from .models.studentSubject import StudentSubject
 from .models.attendance import Attendance
-
+from .models.absent import Absent
+from .models.subjectAttendanceRecord import SubjectAttendanceRecord
 
 # Scripts
 from .scripts.addCollegiate import collegiateScript
 
+
 # Disable this when developing
 # with app.app_context():
+
 #     db.create_all()
 #     collegiateScript()

@@ -4,6 +4,8 @@ from flask import jsonify
 # Models
 from ..models.student import Student
 from ..models.studentSubject import StudentSubject
+from ..models.absent import Absent
+from ..models.attendance import Attendance
 
 
 @app.route("/api/v1/studentdashboard", methods=["GET"])
@@ -21,10 +23,14 @@ def student_dashboard():
     total_subject = len(
         StudentSubject.query.filter_by(studentNo=qUser.student_no).all()
     )
+    total_absent = Absent.query.filter_by(studentNo=current_user).count()
+    total_classes = qUser.total_lectures_attended + total_absent
+    total_percentage = (qUser.total_lectures_attended / total_classes) * 100
     return jsonify(
         {
             "total_students": total_students,
             "total_subjects": total_subject,
             "total_lectures_attended": qUser.total_lectures_attended,
+            "total_percentage": total_percentage,
         }
     )

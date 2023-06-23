@@ -7,6 +7,7 @@ from .student import Student
 from .section import Section
 from .details import Details
 from .attendance import Attendance
+from .absent import Absent
 
 # Utils
 from ..utils.database_utilities import push_to_database
@@ -40,6 +41,10 @@ class Subject(db.Model, Details):
 
     enrolledStudents = db.Relationship("StudentSubject", backref="studentsSubjects")
     subAttendance = db.Relationship("Attendance", backref="subject_attendance")
+    subAbsent = db.Relationship("Absent", backref="subject_absent")
+    subAttendanceRecord = db.Relationship(
+        "SubjectAttendanceRecord", backref="subject_attendance_record"
+    )
     subLecture = db.Relationship("Lecture", backref="professor_lecture")
 
     @classmethod
@@ -124,7 +129,6 @@ class Subject(db.Model, Details):
         from ..models.studentSubject import StudentSubject
 
         enrolled = []
-
         current_date = date.today()
         current_date_string = current_date.strftime("%Y-%m-%d")
 
@@ -137,21 +141,6 @@ class Subject(db.Model, Details):
                 date=current_date_string,
             ).first()
 
-            user_creation_date = User.query.filter_by(id=qUser.id).first()
-
-            if not str(user_creation_date.created).split(" ")[0] == current_date:
-                previous_date = current_date - timedelta(days=1)
-                check_previous_attendance = Attendance.query.filter_by(
-                    studentNo=qUser.student_no, sub_code=self.code, date=previous_date
-                ).first()
-                if not check_previous_attendance:
-                    student = StudentSubject.query.filter_by(
-                        sub_code=self.code, studentNo=student.studentNo
-                    ).first()
-                    student.total_absent = student.total_absent + 1
-
-                    db.session.add(student)
-                    db.session.commit()
             enrolled.append(
                 {
                     "id": qUser.id,
@@ -160,6 +149,7 @@ class Subject(db.Model, Details):
                     "studentNo": student.studentNo,
                     "emailAddress": qUser.emailAddress,
                     "total_attendance": student.total_attendance,
+                    "total_absent": student.total_absent,
                     "marked": "YES" if attendance else "NO",
                 }
             )
@@ -176,6 +166,38 @@ class Subject(db.Model, Details):
                 "day": self.day,
             },
             "enrolled": enrolled,
+        }
+
+    @property
+    def graph(self):
+        current_date = date.today()
+
+        previous_date = []
+        sub = Subject.query.filter_by(code=self.code).first()
+        section = Section.query.filter_by(id=sub.section_id).first()
+        present = []
+        absent = []
+        for i in range(5):
+            prev = current_date - timedelta(days=i + 1)
+            previous_date.append(str(prev))
+
+        for prev in previous_date:
+            pos = Attendance.query.filter_by(sub_code=self.code, date=prev).count()
+            neg = Absent.query.filter_by(sub_code=self.code, date=prev).count()
+            if pos:
+                present.append(pos)
+            else:
+                present.append(0)
+            if neg:
+                absent.append(neg)
+            else:
+                absent.append(0)
+        return {
+            "sub_name": sub.subject_name,
+            "section": section.section_full,
+            "present": present,
+            "absent": absent,
+            "dates": previous_date,
         }
 
     def __repr__(self):

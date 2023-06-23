@@ -15,7 +15,7 @@ class ApplicationConfig:
     SQLALCHEMY_DATABASE_URI = os.getenv("db")
     SQLALCHEMY_POOL_SIZE = 10
     SQLALCHEMY_POOL_TIMEOUT = 30
-
+    CORS_HEADERS = "Content-Type"
     JWT_TOKEN_LOCATION = ["headers"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=5)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(hours=10)
@@ -26,3 +26,4 @@ class ApplicationConfig:
     JWT_COOKIE_SECURE = True
     # JWT_REFRESH_COOKIE_NAME = "refresh_token_cookie"
     # JWT_REFRESH_COOKIE_PATH = "/"
+    SCHEDULER_TIMEZONE = "Asia/Singapore"

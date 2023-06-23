@@ -1,8 +1,10 @@
-from app import db
+from app import app, db
+
+from .attendance import Attendance
 
 
-class Attendance(db.Model):
-    __tablename__ = "attendance"
+class Absent(db.Model):
+    __tablename__ = "absent"
     id = db.Column(db.Integer(), unique=True, nullable=False, primary_key=True)
     studentNo = db.Column(
         db.String(length=10),
@@ -15,4 +17,3 @@ class Attendance(db.Model):
         nullable=False,
     )
     date = db.Column(db.String(length=20), nullable=False)
-    time = db.Column(db.String(length=20), nullable=False)

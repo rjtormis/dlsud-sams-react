@@ -1,15 +1,21 @@
-from flask import jsonify, request, make_response
+from app import app, db, jwt, bcrypt, cross_origin
+from datetime import datetime, date, timedelta
 
+from flask import jsonify, request, make_response
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token
 from flask_jwt_extended import set_access_cookies
 from flask_jwt_extended import set_refresh_cookies
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from app import app, db, jwt, bcrypt, cross_origin
 
 # Models
 from ..models.user import User
+from ..models.subject import Subject
+from ..models.student import Student
+from ..models.studentSubject import StudentSubject
+from ..models.attendance import Attendance
+from ..models.absent import Absent
 
 # Exception
 from ..exception import NotFoundError
@@ -35,7 +41,6 @@ def auth():
         serialized_user = User.authenticate(email, password)
         access_token = create_access_token(identity=serialized_user["id"], fresh=True)
         refresh_token = create_refresh_token(identity=serialized_user["id"])
-
         return jsonify(
             {
                 "user": serialized_user,

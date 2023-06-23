@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app import db
 
 # Models
@@ -23,6 +25,7 @@ class StudentSubject(db.Model):
     )
     total_attendance = db.Column(db.Integer(), nullable=False, default=0)
     total_absent = db.Column(db.Integer(), nullable=False, default=0)
+    date = db.Column(db.String(length=20), nullable=False)
 
     @property
     def serialized(self):
@@ -31,10 +34,13 @@ class StudentSubject(db.Model):
             "sub_code": self.sub_code,
             "studentNo": self.studentNo,
             "total_attendance": self.total_attendance,
+            "total_absent": self.total_absent,
+            "enrolled_date": self.date,
         }
 
     @classmethod
     def enroll_student(cls, id, code):
+        current_date = datetime.now().strftime("%Y-%m-%d")
         qUser = Student.query.filter_by(id=id).first()
         qSubject = Subject.query.filter_by(code=code).first()
         if qSubject:
@@ -45,8 +51,11 @@ class StudentSubject(db.Model):
                 raise ConflictError("You are already enrolled in this subject.")
 
             enrollSub = StudentSubject(
-                sub_code=qSubject.code, studentNo=qUser.student_no
+                sub_code=qSubject.code, studentNo=qUser.student_no, date=current_date
             )
             push_to_database(enrollSub)
         else:
             raise NotFoundError("Subject code does not exists")
+
+    def __repr__(self):
+        return f"Student no. {self.studentNo}"

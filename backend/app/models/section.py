@@ -25,6 +25,9 @@ class Section(db.Model, Details):
     )
 
     subjects = db.relationship("Subject", backref="section", cascade="all,delete")
+    subAttendanceRecord = db.Relationship(
+        "SubjectAttendanceRecord", backref="sectionSubject_attendance_record"
+    )
 
     @classmethod
     def create_section(cls, course, year, section, id):
